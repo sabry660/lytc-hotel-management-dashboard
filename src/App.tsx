@@ -36,6 +36,7 @@ import {
   INITIAL_MAINTENANCE, 
   INITIAL_RESTAURANT, 
   INITIAL_INVOICES, 
+  INITIAL_STAFF,
   HOTEL_INFO 
 } from './data';
 import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice, Staff } from './types';
@@ -90,7 +91,7 @@ export default function App() {
   });
   const [staff, setStaff] = useState<Staff[]>(() => {
     const saved = localStorage.getItem('lytc_staff');
-    return saved ? JSON.parse(saved) : [];
+    return saved ? JSON.parse(saved) : INITIAL_STAFF;
   });
 
   // UI Notifications dropdown & Global search
@@ -706,6 +707,8 @@ export default function App() {
                     { label: 'المدفوعات', icon: <CreditCard size={14} /> },
                     { label: 'التحليلات', icon: <BarChart3 size={14} /> },
                     { label: 'التسويق', icon: <Globe size={14} /> },
+                    { label: 'تحليلات التسويق', icon: <TrendingUp size={14} /> },
+                    { label: 'مركز الذكاء الاصطناعي', icon: <Brain size={14} /> },
                     { label: 'الموظفين', icon: <Award size={14} /> },
                     { label: 'إدارة الموقع', icon: <Globe size={14} /> },
                     { label: 'إدارة السمعة', icon: <Star size={14} /> },

@@ -44,6 +44,15 @@ export default function StaffSection({ staff, onUpdateStaffStatus }: StaffSectio
     }
   };
 
+  const getAttendanceStats = (attendance: any) => {
+    if (!attendance || attendance.length === 0) return { present: 0, absent: 0, late: 0 };
+    return {
+      present: attendance.filter((a: any) => a.status === 'present').length,
+      absent: attendance.filter((a: any) => a.status === 'absent').length,
+      late: attendance.filter((a: any) => a.status === 'late').length
+    };
+  };
+
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
@@ -283,13 +292,38 @@ export default function StaffSection({ staff, onUpdateStaffStatus }: StaffSectio
                 </div>
               )}
 
+              {/* Attendance */}
+              {selectedStaff.attendance && selectedStaff.attendance.length > 0 && (
+                <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
+                  <h4 className="text-sm font-bold text-[#E6C587] mb-3">سجل الحضور</h4>
+                  <div className="space-y-2">
+                    {selectedStaff.attendance.map((record, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-xs p-2 bg-[#090909] rounded-lg">
+                        <div>
+                          <span className="text-white">{record.date}</span>
+                          <span className="text-gray-500 mr-2">{record.checkIn} - {record.checkOut}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                          record.status === 'present' ? 'text-emerald-400 bg-emerald-950/20' :
+                          record.status === 'late' ? 'text-amber-400 bg-amber-950/20' :
+                          record.status === 'absent' ? 'text-red-400 bg-red-950/20' :
+                          'text-gray-400 bg-gray-900'
+                        }`}>
+                          {record.status === 'present' ? 'حاضر' : record.status === 'late' ? 'متأخر' : record.status === 'absent' ? 'غائب' : 'إجازة'}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               {/* Shift Schedule */}
               {selectedStaff.shiftSchedule && selectedStaff.shiftSchedule.length > 0 && (
                 <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
-                  <h4 className="text-sm font-bold text-[#E6C587] mb-3">جدول المناوبات</h4>
-                  <div className="space-y-2">
+                  <h4 className="text-sm font-bold text-[#E6C587] mb-3">جدول العمل</h4>
+                  <div className="grid grid-cols-1 gap-2 text-xs">
                     {selectedStaff.shiftSchedule.map((shift, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-2 bg-[#090909] border border-gray-800 rounded-lg text-xs">
+                      <div key={idx} className="flex justify-between items-center p-2 bg-[#090909] rounded-lg">
                         <span className="text-white">{shift.day}</span>
                         <span className="text-gray-400">{shift.startTime} - {shift.endTime}</span>
                       </div>
@@ -298,19 +332,18 @@ export default function StaffSection({ staff, onUpdateStaffStatus }: StaffSectio
                 </div>
               )}
 
-              {/* Attendance Records */}
-              {selectedStaff.attendance && selectedStaff.attendance.length > 0 && (
+              {/* Rewards */}
+              {selectedStaff.rewards && selectedStaff.rewards.length > 0 && (
                 <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
-                  <h4 className="text-sm font-bold text-[#E6C587] mb-3">سجل الحضور</h4>
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {selectedStaff.attendance.slice(0, 5).map((record, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-2 bg-[#090909] border border-gray-800 rounded-lg text-xs">
-                        <span className="text-white">{record.date}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-emerald-400">{record.checkIn}</span>
-                          <span className="text-gray-500">-</span>
-                          <span className="text-amber-400">{record.checkOut}</span>
+                  <h4 className="text-sm font-bold text-[#E6C587] mb-3">المكافآت</h4>
+                  <div className="space-y-2">
+                    {selectedStaff.rewards.map((reward, idx) => (
+                      <div key={idx} className="flex justify-between items-center text-xs p-2 bg-[#090909] rounded-lg">
+                        <div>
+                          <span className="text-white">{reward.type}</span>
+                          <span className="text-gray-500 mr-2">{reward.date}</span>
                         </div>
+                        <span className="text-amber-400">{reward.amount.toLocaleString('ar-SA')} ريال</span>
                       </div>
                     ))}
                   </div>

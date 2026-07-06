@@ -1,4 +1,4 @@
-import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice } from './types';
+import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice, Staff } from './types';
 
 export const INITIAL_ROOMS: Room[] = [
   {
@@ -702,6 +702,140 @@ export const INITIAL_INVOICES: Invoice[] = [
     status: 'paid',
     date: '2026-07-04',
     method: 'بوابة دفع إلكترونية'
+  }
+];
+
+export const INITIAL_STAFF: Staff[] = [
+  {
+    id: 's1',
+    name: 'محمد العتيبي',
+    position: 'مدير الاستقبال',
+    department: 'الاستقبال',
+    email: 'mohammed.alotaibi@lytc.com',
+    phone: '+966 50 123 4567',
+    status: 'active',
+    attendance: [
+      { date: '2026-07-01', checkIn: '08:00', checkOut: '16:00', status: 'present' },
+      { date: '2026-07-02', checkIn: '08:05', checkOut: '16:00', status: 'late' },
+      { date: '2026-07-03', checkIn: '08:00', checkOut: '16:00', status: 'present' }
+    ],
+    performance: { rating: 4.8, completedTasks: 156, customerSatisfaction: 95, efficiency: 92 },
+    completedTasks: 156,
+    averageResponseTime: 8,
+    shiftSchedule: [
+      { day: 'الأحد', startTime: '08:00', endTime: '16:00' },
+      { day: 'الاثنين', startTime: '08:00', endTime: '16:00' },
+      { day: 'الثلاثاء', startTime: '08:00', endTime: '16:00' },
+      { day: 'الأربعاء', startTime: '08:00', endTime: '16:00' },
+      { day: 'الخميس', startTime: '08:00', endTime: '16:00' }
+    ],
+    rewards: [{ date: '2026-06', type: 'موظف الشهر', amount: 5000, reason: 'أداء متميز' }]
+  },
+  {
+    id: 's2',
+    name: 'فاطمة الحربي',
+    position: 'مشرفة النظافة',
+    department: 'النظافة',
+    email: 'fatima.alharbi@lytc.com',
+    phone: '+966 50 234 5678',
+    status: 'active',
+    attendance: [
+      { date: '2026-07-01', checkIn: '06:00', checkOut: '14:00', status: 'present' },
+      { date: '2026-07-02', checkIn: '06:00', checkOut: '14:00', status: 'present' },
+      { date: '2026-07-03', checkIn: '06:00', checkOut: '14:00', status: 'present' }
+    ],
+    performance: { rating: 4.9, completedTasks: 234, customerSatisfaction: 98, efficiency: 95 },
+    completedTasks: 234,
+    averageResponseTime: 5,
+    shiftSchedule: [
+      { day: 'الأحد', startTime: '06:00', endTime: '14:00' },
+      { day: 'الاثنين', startTime: '06:00', endTime: '14:00' },
+      { day: 'الثلاثاء', startTime: '06:00', endTime: '14:00' },
+      { day: 'الأربعاء', startTime: '06:00', endTime: '14:00' },
+      { day: 'الخميس', startTime: '06:00', endTime: '14:00' },
+      { day: 'الجمعة', startTime: '06:00', endTime: '14:00' }
+    ],
+    rewards: [
+      { date: '2026-05', type: 'موظف الشهر', amount: 5000, reason: 'أداء متميز' },
+      { date: '2026-06', type: 'جائزة التميز', amount: 3000, reason: 'قيادة متميزة' }
+    ]
+  },
+  {
+    id: 's3',
+    name: 'أحمد الشمري',
+    position: 'فني صيانة',
+    department: 'الصيانة',
+    email: 'ahmed.alshamrani@lytc.com',
+    phone: '+966 50 345 6789',
+    status: 'active',
+    attendance: [
+      { date: '2026-07-01', checkIn: '10:00', checkOut: '18:00', status: 'present' },
+      { date: '2026-07-02', checkIn: '10:10', checkOut: '18:00', status: 'late' },
+      { date: '2026-07-03', checkIn: '10:05', checkOut: '18:00', status: 'late' }
+    ],
+    performance: { rating: 4.5, completedTasks: 89, customerSatisfaction: 88, efficiency: 85 },
+    completedTasks: 89,
+    averageResponseTime: 12,
+    shiftSchedule: [
+      { day: 'الأحد', startTime: '10:00', endTime: '18:00' },
+      { day: 'الاثنين', startTime: '10:00', endTime: '18:00' },
+      { day: 'الثلاثاء', startTime: '10:00', endTime: '18:00' },
+      { day: 'الأربعاء', startTime: '10:00', endTime: '18:00' },
+      { day: 'الخميس', startTime: '10:00', endTime: '18:00' }
+    ],
+    rewards: []
+  },
+  {
+    id: 's4',
+    name: 'سارة العتيبي',
+    position: 'مديرة المطعم',
+    department: 'المطعم',
+    email: 'sara.alotaibi@lytc.com',
+    phone: '+966 50 456 7890',
+    status: 'active',
+    attendance: [
+      { date: '2026-07-01', checkIn: '12:00', checkOut: '20:00', status: 'present' },
+      { date: '2026-07-02', checkIn: '12:00', checkOut: '20:00', status: 'present' },
+      { date: '2026-07-03', checkIn: '12:00', checkOut: '20:00', status: 'present' }
+    ],
+    performance: { rating: 4.9, completedTasks: 178, customerSatisfaction: 97, efficiency: 94 },
+    completedTasks: 178,
+    averageResponseTime: 6,
+    shiftSchedule: [
+      { day: 'الأحد', startTime: '12:00', endTime: '20:00' },
+      { day: 'الاثنين', startTime: '12:00', endTime: '20:00' },
+      { day: 'الثلاثاء', startTime: '12:00', endTime: '20:00' },
+      { day: 'الأربعاء', startTime: '12:00', endTime: '20:00' },
+      { day: 'الخميس', startTime: '12:00', endTime: '20:00' },
+      { day: 'الجمعة', startTime: '12:00', endTime: '20:00' },
+      { day: 'السبت', startTime: '12:00', endTime: '20:00' }
+    ],
+    rewards: [{ date: '2026-06', type: 'مديرة العام', amount: 10000, reason: 'قيادة استثنائية' }]
+  },
+  {
+    id: 's5',
+    name: 'خالد القحطاني',
+    position: 'محاسب',
+    department: 'المالية',
+    email: 'khaled.alqahtani@lytc.com',
+    phone: '+966 50 567 8901',
+    status: 'on_leave',
+    attendance: [
+      { date: '2026-07-01', checkIn: '09:00', checkOut: '17:00', status: 'present' },
+      { date: '2026-07-02', checkIn: '09:00', checkOut: '17:00', status: 'present' },
+      { date: '2026-07-03', checkIn: '', checkOut: '', status: 'leave' }
+    ],
+    performance: { rating: 4.6, completedTasks: 120, customerSatisfaction: 90, efficiency: 88 },
+    completedTasks: 120,
+    averageResponseTime: 15,
+    shiftSchedule: [
+      { day: 'الأحد', startTime: '09:00', endTime: '17:00' },
+      { day: 'الاثنين', startTime: '09:00', endTime: '17:00' },
+      { day: 'الثلاثاء', startTime: '09:00', endTime: '17:00' },
+      { day: 'الأربعاء', startTime: '09:00', endTime: '17:00' },
+      { day: 'الخميس', startTime: '09:00', endTime: '17:00' }
+    ],
+    rewards: []
   }
 ];
 
