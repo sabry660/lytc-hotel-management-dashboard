@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { CreditCard, DollarSign, ArrowUpRight, ArrowDownRight, Printer, AlertCircle, RefreshCw, FileText } from 'lucide-react';
+import { motion } from 'motion/react';
+import { 
+  CreditCard, DollarSign, ArrowUpRight, ArrowDownRight, Printer, AlertCircle, RefreshCw, FileText,
+  TrendingUp, BarChart3, Filter, Search, Plus, X, Save, Download, Percent, 
+  Calendar, CheckCircle2, Clock, Wallet, Building2, CreditCard as CardIcon, 
+  Receipt, Calculator, PieChart
+} from 'lucide-react';
 import { Invoice } from '../types';
 
 interface PaymentsSectionProps {
@@ -9,6 +15,10 @@ interface PaymentsSectionProps {
 
 export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: PaymentsSectionProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [viewMode, setViewMode] = useState<'invoices' | 'taxes' | 'gateways' | 'installments'>('invoices');
+  const [filter, setFilter] = useState<'all' | Invoice['status']>('all');
+
+  const filteredInvoices = filter === 'all' ? invoices : invoices.filter(inv => inv.status === filter);
 
   const totalPayments = invoices
     .filter(inv => inv.status === 'paid')
@@ -22,6 +32,9 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
     .filter(inv => inv.status === 'refunded')
     .reduce((sum, inv) => sum + inv.amount, 0);
 
+  const vatRate = 0.15; // 15% VAT
+  const totalVAT = totalPayments * vatRate;
+
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
@@ -30,48 +43,79 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
           <h1 className="text-2xl font-black text-[#E6C587]">العمليات المالية والفواتير</h1>
           <p className="text-gray-500 text-xs mt-1">إصدار ومراقبة الفواتير الإلكترونية المعتمدة، وإجراء تحويلات الدفع والتسويات للنزلاء.</p>
         </div>
+        <button className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
+          <Plus size={15} />
+          <span>فاتورة جديدة</span>
+        </button>
+      </div>
+
+      {/* View Mode Toggles */}
+      <div className="flex flex-wrap items-center gap-2 bg-[#0b0b0b] border border-gray-900 p-3 rounded-xl">
+        {[
+          { id: 'invoices', label: 'الفواتير', icon: <Receipt size={14} /> },
+          { id: 'taxes', label: 'الضرائب', icon: <Calculator size={14} /> },
+          { id: 'gateways', label: 'بوابات الدفع', icon: <CardIcon size={14} /> },
+          { id: 'installments', label: 'الأقساط', icon: <Calendar size={14} /> }
+        ].map((mode) => (
+          <button
+            key={mode.id}
+            onClick={() => setViewMode(mode.id as any)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition ${
+              viewMode === mode.id ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800 hover:text-white'
+            }`}
+          >
+            {mode.icon}
+            <span>{mode.label}</span>
+          </button>
+        ))}
       </div>
 
       {/* Financial Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-[#0b0b0b] border border-gray-900 rounded-xl hover:border-emerald-500/25 transition duration-200 flex justify-between items-center relative overflow-hidden">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-emerald-500/35 transition duration-200">
           <div className="space-y-1">
-            <span className="text-xs text-gray-500 font-bold block">إجمالي المدفوعات المستلمة:</span>
-            <span className="text-2xl font-black text-emerald-400 font-mono">
-              {totalPayments.toLocaleString('ar-SA')} <span className="text-xs font-sans">ريال</span>
-            </span>
+            <span className="text-[10px] text-gray-500">إجمالي المدفوعات</span>
+            <div className="text-lg font-bold text-white font-mono">{totalPayments.toLocaleString('ar-SA')} ريال</div>
           </div>
-          <div className="p-3 bg-emerald-950/20 text-emerald-400 rounded-xl">
-            <ArrowUpRight size={22} />
+          <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg mt-2">
+            <ArrowUpRight size={16} />
           </div>
         </div>
 
-        <div className="p-6 bg-[#0b0b0b] border border-gray-900 rounded-xl hover:border-yellow-500/25 transition duration-200 flex justify-between items-center relative overflow-hidden">
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-amber-500/35 transition duration-200">
           <div className="space-y-1">
-            <span className="text-xs text-gray-500 font-bold block">مستحقات معلقة بانتظار التحصيل:</span>
-            <span className="text-2xl font-black text-amber-500 font-mono">
-              {pendingPayments.toLocaleString('ar-SA')} <span className="text-xs font-sans">ريال</span>
-            </span>
+            <span className="text-[10px] text-gray-500">ضريبة القيمة المضافة (15%)</span>
+            <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA')} ريال</div>
           </div>
-          <div className="p-3 bg-amber-950/20 text-amber-500 rounded-xl">
-            <AlertCircle size={22} />
+          <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg mt-2">
+            <Percent size={16} />
           </div>
         </div>
 
-        <div className="p-6 bg-[#0b0b0b] border border-gray-900 rounded-xl hover:border-red-500/25 transition duration-200 flex justify-between items-center relative overflow-hidden">
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-red-500/35 transition duration-200">
           <div className="space-y-1">
-            <span className="text-xs text-gray-500 font-bold block">مبالغ مستردة وتسويات:</span>
-            <span className="text-2xl font-black text-red-400 font-mono">
-              {refundedPayments.toLocaleString('ar-SA')} <span className="text-xs font-sans">ريال</span>
-            </span>
+            <span className="text-[10px] text-gray-500">المدفوعات المعلقة</span>
+            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA')} ريال</div>
           </div>
-          <div className="p-3 bg-red-950/20 text-red-400 rounded-xl">
-            <ArrowDownRight size={22} />
+          <div className="p-2 bg-red-950/20 text-red-400 rounded-lg mt-2">
+            <AlertCircle size={16} />
+          </div>
+        </div>
+
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-purple-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">المستردات</span>
+            <div className="text-lg font-bold text-white font-mono">{refundedPayments.toLocaleString('ar-SA')} ريال</div>
+          </div>
+          <div className="p-2 bg-purple-950/20 text-purple-400 rounded-lg mt-2">
+            <ArrowDownRight size={16} />
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* Invoices View */}
+      {viewMode === 'invoices' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Invoice List Panel */}
         <div className="lg:col-span-2 bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 shadow-xl space-y-4">
           <h2 className="text-sm font-bold text-[#E6C587] flex items-center gap-2">
@@ -207,6 +251,75 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
           )}
         </div>
       </div>
+      )}
+
+      {/* Taxes View */}
+      {viewMode === 'taxes' && (
+        <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-[#E6C587] mb-4">إدارة الضرائب والرسوم</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-bold text-white">ضريبة القيمة المضافة (VAT)</span>
+                <span className="text-xs text-amber-400">15%</span>
+              </div>
+              <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA')} ريال</div>
+            </div>
+            <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-bold text-white">ضريبة الخدمات السياحية</span>
+                <span className="text-xs text-amber-400">5%</span>
+              </div>
+              <div className="text-lg font-bold text-white font-mono">{(totalPayments * 0.05).toLocaleString('ar-SA')} ريال</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Payment Gateways View */}
+      {viewMode === 'gateways' && (
+        <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-[#E6C587] mb-4">بوابات الدفع الإلكتروني</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { name: 'مدى', status: 'نشط', icon: <Wallet size={24} /> },
+              { name: 'STC Pay', status: 'نشط', icon: <CardIcon size={24} /> },
+              { name: 'Visa/Mastercard', status: 'نشط', icon: <CreditCard size={24} /> },
+              { name: 'Apple Pay', status: 'نشط', icon: <Building2 size={24} /> }
+            ].map((gateway, idx) => (
+              <div key={idx} className="p-4 bg-[#121212] border border-gray-800 rounded-xl text-center">
+                <div className="text-[#D4AF37] mx-auto mb-2">{gateway.icon}</div>
+                <div className="text-sm font-bold text-white">{gateway.name}</div>
+                <div className="text-xs text-emerald-400 mt-1">{gateway.status}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Installments View */}
+      {viewMode === 'installments' && (
+        <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6">
+          <h3 className="text-lg font-bold text-[#E6C587] mb-4">خطط الأقساط</h3>
+          <div className="space-y-3">
+            {[
+              { guest: 'الشيخ عبد العزيز', amount: 15000, remaining: 5000, installments: 3 },
+              { guest: 'السيدة فاطمة', amount: 25000, remaining: 10000, installments: 5 }
+            ].map((plan, idx) => (
+              <div key={idx} className="p-4 bg-[#121212] border border-gray-800 rounded-xl flex justify-between items-center">
+                <div>
+                  <div className="text-sm font-bold text-white">{plan.guest}</div>
+                  <div className="text-xs text-gray-500">المبلغ الكلي: {plan.amount.toLocaleString('ar-SA')} ريال</div>
+                </div>
+                <div className="text-left">
+                  <div className="text-sm font-bold text-amber-400">{plan.remaining.toLocaleString('ar-SA')} ريال</div>
+                  <div className="text-xs text-gray-500">{plan.installments} أقساط متبقية</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

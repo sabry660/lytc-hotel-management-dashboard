@@ -56,6 +56,46 @@ export default function DashboardHome({
   const pendingRequestsCount = requests.filter(req => req.status === 'pending').length;
   const openMaintenanceCount = maintenance.filter(m => m.status === 'open' || m.status === 'assigned').length;
 
+  // New Executive Dashboard KPIs
+  const averageRoomRate = rooms.length > 0 
+    ? rooms.reduce((sum, r) => sum + r.pricePerNight, 0) / rooms.length 
+    : 0;
+  
+  const revPAR = availableRoomsCount > 0 
+    ? totalRevenue / (rooms.length - occupiedRoomsCount) 
+    : 0;
+
+  const directBookings = reservations.filter(r => 
+    r.bookingSource === 'direct' || !r.bookingSource
+  ).length;
+
+  const platformBookings = reservations.filter(r => 
+    r.bookingSource && r.bookingSource !== 'direct'
+  ).length;
+
+  const cancellationRate = reservations.length > 0 
+    ? (reservations.filter(r => r.status === 'cancelled').length / reservations.length) * 100 
+    : 0;
+
+  const averageGuestRating = 4.7; // Demo value - would come from actual ratings
+
+  const pendingPayments = invoices
+    .filter(inv => inv.status === 'unpaid')
+    .reduce((sum, inv) => sum + inv.amount, 0);
+
+  const pendingHousekeeping = housekeeping.filter(h => h.status !== 'completed').length;
+
+  const restaurantRevenue = 45000; // Demo value
+  const spaRevenue = 28000; // Demo value
+
+  const vipGuestsArriving = guests.filter(g => g.isVIP).length;
+
+  const websiteVisits = 12500; // Demo value
+  const seoScore = 87; // Demo value
+  const googleBusinessViews = 8900; // Demo value
+  const instagramReach = 45000; // Demo value
+  const unreadMessages = 23; // Demo value
+
   const latestReservations = [...reservations]
     .sort((a, b) => b.id.localeCompare(a.id))
     .slice(0, 4);
@@ -200,6 +240,207 @@ export default function DashboardHome({
             <ArrowUpRight size={14} />
             <span className="font-bold">+18.4%</span>
             <span className="text-gray-600">معدل الإيراد اليومي</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Expanded Executive Dashboard KPI Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        {/* Average Room Rate */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-purple-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">متوسط سعر الغرفة</span>
+            <div className="text-lg font-bold text-white font-mono">{Math.round(averageRoomRate)} ريال</div>
+          </div>
+          <div className="p-2 bg-purple-950/20 text-purple-400 rounded-lg">
+            <TrendingUp size={16} />
+          </div>
+        </div>
+
+        {/* RevPAR */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-cyan-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">الإيراد لكل غرفة متاحة</span>
+            <div className="text-lg font-bold text-white font-mono">{Math.round(revPAR)} ريال</div>
+          </div>
+          <div className="p-2 bg-cyan-950/20 text-cyan-400 rounded-lg">
+            <Activity size={16} />
+          </div>
+        </div>
+
+        {/* Direct Bookings */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-emerald-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">الحجوزات المباشرة</span>
+            <div className="text-lg font-bold text-white font-mono">{directBookings}</div>
+          </div>
+          <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg">
+            <Calendar size={16} />
+          </div>
+        </div>
+
+        {/* Platform Bookings */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-blue-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">حجوزات المنصات</span>
+            <div className="text-lg font-bold text-white font-mono">{platformBookings}</div>
+          </div>
+          <div className="p-2 bg-blue-950/20 text-blue-400 rounded-lg">
+            <Compass size={16} />
+          </div>
+        </div>
+
+        {/* Cancellation Rate */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-red-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">معدل الإلغاء</span>
+            <div className="text-lg font-bold text-white font-mono">{cancellationRate.toFixed(1)}%</div>
+          </div>
+          <div className="p-2 bg-red-950/20 text-red-400 rounded-lg">
+            <ArrowDownRight size={16} />
+          </div>
+        </div>
+
+        {/* Average Guest Rating */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-yellow-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">متوسط تقييم النزلاء</span>
+            <div className="text-lg font-bold text-white font-mono">{averageGuestRating} <Star size={14} className="inline text-yellow-400" /></div>
+          </div>
+          <div className="p-2 bg-yellow-950/20 text-yellow-400 rounded-lg">
+            <Star size={16} />
+          </div>
+        </div>
+
+        {/* Pending Payments */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-orange-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">المدفوعات المستحقة</span>
+            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA')} ريال</div>
+          </div>
+          <div className="p-2 bg-orange-950/20 text-orange-400 rounded-lg">
+            <CreditCard size={16} />
+          </div>
+        </div>
+
+        {/* Open Maintenance */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-pink-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">طلبات الصيانة المفتوحة</span>
+            <div className="text-lg font-bold text-white font-mono">{openMaintenanceCount}</div>
+          </div>
+          <div className="p-2 bg-pink-950/20 text-pink-400 rounded-lg">
+            <Wrench size={16} />
+          </div>
+        </div>
+
+        {/* Pending Housekeeping */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-teal-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">مهام النظافة المتبقية</span>
+            <div className="text-lg font-bold text-white font-mono">{pendingHousekeeping}</div>
+          </div>
+          <div className="p-2 bg-teal-950/20 text-teal-400 rounded-lg">
+            <Sparkles size={16} />
+          </div>
+        </div>
+
+        {/* Restaurant Revenue */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-amber-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">إيرادات المطعم</span>
+            <div className="text-lg font-bold text-white font-mono">{restaurantRevenue.toLocaleString('ar-SA')} ريال</div>
+          </div>
+          <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg">
+            <Coffee size={16} />
+          </div>
+        </div>
+
+        {/* Spa Revenue */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-indigo-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">إيرادات السبا</span>
+            <div className="text-lg font-bold text-white font-mono">{spaRevenue.toLocaleString('ar-SA')} ريال</div>
+          </div>
+          <div className="p-2 bg-indigo-950/20 text-indigo-400 rounded-lg">
+            <Heart size={16} />
+          </div>
+        </div>
+
+        {/* VIP Guests Arriving */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-rose-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">الضيوف المهمون القادمين</span>
+            <div className="text-lg font-bold text-white font-mono">{vipGuestsArriving}</div>
+          </div>
+          <div className="p-2 bg-rose-950/20 text-rose-400 rounded-lg">
+            <ShieldAlert size={16} />
+          </div>
+        </div>
+
+        {/* Weather */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-sky-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">حالة الطقس</span>
+            <div className="text-lg font-bold text-white font-mono">42° م</div>
+          </div>
+          <div className="p-2 bg-sky-950/20 text-sky-400 rounded-lg">
+            <CloudSun size={16} />
+          </div>
+        </div>
+
+        {/* Website Visits */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-green-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">زيارات الموقع</span>
+            <div className="text-lg font-bold text-white font-mono">{websiteVisits.toLocaleString('ar-SA')}</div>
+          </div>
+          <div className="p-2 bg-green-950/20 text-green-400 rounded-lg">
+            <Activity size={16} />
+          </div>
+        </div>
+
+        {/* SEO Score */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-lime-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">درجة SEO</span>
+            <div className="text-lg font-bold text-white font-mono">{seoScore}/100</div>
+          </div>
+          <div className="p-2 bg-lime-950/20 text-lime-400 rounded-lg">
+            <TrendingUp size={16} />
+          </div>
+        </div>
+
+        {/* Google Business Views */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-blue-600/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">مشاهدات Google Business</span>
+            <div className="text-lg font-bold text-white font-mono">{googleBusinessViews.toLocaleString('ar-SA')}</div>
+          </div>
+          <div className="p-2 bg-blue-900/20 text-blue-400 rounded-lg">
+            <Compass size={16} />
+          </div>
+        </div>
+
+        {/* Instagram Reach */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-pink-600/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">وصول Instagram</span>
+            <div className="text-lg font-bold text-white font-mono">{instagramReach.toLocaleString('ar-SA')}</div>
+          </div>
+          <div className="p-2 bg-pink-900/20 text-pink-400 rounded-lg">
+            <Heart size={16} />
+          </div>
+        </div>
+
+        {/* Unread Messages */}
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-red-600/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">محادثات غير مقروءة</span>
+            <div className="text-lg font-bold text-white font-mono">{unreadMessages}</div>
+          </div>
+          <div className="p-2 bg-red-900/20 text-red-400 rounded-lg">
+            <MessageSquare size={16} />
           </div>
         </div>
       </div>

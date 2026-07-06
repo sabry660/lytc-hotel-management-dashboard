@@ -4,116 +4,235 @@ export const INITIAL_ROOMS: Room[] = [
   {
     id: 'r1',
     number: '501',
+    name: 'بنتهاوس الخليج الملكي',
+    description: 'أرقى بنتهاوس في الفندق مع إطلالة بانورامية ساحرة على الخليج العربي، مصمم لاستقبال كبار الشخصيات والعائلات الملكية.',
     type: 'بنتهاوس فاخر',
     status: 'occupied',
     floor: 5,
     pricePerNight: 4500,
+    capacity: 4,
     amenities: ['جاكوزي خاص', 'إطلالة بانورامية على البحر', 'شرفة خاصة', 'خادم شخصي', 'سينما خاصة'],
-    guestName: 'الشيخ سلمان آل سعود'
+    images: ['https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800', 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800'],
+    guestName: 'الشيخ سلمان آل سعود',
+    lastUpdated: '2026-07-05 14:30',
+    occupancyRate: 92
   },
   {
     id: 'r2',
     number: '502',
+    name: 'جناح النخبة الملكي',
+    description: 'جناح ملكي فاخر بمسبح خاص وصالون استقبال راقي، مثالي للضيوف الذين يبحثون عن الخصوصية التامة والرفاهية.',
     type: 'جناح ملكي',
     status: 'occupied',
     floor: 5,
     pricePerNight: 3500,
+    capacity: 3,
     amenities: ['مسبح خاص', 'صالون استقبال', 'خادم شخصي', 'غرفة طعام منفصلة'],
-    guestName: 'د. فاطمة الهاشم'
+    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800', 'https://images.unsplash.com/photo-1584132967334-10e028bd69f7?w=800'],
+    guestName: 'د. فاطمة الهاشم',
+    lastUpdated: '2026-07-05 12:15',
+    occupancyRate: 88,
+    maintenanceLog: [
+      { date: '2026-06-15', issue: 'صيانة نظام التكييف', technician: 'محمد العتيبي', cost: 1200, status: 'completed' },
+      { date: '2026-05-20', issue: 'إصلاح المسبح', technician: 'أحمد الشمري', cost: 3500, status: 'completed' }
+    ],
+    cleaningLog: [
+      { date: '2026-07-05', staff: 'فاطمة الحربي', duration: 45, quality: 5 },
+      { date: '2026-07-04', staff: 'سارة العتيبي', duration: 50, quality: 4 }
+    ],
+    roomRevenue: 285000
   },
   {
     id: 'r3',
     number: '401',
+    name: 'جناح ديلوكس البحري',
+    description: 'جناح ديلوكس أنيق مع إطلالة مباشرة على البحر ومرافق عصرية متكاملة.',
     type: 'جناح ديلوكس',
     status: 'available',
     floor: 4,
     pricePerNight: 2200,
-    amenities: ['إطلالة على البحر', 'آلة قهوة إسبراسو', 'حمام رخامي', 'شاشة ذكية 85 بوصة']
+    capacity: 2,
+    amenities: ['إطلالة على البحر', 'آلة قهوة إسبراسو', 'حمام رخامي', 'شاشة ذكية 85 بوصة'],
+    images: ['https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800'],
+    lastUpdated: '2026-07-05 10:00',
+    occupancyRate: 75,
+    maintenanceLog: [
+      { date: '2026-06-10', issue: 'استبدال مراوح السقف', technician: 'خالد الغامدي', cost: 450, status: 'completed' }
+    ],
+    cleaningLog: [
+      { date: '2026-07-04', staff: 'منى القحطاني', duration: 35, quality: 5 },
+      { date: '2026-07-02', staff: 'عائشة الشمري', duration: 40, quality: 4 }
+    ],
+    roomRevenue: 156000
   },
   {
     id: 'r4',
     number: '402',
+    name: 'جناح ديلوكس الكلاسيكي',
+    description: 'جناح ديلوكس كلاسيكي بتصميم عصري أنيق، مثالي للأزواج ورحلات العمل.',
     type: 'جناح ديلوكس',
     status: 'cleaning',
     floor: 4,
     pricePerNight: 2200,
+    capacity: 2,
     amenities: ['إطلالة على البحر', 'آلة قهوة إسبراسو', 'حمام رخامي'],
-    guestName: 'أحمد الشمري' // Just checked out, needs cleaning
+    images: ['https://images.unsplash.com/photo-1591088398332-8a7791972843?w=800'],
+    guestName: 'أحمد الشمري',
+    lastUpdated: '2026-07-05 09:45',
+    occupancyRate: 82,
+    maintenanceLog: [
+      { date: '2026-06-25', issue: 'إصلاح قفل الباب', technician: 'عبدالله العتيبي', cost: 280, status: 'completed' }
+    ],
+    cleaningLog: [
+      { date: '2026-07-05', staff: 'نورة الشمري', duration: 38, quality: 5 },
+      { date: '2026-07-03', staff: 'سارة الحربي', duration: 42, quality: 4 }
+    ],
+    roomRevenue: 142000
   },
   {
     id: 'r5',
     number: '403',
+    name: 'جناح بريميوم الأعمال',
+    description: 'جناح بريميوم مخصص لرجال الأعمال مع مكتب عمل متطور وإنترنت فائق السرعة.',
     type: 'غرفة بريميوم دبل',
     status: 'occupied',
     floor: 4,
     pricePerNight: 1500,
+    capacity: 2,
     amenities: ['إطلالة جزئية على البحر', 'مكتب عمل فاخر', 'إنترنت فائق السرعة'],
-    guestName: 'م. يوسف القحطاني'
+    images: ['https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800'],
+    guestName: 'م. يوسف القحطاني',
+    lastUpdated: '2026-07-05 11:20',
+    occupancyRate: 79,
+    maintenanceLog: [
+      { date: '2026-06-18', issue: 'ترقية الإنترنت', technician: 'فريق تقنية المعلومات', cost: 800, status: 'completed' }
+    ],
+    cleaningLog: [
+      { date: '2026-07-04', staff: 'هند الشمري', duration: 30, quality: 5 },
+      { date: '2026-07-01', staff: 'مريم العتيبي', duration: 35, quality: 4 }
+    ],
+    roomRevenue: 98000
   },
   {
     id: 'r6',
     number: '301',
+    name: 'جناح بريميوم الحديقة',
+    description: 'جناح بريميوم هادئ مع إطلالة على الحدائق الخلابة ومكتب عمل مريح.',
     type: 'غرفة بريميوم دبل',
     status: 'available',
     floor: 3,
     pricePerNight: 1500,
-    amenities: ['إطلالة على الحديقة', 'مكتب عمل فاخر', 'ميني بار مجاني']
+    capacity: 2,
+    amenities: ['إطلالة على الحديقة', 'مكتب عمل فاخر', 'ميني بار مجاني'],
+    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800'],
+    lastUpdated: '2026-07-05 08:30',
+    occupancyRate: 71,
+    maintenanceLog: [],
+    cleaningLog: [
+      { date: '2026-07-03', staff: 'فاطمة القحطاني', duration: 32, quality: 5 },
+      { date: '2026-06-30', staff: 'نورة الغامدي', duration: 38, quality: 4 }
+    ],
+    roomRevenue: 89000
   },
   {
     id: 'r7',
     number: '302',
+    name: 'غرفة كلاسيك المريحة',
+    description: 'غرفة كلاسيك مريحة بتصميم عصري ومرافق أساسية متميزة.',
     type: 'غرفة كلاسيك',
     status: 'occupied',
     floor: 3,
     pricePerNight: 950,
+    capacity: 2,
     amenities: ['سرير كينغ', 'إنترنت سريع', 'آلة قهوة دائرية'],
-    guestName: 'سارة الحربي'
+    images: ['https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800'],
+    guestName: 'سارة الحربي',
+    lastUpdated: '2026-07-05 13:00',
+    occupancyRate: 85,
+    maintenanceLog: [
+      { date: '2026-06-12', issue: 'إصلاح التلفزيون', technician: 'فريق الصيانة', cost: 350, status: 'completed' }
+    ],
+    cleaningLog: [
+      { date: '2026-07-04', staff: 'عائشة العتيبي', duration: 25, quality: 5 },
+      { date: '2026-07-01', staff: 'منى الشمري', duration: 28, quality: 4 }
+    ],
+    roomRevenue: 67000
   },
   {
     id: 'r8',
     number: '303',
+    name: 'غرفة كلاسيك الداخلية',
+    description: 'غرفة كلاسيك اقتصادية بإطلالة داخلية هادئة ومناسبة للميزانية.',
     type: 'غرفة كلاسيك',
     status: 'maintenance',
     floor: 3,
     pricePerNight: 950,
+    capacity: 2,
     amenities: ['سرير كينغ', 'إطلالة داخلية'],
+    images: ['https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800'],
+    lastUpdated: '2026-07-04 16:00',
+    occupancyRate: 68
   },
   {
     id: 'r9',
     number: '201',
+    name: 'غرفة كلاسيك الاقتصادية',
+    description: 'غرفة كلاسيك اقتصادية بتصميم بسيط وأنيق.',
     type: 'غرفة كلاسيك',
     status: 'available',
     floor: 2,
     pricePerNight: 950,
-    amenities: ['سرير كينغ', 'إطلالة داخلية']
+    capacity: 2,
+    amenities: ['سرير كينغ', 'إطلالة داخلية'],
+    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800'],
+    lastUpdated: '2026-07-05 07:00',
+    occupancyRate: 73
   },
   {
     id: 'r10',
     number: '202',
+    name: 'غرفة كلاسيك التوأم',
+    description: 'غرفة كلاسيك بسريرين منفصلين، مناسبة للأصدقاء أو الزملاء.',
     type: 'غرفة كلاسيك',
     status: 'out_of_service',
     floor: 2,
     pricePerNight: 950,
-    amenities: ['سريران منفصلان', 'إطلالة داخلية']
+    capacity: 2,
+    amenities: ['سريران منفصلان', 'إطلالة داخلية'],
+    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800'],
+    lastUpdated: '2026-07-03 18:00',
+    occupancyRate: 65
   },
   {
     id: 'r11',
     number: '503',
+    name: 'بنتهاوس الكورنيش الملكي',
+    description: 'بنتهاوس فاخر مع إطلالة كاملة على الكورنيش وجاكوزي خارجي وبار قهوة متكامل.',
     type: 'بنتهاوس فاخر',
     status: 'available',
     floor: 5,
     pricePerNight: 4800,
-    amenities: ['جاكوزي خارجي', 'إطلالة كاملة على الكورنيش', 'بار قهوة متكامل', 'تلسكوب فلكي']
+    capacity: 4,
+    amenities: ['جاكوزي خارجي', 'إطلالة كاملة على الكورنيش', 'بار قهوة متكامل', 'تلسكوب فلكي'],
+    images: ['https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800', 'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800'],
+    lastUpdated: '2026-07-05 09:00',
+    occupancyRate: 95
   },
   {
     id: 'r12',
     number: '404',
+    name: 'جناح ديلوكس الشاطئي',
+    description: 'جناح ديلوكس مع إطلالة كاملة على البحر وشرفة رخامية ممتدة ونظام صوتي محيطي.',
     type: 'جناح ديلوكس',
     status: 'occupied',
     floor: 4,
     pricePerNight: 2400,
+    capacity: 3,
     amenities: ['إطلالة كاملة على البحر', 'شرفة رخامية ممتدة', 'نظام صوتي محيطي'],
-    guestName: 'عبد العزيز العتيبي'
+    images: ['https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800'],
+    guestName: 'عبد العزيز العتيبي',
+    lastUpdated: '2026-07-05 14:00',
+    occupancyRate: 90
   }
 ];
 
@@ -127,6 +246,28 @@ export const INITIAL_GUESTS: Guest[] = [
     stayCount: 14,
     notes: 'يفضل الشاي الأخضر العضوي في الصباح الباكر، ودرجة حرارة الجناح دائماً 21 درجة مئوية.',
     nationality: 'سعودي',
+    language: 'العربية',
+    passportNumber: 'A12345678',
+    dateOfBirth: '1975-03-15',
+    anniversaryDate: '2000-06-20',
+    previousStays: [
+      { checkIn: '2026-01-10', checkOut: '2026-01-15', roomNumber: '501', amount: 22500 },
+      { checkIn: '2025-09-05', checkOut: '2025-09-12', roomNumber: '502', amount: 28000 },
+      { checkIn: '2025-04-20', checkOut: '2025-04-25', roomNumber: '501', amount: 22500 }
+    ],
+    totalSpending: 485000,
+    preferredRoom: 'بنتهاوس فاخر',
+    pillowPreference: 'ريش طبيعي',
+    favoriteFoods: ['الشاي الأخضر', 'المأكولات البحرية', 'الفواكه الطازجة'],
+    foodAllergies: [],
+    roomPreferences: ['طابق علوي', 'إطلالة على البحر', 'جناح واسع'],
+    visitReason: 'أعمال ورسمية',
+    childrenCount: 0,
+    loyaltyPoints: 15000,
+    marketingConsent: true,
+    lastEmailOpen: '2026-07-04',
+    lifetimeValue: 485000,
+    referralSource: 'direct',
     avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'
   },
   {
@@ -138,6 +279,25 @@ export const INITIAL_GUESTS: Guest[] = [
     stayCount: 8,
     notes: 'تطلب وسائد ريش طبيعي إضافية وماء نقي خالٍ من الصوديوم.',
     nationality: 'كويتي',
+    language: 'العربية',
+    passportNumber: 'K87654321',
+    dateOfBirth: '1982-08-22',
+    previousStays: [
+      { checkIn: '2026-06-01', checkOut: '2026-06-08', roomNumber: '502', amount: 24500 },
+      { checkIn: '2025-11-15', checkOut: '2025-11-20', roomNumber: '501', amount: 22500 }
+    ],
+    totalSpending: 195000,
+    preferredRoom: 'جناح ملكي',
+    pillowPreference: 'ريش طبيعي',
+    favoriteFoods: ['السلطات الصحية', 'العصائر الطازجة'],
+    foodAllergies: ['المكسرات', 'الجلوتين'],
+    roomPreferences: ['هدوء تام', 'خدمة غرف 24/7'],
+    visitReason: 'طبية',
+    childrenCount: 0,
+    loyaltyPoints: 8500,
+    marketingConsent: false,
+    lifetimeValue: 195000,
+    referralSource: 'booking.com',
     avatarUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150'
   },
   {
@@ -149,6 +309,24 @@ export const INITIAL_GUESTS: Guest[] = [
     stayCount: 3,
     notes: 'يفضل تسجيل المغادرة المتأخر عند الساعة 3 مساءً.',
     nationality: 'سعودي',
+    language: 'العربية',
+    passportNumber: 'S11223344',
+    dateOfBirth: '1988-12-10',
+    previousStays: [
+      { checkIn: '2026-05-20', checkOut: '2026-05-23', roomNumber: '402', amount: 6600 }
+    ],
+    totalSpending: 18500,
+    preferredRoom: 'جناح ديلوكس',
+    pillowPreference: 'إسفنج عالي الجودة',
+    favoriteFoods: ['الشواء العربي', 'القهوة العربية'],
+    foodAllergies: [],
+    roomPreferences: ['إنترنت سريع', 'مكتب عمل'],
+    visitReason: 'أعمال',
+    childrenCount: 0,
+    loyaltyPoints: 1200,
+    marketingConsent: true,
+    lifetimeValue: 18500,
+    referralSource: 'direct',
     avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'
   },
   {
@@ -160,6 +338,25 @@ export const INITIAL_GUESTS: Guest[] = [
     stayCount: 5,
     notes: 'مهتم بخدمة الليموزين السريعة، يطلب جريدة الصباح اليومية.',
     nationality: 'سعودي',
+    language: 'العربية',
+    passportNumber: 'S55667788',
+    dateOfBirth: '1985-04-18',
+    previousStays: [
+      { checkIn: '2026-04-10', checkOut: '2026-04-15', roomNumber: '403', amount: 7500 },
+      { checkIn: '2025-10-05', checkOut: '2025-10-10', roomNumber: '401', amount: 11000 }
+    ],
+    totalSpending: 42000,
+    preferredRoom: 'غرفة بريميوم دبل',
+    pillowPreference: 'عادي',
+    favoriteFoods: ['الإفطار العربي', 'المشروبات الساخنة'],
+    foodAllergies: [],
+    roomPreferences: ['قرب المصعد', 'خدمة صحية سريعة'],
+    visitReason: 'أعمال',
+    childrenCount: 2,
+    loyaltyPoints: 3500,
+    marketingConsent: true,
+    lifetimeValue: 42000,
+    referralSource: 'corporate',
     avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150'
   },
   {
@@ -171,6 +368,24 @@ export const INITIAL_GUESTS: Guest[] = [
     stayCount: 2,
     notes: 'تحضر باستمرار جلسات اليوغا الصباحية في السبا الخاص بالفندق.',
     nationality: 'سعودي',
+    language: 'العربية',
+    passportNumber: 'S99887766',
+    dateOfBirth: '1992-07-25',
+    previousStays: [
+      { checkIn: '2026-06-15', checkOut: '2026-06-18', roomNumber: '303', amount: 2850 }
+    ],
+    totalSpending: 8500,
+    preferredRoom: 'غرفة كلاسيك',
+    pillowPreference: 'إسفنج ناعم',
+    favoriteFoods: ['السلطات', 'العصائر الطبيعية'],
+    foodAllergies: ['اللاكتوز'],
+    roomPreferences: ['قرب السبا', 'هدوء'],
+    visitReason: 'ترفيه',
+    childrenCount: 0,
+    loyaltyPoints: 800,
+    marketingConsent: true,
+    lifetimeValue: 8500,
+    referralSource: 'instagram',
     avatarUrl: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150'
   },
   {
@@ -416,7 +631,11 @@ export const INITIAL_RESTAURANT: RestaurantOrder[] = [
   {
     id: 'rest-1',
     tableNumber: 'الطاولة الملكية 1',
-    items: ['ستيك فيليه بالذهب عيار 24 قيراط', 'سلطة الكينوا العضوية', 'مشروب ليمون ونعناع فوار'],
+    items: [
+      { name: 'ستيك فيليه بالذهب عيار 24 قيراط', quantity: 1, price: 650 },
+      { name: 'سلطة الكينوا العضوية', quantity: 1, price: 180 },
+      { name: 'مشروب ليمون ونعناع فوار', quantity: 2, price: 210 }
+    ],
     status: 'preparing',
     total: 1250,
     time: '11:10'
@@ -424,7 +643,11 @@ export const INITIAL_RESTAURANT: RestaurantOrder[] = [
   {
     id: 'rest-2',
     tableNumber: 'طاولة البحر 4',
-    items: ['طبق ثمار البحر المشكلة الفاخر', 'شوربة كابوريا بالكريمة', 'شاي مثلج بالزعفران'],
+    items: [
+      { name: 'طبق ثمار البحر المشكلة الفاخر', quantity: 1, price: 550 },
+      { name: 'شوربة كابوريا بالكريمة', quantity: 1, price: 180 },
+      { name: 'شاي مثلج بالزعفران', quantity: 2, price: 120 }
+    ],
     status: 'ordered',
     total: 850,
     time: '11:22'
@@ -432,7 +655,11 @@ export const INITIAL_RESTAURANT: RestaurantOrder[] = [
   {
     id: 'rest-3',
     tableNumber: 'الجناح 501',
-    items: ['حساء العدس بالكمون الشامي', 'مشاوي مشكلة ليتك المميزة', 'مياه إيفيان مبردة'],
+    items: [
+      { name: 'حساء العدس بالكمون الشامي', quantity: 1, price: 85 },
+      { name: 'مشاوي مشكلة ليتك المميزة', quantity: 1, price: 280 },
+      { name: 'مياه إيفيان مبردة', quantity: 3, price: 85 }
+    ],
     status: 'delivered',
     total: 450,
     time: '10:05'

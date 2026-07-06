@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Building, Bell, Search, User, LogOut, Sparkles, Clock, Menu, X, Check, CheckCircle2,
-  Calendar, BedDouble, Users, MessageSquare, Wrench, Coffee, CreditCard, BarChart3, Globe, Settings, Award
+  Calendar, BedDouble, Users, MessageSquare, Wrench, Coffee, CreditCard, BarChart3, Globe, Settings, Award, TrendingUp, Brain, Star, FileText
 } from 'lucide-react';
 
 import Login from './components/Login';
@@ -10,6 +10,7 @@ import DashboardHome from './components/DashboardHome';
 import RoomsSection from './components/RoomsSection';
 import ReservationsSection from './components/ReservationsSection';
 import GuestsSection from './components/GuestsSection';
+import GuestCRMSection from './components/GuestCRMSection';
 import RequestsSection from './components/RequestsSection';
 import HousekeepingSection from './components/HousekeepingSection';
 import MaintenanceSection from './components/MaintenanceSection';
@@ -17,6 +18,13 @@ import RestaurantSection from './components/RestaurantSection';
 import PaymentsSection from './components/PaymentsSection';
 import AnalyticsSection from './components/AnalyticsSection';
 import MarketingSection from './components/MarketingSection';
+import MarketingAnalyticsSection from './components/MarketingAnalyticsSection';
+import AICenterSection from './components/AICenterSection';
+import StaffSection from './components/StaffSection';
+import WebsiteCMS from './components/WebsiteCMS';
+import ReputationSection from './components/ReputationSection';
+import GoogleBusinessSection from './components/GoogleBusinessSection';
+import ReportsSection from './components/ReportsSection';
 import SettingsSection from './components/SettingsSection';
 
 import { 
@@ -30,7 +38,7 @@ import {
   INITIAL_INVOICES, 
   HOTEL_INFO 
 } from './data';
-import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice } from './types';
+import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice, Staff } from './types';
 
 export default function App() {
   // Authentication & Loading States
@@ -45,7 +53,7 @@ export default function App() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   // Active view tab state
-  const [activeTab, setActiveTab] = useState<'لوحة التحكم' | 'الحجوزات' | 'الغرف' | 'النزلاء' | 'طلبات النزلاء' | 'خدمة الغرف' | 'المطعم' | 'الصيانة' | 'المدفوعات' | 'التحليلات' | 'التسويق' | 'الإعدادات'>('لوحة التحكم');
+  const [activeTab, setActiveTab] = useState<'لوحة التحكم' | 'الحجوزات' | 'الغرف' | 'النزلاء' | 'طلبات النزلاء' | 'خدمة الغرف' | 'المطعم' | 'الصيانة' | 'المدفوعات' | 'التحليلات' | 'التسويق' | 'الموظفين' | 'إدارة الموقع' | 'إدارة السمعة' | 'Google Business' | 'التقارير' | 'الإعدادات'>('لوحة التحكم');
 
   // Core Entity States
   const [rooms, setRooms] = useState<Room[]>(() => {
@@ -79,6 +87,10 @@ export default function App() {
   const [invoices, setInvoices] = useState<Invoice[]>(() => {
     const saved = localStorage.getItem('lytc_invoices');
     return saved ? JSON.parse(saved) : INITIAL_INVOICES;
+  });
+  const [staff, setStaff] = useState<Staff[]>(() => {
+    const saved = localStorage.getItem('lytc_staff');
+    return saved ? JSON.parse(saved) : [];
   });
 
   // UI Notifications dropdown & Global search
@@ -121,6 +133,9 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('lytc_invoices', JSON.stringify(invoices));
   }, [invoices]);
+  useEffect(() => {
+    localStorage.setItem('lytc_staff', JSON.stringify(staff));
+  }, [staff]);
 
   // Handle simulate luxury booting loading screen
   useEffect(() => {
@@ -165,6 +180,21 @@ export default function App() {
     
     setNotifications(prev => [
       { id: Date.now().toString(), title: `تعديل حالة الجناح ${roomNo} ليصبح ${labels[status]} الآن`, time: 'الآن', read: false },
+      ...prev
+    ]);
+  };
+
+  const handleUpdateRoom = (updatedRoom: Room) => {
+    setRooms(prev => prev.map(r => r.id === updatedRoom.id ? updatedRoom : r));
+    
+    // Add real-time event notice
+    const labels: Record<Room['status'], string> = {
+      available: 'متاحاً', occupied: 'مشغولاً بالنزلاء', cleaning: 'تحت النظافة والتعقيم',
+      maintenance: 'تحت الصيانة الفنية', out_of_service: 'خارج الخدمة الفندقية'
+    };
+    
+    setNotifications(prev => [
+      { id: Date.now().toString(), title: `تم تحديث معلومات الجناح ${updatedRoom.number}`, time: 'الآن', read: false },
       ...prev
     ]);
   };
@@ -262,6 +292,10 @@ export default function App() {
     setInvoices(prev => prev.map(inv => inv.id === invId ? { ...inv, status } : inv));
   };
 
+  const handleUpdateStaffStatus = (staffId: string, status: Staff['status']) => {
+    setStaff(prev => prev.map(person => person.id === staffId ? { ...person, status } : person));
+  };
+
   // Global Search logic
   const searchResults = () => {
     if (!globalSearchQuery) return [];
@@ -311,7 +345,7 @@ export default function App() {
           />
         );
       case 'الغرف':
-        return <RoomsSection rooms={rooms} onUpdateRoomStatus={handleUpdateRoomStatus} />;
+        return <RoomsSection rooms={rooms} onUpdateRoomStatus={handleUpdateRoomStatus} onUpdateRoom={handleUpdateRoom} />;
       case 'الحجوزات':
         return (
           <ReservationsSection
@@ -324,6 +358,8 @@ export default function App() {
         );
       case 'النزلاء':
         return <GuestsSection guests={guests} reservations={reservations} />;
+      case 'إدارة الضيوف':
+        return <GuestCRMSection guests={guests} />;
       case 'طلبات النزلاء':
         return (
           <RequestsSection
@@ -344,6 +380,20 @@ export default function App() {
         return <AnalyticsSection />;
       case 'التسويق':
         return <MarketingSection />;
+      case 'تحليلات التسويق':
+        return <MarketingAnalyticsSection />;
+      case 'مركز الذكاء الاصطناعي':
+        return <AICenterSection />;
+      case 'الموظفين':
+        return <StaffSection staff={staff} onUpdateStaffStatus={handleUpdateStaffStatus} />;
+      case 'إدارة الموقع':
+        return <WebsiteCMS />;
+      case 'إدارة السمعة':
+        return <ReputationSection />;
+      case 'Google Business':
+        return <GoogleBusinessSection />;
+      case 'التقارير':
+        return <ReportsSection />;
       case 'الإعدادات':
         return <SettingsSection />;
     }
@@ -414,7 +464,7 @@ export default function App() {
             { label: 'لوحة التحكم', icon: <Building size={16} /> },
             { label: 'الحجوزات', icon: <Calendar size={16} /> },
             { label: 'الغرف', icon: <BedDouble size={16} /> },
-            { label: 'النزلاء', icon: <Users size={16} /> },
+            { label: 'إدارة الضيوف', icon: <Users size={16} /> },
             { label: 'طلبات النزلاء', icon: <MessageSquare size={16} /> },
             { label: 'خدمة الغرف', icon: <Sparkles size={16} /> },
             { label: 'المطعم', icon: <Coffee size={16} /> },
@@ -422,6 +472,13 @@ export default function App() {
             { label: 'المدفوعات', icon: <CreditCard size={16} /> },
             { label: 'التحليلات', icon: <BarChart3 size={16} /> },
             { label: 'التسويق', icon: <Globe size={16} /> },
+            { label: 'تحليلات التسويق', icon: <TrendingUp size={16} /> },
+            { label: 'مركز الذكاء الاصطناعي', icon: <Brain size={16} /> },
+            { label: 'الموظفين', icon: <Award size={16} /> },
+            { label: 'إدارة الموقع', icon: <Globe size={16} /> },
+            { label: 'إدارة السمعة', icon: <Star size={16} /> },
+            { label: 'Google Business', icon: <TrendingUp size={16} /> },
+            { label: 'التقارير', icon: <FileText size={16} /> },
             { label: 'الإعدادات', icon: <Settings size={16} /> }
           ].map((item) => (
             <button
@@ -649,6 +706,11 @@ export default function App() {
                     { label: 'المدفوعات', icon: <CreditCard size={14} /> },
                     { label: 'التحليلات', icon: <BarChart3 size={14} /> },
                     { label: 'التسويق', icon: <Globe size={14} /> },
+                    { label: 'الموظفين', icon: <Award size={14} /> },
+                    { label: 'إدارة الموقع', icon: <Globe size={14} /> },
+                    { label: 'إدارة السمعة', icon: <Star size={14} /> },
+                    { label: 'Google Business', icon: <TrendingUp size={14} /> },
+                    { label: 'التقارير', icon: <FileText size={14} /> },
                     { label: 'الإعدادات', icon: <Settings size={14} /> }
                   ].map((item) => (
                     <button

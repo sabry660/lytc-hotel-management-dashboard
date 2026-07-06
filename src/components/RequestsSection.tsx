@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { MessageSquare, Clock, Filter, CheckCircle2, User, UserCheck, AlertOctagon, Coffee, Shirt, Sparkles, Navigation, ConciergeBell, Check } from 'lucide-react';
+import { motion } from 'motion/react';
+import { 
+  MessageSquare, Clock, Filter, CheckCircle2, User, UserCheck, AlertOctagon, Coffee, Shirt, Sparkles, 
+  Navigation, ConciergeBell, Check, Plane, Search, Package, TrendingUp, BarChart3, Star, 
+  Award, Timer, ArrowUpRight, ArrowDownRight, Download, Printer, Plus, X, Save
+} from 'lucide-react';
 import { ServiceRequest } from '../types';
 
 interface RequestsSectionProps {
@@ -26,6 +31,8 @@ export default function RequestsSection({
       case 'maintenance': return 'أعطال الصيانة والكهرباء';
       case 'taxi': return 'طلب سيارة وسائق ليموزين';
       case 'reception': return 'طلب خدمة الاستقبال والدعم';
+      case 'airport_pickup': return 'استقبال من المطار';
+      case 'lost_found': return 'مفقودات ومستندات';
     }
   };
 
@@ -37,6 +44,8 @@ export default function RequestsSection({
       case 'maintenance': return <AlertOctagon className="w-4 h-4 text-red-400" />;
       case 'taxi': return <Navigation className="w-4 h-4 text-emerald-400" />;
       case 'reception': return <ConciergeBell className="w-4 h-4 text-purple-400" />;
+      case 'airport_pickup': return <Plane className="w-4 h-4 text-cyan-400" />;
+      case 'lost_found': return <Search className="w-4 h-4 text-orange-400" />;
     }
   };
 
@@ -94,6 +103,49 @@ export default function RequestsSection({
           >
             المكتملة بنجاح ({requests.filter(r => r.status === 'completed').length})
           </button>
+        </div>
+      </div>
+
+      {/* Performance Metrics */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-emerald-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">معدل الإنجاز</span>
+            <div className="text-lg font-bold text-white font-mono">87%</div>
+          </div>
+          <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg mt-2">
+            <CheckCircle2 size={16} />
+          </div>
+        </div>
+
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-blue-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">متوسط وقت الاستجابة</span>
+            <div className="text-lg font-bold text-white font-mono">12 دقيقة</div>
+          </div>
+          <div className="p-2 bg-blue-950/20 text-blue-400 rounded-lg mt-2">
+            <Timer size={16} />
+          </div>
+        </div>
+
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-purple-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">الطلبات المنجزة اليوم</span>
+            <div className="text-lg font-bold text-white font-mono">24</div>
+          </div>
+          <div className="p-2 bg-purple-950/20 text-purple-400 rounded-lg mt-2">
+            <Award size={16} />
+          </div>
+        </div>
+
+        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-amber-500/35 transition duration-200">
+          <div className="space-y-1">
+            <span className="text-[10px] text-gray-500">تقييم الخدمة</span>
+            <div className="text-lg font-bold text-white font-mono">4.8/5</div>
+          </div>
+          <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg mt-2">
+            <Star size={16} />
+          </div>
         </div>
       </div>
 
