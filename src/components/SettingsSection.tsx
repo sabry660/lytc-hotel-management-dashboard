@@ -70,7 +70,24 @@ export default function SettingsSection() {
 
           <div className="pt-4 flex justify-end">
             <button
-              onClick={() => alert('تم حفظ تعديلات الفندق الرسمية بنجاح في قاعدة البيانات الأمنية لمجموعة ليتك.')}
+              onClick={() => {
+                // Save settings to localStorage
+                localStorage.setItem('lytc_hotel_name', hotelName);
+                localStorage.setItem('lytc_hotel_address', hotelAddress);
+                localStorage.setItem('lytc_hotel_email', hotelEmail);
+                localStorage.setItem('lytc_notify_sound', JSON.stringify(notifySound));
+                localStorage.setItem('lytc_email_summary', JSON.stringify(emailSummary));
+                
+                // Show success message
+                const button = event.target as HTMLButtonElement;
+                const originalText = button.textContent;
+                button.textContent = 'تم الحفظ بنجاح ✓';
+                button.classList.add('bg-emerald-600');
+                setTimeout(() => {
+                  button.textContent = originalText;
+                  button.classList.remove('bg-emerald-600');
+                }, 2000);
+              }}
               className="px-5 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200"
             >
               حفظ التغييرات التعريفية

@@ -100,8 +100,17 @@ export default function RoomsSection({ rooms, onUpdateRoomStatus, onUpdateRoom }
   };
 
   const handleBulkAction = (action: string) => {
-    // Implement bulk actions
-    console.log('Bulk action:', action, selectedRooms);
+    selectedRooms.forEach(roomId => {
+      const room = rooms.find(r => r.id === roomId);
+      if (room) {
+        if (action === 'available') {
+          onUpdateRoomStatus(roomId, 'available');
+        } else if (action === 'maintenance') {
+          onUpdateRoomStatus(roomId, 'maintenance');
+        }
+      }
+    });
+    setSelectedRooms(new Set());
   };
 
   return (

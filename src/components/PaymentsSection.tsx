@@ -235,7 +235,43 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
 
                 <button
                   type="button"
-                  onClick={() => alert('جاري تواصل الخادم بمركز طباعة الفواتير اللاسلكية المعتمدة لشركة ليتك...')}
+                  onClick={() => {
+                    // Simulate printing functionality
+                    const printWindow = window.open('', '_blank');
+                    if (printWindow) {
+                      printWindow.document.write(`
+                        <html dir="rtl">
+                        <head>
+                          <title>فاتورة ${selectedInvoice.id}</title>
+                          <style>
+                            body { font-family: Arial, sans-serif; padding: 40px; }
+                            .header { text-align: center; margin-bottom: 30px; }
+                            .invoice-details { margin: 20px 0; }
+                            .total { font-size: 24px; font-weight: bold; color: #D4AF37; }
+                          </style>
+                        </head>
+                        <body>
+                          <div class="header">
+                            <h1>قصر ليتك الفاخر للضيافة</h1>
+                            <p>فاتورة ضريبية رسمية</p>
+                          </div>
+                          <div class="invoice-details">
+                            <p>رقم الفاتورة: ${selectedInvoice.id}</p>
+                            <p>اسم النزيل: ${selectedInvoice.guestName}</p>
+                            <p>الغرفة: ${selectedInvoice.roomNumber}</p>
+                            <p>التاريخ: ${selectedInvoice.date}</p>
+                            <p>طريقة الدفع: ${selectedInvoice.method}</p>
+                          </div>
+                          <div class="total">
+                            الإجمالي: ${selectedInvoice.amount.toLocaleString('ar-SA')} ريال
+                          </div>
+                        </body>
+                        </html>
+                      `);
+                      printWindow.document.close();
+                      printWindow.print();
+                    }
+                  }}
                   className="w-full py-2.5 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition flex items-center justify-center gap-2"
                 >
                   <Printer size={13} />

@@ -324,29 +324,38 @@ export default function DashboardHome({
         </div>
 
         {/* Open Maintenance */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-pink-500/35 transition duration-200">
-          <div className="space-y-1">
+        <button 
+          onClick={() => onNavigate('الصيانة')}
+          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-pink-500/35 transition duration-200 w-full"
+        >
+          <div className="space-y-1 text-right">
             <span className="text-[10px] text-gray-500">طلبات الصيانة المفتوحة</span>
             <div className="text-lg font-bold text-white font-mono">{openMaintenanceCount}</div>
           </div>
           <div className="p-2 bg-pink-950/20 text-pink-400 rounded-lg">
             <Wrench size={16} />
           </div>
-        </div>
+        </button>
 
         {/* Pending Housekeeping */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-teal-500/35 transition duration-200">
-          <div className="space-y-1">
+        <button 
+          onClick={() => onNavigate('خدمة الغرف')}
+          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-teal-500/35 transition duration-200 w-full"
+        >
+          <div className="space-y-1 text-right">
             <span className="text-[10px] text-gray-500">مهام النظافة المتبقية</span>
             <div className="text-lg font-bold text-white font-mono">{pendingHousekeeping}</div>
           </div>
           <div className="p-2 bg-teal-950/20 text-teal-400 rounded-lg">
             <Sparkles size={16} />
           </div>
-        </div>
+        </button>
 
         {/* Restaurant Revenue */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-amber-500/35 transition duration-200">
+        <button 
+          onClick={() => onNavigate('المطعم')}
+          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-amber-500/35 transition duration-200 w-full"
+        >
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">إيرادات المطعم</span>
             <div className="text-lg font-bold text-white font-mono">{restaurantRevenue.toLocaleString('ar-SA')} ريال</div>
@@ -354,7 +363,7 @@ export default function DashboardHome({
           <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg">
             <Coffee size={16} />
           </div>
-        </div>
+        </button>
 
         {/* Spa Revenue */}
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-indigo-500/35 transition duration-200">
@@ -368,15 +377,18 @@ export default function DashboardHome({
         </div>
 
         {/* VIP Guests Arriving */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-rose-500/35 transition duration-200">
-          <div className="space-y-1">
+        <button 
+          onClick={() => onNavigate('النزلاء')}
+          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-rose-500/35 transition duration-200 w-full"
+        >
+          <div className="space-y-1 text-right">
             <span className="text-[10px] text-gray-500">الضيوف المهمون القادمين</span>
             <div className="text-lg font-bold text-white font-mono">{vipGuestsArriving}</div>
           </div>
           <div className="p-2 bg-rose-950/20 text-rose-400 rounded-lg">
             <ShieldAlert size={16} />
           </div>
-        </div>
+        </button>
 
         {/* Weather */}
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-sky-500/35 transition duration-200">
