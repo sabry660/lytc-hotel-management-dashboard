@@ -187,12 +187,32 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
     setEditModalOpen(true);
   };
 
-  const handleSaveRoom = () => {
-    if (editingRoom) {
-      // Update the entire room object
-      onUpdateRoom(editingRoom);
+  const handleUpdateRoom = async (roomId: string, roomData: any) => {
+    try {
+      const roomResponse = await apiService.updateRoom(parseInt(roomId), roomData);
+      // Update local state with the updated room
+      setRooms(rooms.map(room => 
+        room.id === roomId ? { ...room, ...roomData } : room
+      ));
       setEditModalOpen(false);
       setEditingRoom(null);
+    } catch (error) {
+      console.error('Failed to update room:', error);
+    }
+  };
+
+  const handleSaveRoom = () => {
+    if (editingRoom) {
+      // Use API to update the room
+      handleUpdateRoom(editingRoom.id, {
+        roomNumber: editingRoom.roomNumber,
+        maxAdults: editingRoom.maxAdults,
+        maxKids: editingRoom.maxKids,
+        description: editingRoom.description,
+        floor: editingRoom.floor,
+        price: editingRoom.price,
+        status: editingRoom.status,
+      });
     }
   };
 

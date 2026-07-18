@@ -16,17 +16,50 @@ interface RestaurantSectionProps {
 }
 
 export default function RestaurantSection({ orders: initialOrders = [], onUpdateOrderStatus }: RestaurantSectionProps) {
-  const [viewMode, setViewMode] = useState<'orders' | 'tables' | 'menu' | 'inventory' | 'kitchen'>('orders');
+  const [viewMode, setViewMode] = useState<'orders' | 'tables' | 'menu' | 'inventory' | 'kitchen' | 'stats' | 'pending'>('orders');
   const [filter, setFilter] = useState<'all' | RestaurantOrder['status']>('all');
   const [selectedOrder, setSelectedOrder] = useState<RestaurantOrder | null>(null);
   const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
   const [orders, setOrders] = useState<RestaurantOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState<any>(null);
+  const [pendingOrders, setPendingOrders] = useState<any[]>([]);
+  const [menuItems, setMenuItems] = useState<any[]>([]);
 
   useEffect(() => {
     loadOrders();
+    loadStats();
+    loadPendingOrders();
+    loadMenu();
   }, []);
+
+  const loadStats = async () => {
+    try {
+      const response = await apiService.getRestaurantStats();
+      setStats(response);
+    } catch (error) {
+      console.error('Failed to load stats:', error);
+    }
+  };
+
+  const loadPendingOrders = async () => {
+    try {
+      const response = await apiService.getRestaurantPendingOrders();
+      setPendingOrders(response || []);
+    } catch (error) {
+      console.error('Failed to load pending orders:', error);
+    }
+  };
+
+  const loadMenu = async () => {
+    try {
+      const response = await apiService.getRestaurantMenu(0, 50);
+      setMenuItems(response.content || []);
+    } catch (error) {
+      console.error('Failed to load menu:', error);
+    }
+  };
 
   const loadOrders = async () => {
     setIsLoading(true);
@@ -98,7 +131,9 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
           { id: 'tables', label: 'الطاولات', icon: <Table size={14} /> },
           { id: 'menu', label: 'القائمة', icon: <ChefHat size={14} /> },
           { id: 'inventory', label: 'المخزون', icon: <Package size={14} /> },
-          { id: 'kitchen', label: 'المطبخ', icon: <Timer size={14} /> }
+          { id: 'kitchen', label: 'المطبخ', icon: <Timer size={14} /> },
+          { id: 'stats', label: 'الإحصائيات', icon: <BarChart3 size={14} /> },
+          { id: 'pending', label: 'المعلقة', icon: <Clock size={14} /> }
         ].map((mode) => (
           <button
             key={mode.id}
@@ -346,6 +381,119 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Stats View */}
+      {viewMode === 'stats' && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center">
+                <Utensils size={24} className="text-[#E6C587]" />
+              </div>
+              <span className="text-xs text-gray-500">إجمالي الطلبات</span>
+            </div>
+            <h3 className="text-3xl font-black text-white">{stats?.totalOrders || 0}</h3>
+            <p className="text-xs text-gray-600 mt-2">طلب</p>
+          </div>
+
+          <div className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-yellow-950/20 border border-yellow-500/30 rounded-xl flex items-center justify-center">
+                <Clock size={24} className="text-yellow-400" />
+              </div>
+              <span className="text-xs text-gray-500">طلبات معلقة</span>
+            </div>
+            <h3 className="text-3xl font-black text-white">{stats?.pendingOrders || 0}</h3>
+            <p className="text-xs text-gray-600 mt-2">طلب</p>
+          </div>
+
+          <div className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-emerald-950/20 border border-emerald-500/30 rounded-xl flex items-center justify-center">
+                <CheckCircle2 size={24} className="text-emerald-400" />
+              </div>
+              <span className="text-xs text-gray-500">طلبات مكتملة</span>
+            </div>
+            <h3 className="text-3xl font-black text-white">{stats?.completedOrders || 0}</h3>
+            <p className="text-xs text-gray-600 mt-2">طلب</p>
+          </div>
+
+          <div className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center">
+                <DollarSign size={24} className="text-[#E6C587]" />
+              </div>
+              <span className="text-xs text-gray-500">إجمالي الإيرادات</span>
+            </div>
+            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.totalRevenue?.toLocaleString('ar-SA') || 0}</h3>
+            <p className="text-xs text-gray-600 mt-2">ريال</p>
+          </div>
+
+          <div className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-6 md:col-span-2 lg:col-span-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 bg-purple-950/20 border border-purple-500/30 rounded-xl flex items-center justify-center">
+                <TrendingUp size={24} className="text-purple-400" />
+              </div>
+              <span className="text-xs text-gray-500">إيرادات اليوم</span>
+            </div>
+            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.todayRevenue?.toLocaleString('ar-SA') || 0}</h3>
+            <p className="text-xs text-gray-600 mt-2">ريال</p>
+          </div>
+        </div>
+      )}
+
+      {/* Pending Orders View */}
+      {viewMode === 'pending' && (
+        <div className="overflow-x-auto pb-2">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-800">
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">رقم الطلب</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">اسم الضيف</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">الغرفة</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">العناصر</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">المبلغ</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">الوقت</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">الحالة</th>
+                <th className="text-xs text-gray-500 font-bold text-right pb-3">الإجراءات</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingOrders.map((order: any) => (
+                <tr key={order.orderId} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
+                  <td className="py-3 text-sm text-white">{order.orderId}</td>
+                  <td className="py-3 text-sm text-white">{order.guestName}</td>
+                  <td className="py-3 text-sm text-white">{order.roomNumber}</td>
+                  <td className="py-3 text-sm text-gray-400 max-w-xs truncate">{order.items}</td>
+                  <td className="py-3 text-sm text-[#E6C587] font-bold">{order.totalAmount.toLocaleString('ar-SA')} ريال</td>
+                  <td className="py-3 text-sm text-gray-400">{order.orderTime}</td>
+                  <td className="py-3">
+                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-yellow-950/20 text-yellow-400 border border-yellow-500/30">
+                      {order.status}
+                    </span>
+                  </td>
+                  <td className="py-3">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => apiService.updateRestaurantOrderStatus(order.orderId, 'COMPLETED')}
+                        className="p-1.5 bg-emerald-950/20 border border-emerald-500/30 rounded-lg hover:bg-emerald-900/30 transition"
+                      >
+                        <Check size={14} className="text-emerald-400" />
+                      </button>
+                      <button
+                        onClick={() => apiService.updateRestaurantOrderStatus(order.orderId, 'CANCELLED')}
+                        className="p-1.5 bg-red-950/20 border border-red-500/30 rounded-lg hover:bg-red-900/30 transition"
+                      >
+                        <X size={14} className="text-red-400" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
 

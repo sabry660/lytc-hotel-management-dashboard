@@ -9,6 +9,7 @@ import { apiService, StayDetailsResponse, CreateStayRequest } from '../services/
 
 export default function ReservationsSection() {
   const [stays, setStays] = useState<StayDetailsResponse[]>([]);
+  const [todayArrivals, setTodayArrivals] = useState<StayDetailsResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'all' | 'arrivals' | 'departures' | 'upcoming'>('all');
@@ -20,6 +21,7 @@ export default function ReservationsSection() {
 
   useEffect(() => {
     loadStays();
+    loadTodayArrivals();
   }, []);
 
   const loadStays = async () => {
@@ -41,6 +43,16 @@ export default function ReservationsSection() {
     }
   };
 
+  const loadTodayArrivals = async () => {
+    try {
+      const response = await apiService.getCheckinTodayStays();
+      setTodayArrivals(response.content || []);
+    } catch (error: any) {
+      console.error('Failed to load today arrivals:', error);
+      setTodayArrivals([]);
+    }
+  };
+
   // New Reservation Form States
   const [guestName, setGuestName] = useState('');
   const [selectedRoomNumber, setSelectedRoomNumber] = useState('');
@@ -58,7 +70,7 @@ export default function ReservationsSection() {
 
     if (!matchesSearch) return false;
     if (activeTab === 'all') return true;
-    if (activeTab === 'arrivals') return stay.status === 'RESERVED';
+    if (activeTab === 'arrivals') return todayArrivals.some(a => a.stayId === stay.stayId);
     if (activeTab === 'departures') return stay.status === 'CHECKED_IN';
     if (activeTab === 'upcoming') return stay.status === 'RESERVED';
     return true;

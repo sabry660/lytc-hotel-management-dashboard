@@ -48,6 +48,16 @@ export default function SpecialOffersSection() {
     setEditingOffer(offer);
   };
 
+  const handleUpdate = async (id: number, offerData: { title?: string; description?: string }) => {
+    try {
+      await apiService.updateSpecialOffer(id, offerData);
+      loadOffers();
+      setEditingOffer(null);
+    } catch (error) {
+      console.error('Failed to update offer:', error);
+    }
+  };
+
   const handleDelete = async (id: number) => {
     if (!confirm('هل أنت متأكد من حذف هذا العرض؟')) return;
     
@@ -227,6 +237,64 @@ export default function SpecialOffersSection() {
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={handleCreateSuccess}
       />
+
+      {/* Edit Offer Modal */}
+      {editingOffer && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-md w-full">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[#E6C587]">تعديل العرض</h3>
+              <button onClick={() => setEditingOffer(null)} className="p-2 bg-gray-900 border border-gray-800 rounded-lg">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">العنوان</label>
+                <input
+                  type="text"
+                  defaultValue={editingOffer.title}
+                  id="editTitle"
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">الوصف</label>
+                <textarea
+                  defaultValue={editingOffer.description}
+                  id="editDescription"
+                  rows={4}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setEditingOffer(null)}
+                  className="px-4 py-2 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const title = (document.getElementById('editTitle') as HTMLInputElement).value;
+                    const description = (document.getElementById('editDescription') as HTMLTextAreaElement).value;
+                    handleUpdate(editingOffer.id, { title, description });
+                  }}
+                  className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2"
+                >
+                  <Save size={14} />
+                  حفظ التغييرات
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
