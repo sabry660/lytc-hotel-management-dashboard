@@ -48,9 +48,13 @@ export default function SpecialOffersModal({ isOpen, onClose, onSuccess }: Speci
         title: '',
         description: '',
       });
-    } catch (error) {
+    } catch (error: any) {
       setIsLoading(false);
-      setErrorMessage('فشل إنشاء العرض الخاص. الرجاء المحاولة مرة أخرى.');
+      if (error.message && error.message.includes('Authentication')) {
+        setErrorMessage('فشل المصادقة. يرجى تسجيل الدخول مرة أخرى.');
+      } else {
+        setErrorMessage('فشل إنشاء العرض الخاص. الرجاء المحاولة مرة أخرى.');
+      }
       console.error('Create special offer error:', error);
     }
   };

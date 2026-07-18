@@ -37,9 +37,13 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       // Transform backend response to RestaurantOrder format if needed
       const transformedOrders = response.content || [];
       setOrders(transformedOrders);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load orders:', error);
-      setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
+      if (error.message && error.message.includes('Active stay not found')) {
+        setError('لا توجد إقامة نشطة للغرفة 101. يجب تسجيل دخول نزيل أولاً.');
+      } else {
+        setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
+      }
       setOrders([]);
     } finally {
       setIsLoading(false);

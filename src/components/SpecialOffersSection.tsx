@@ -26,9 +26,13 @@ export default function SpecialOffersSection() {
     try {
       const response = await apiService.getSpecialOffers(0, 50);
       setOffers(response.content || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load offers:', error);
-      setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
+      if (error.message && error.message.includes('Authentication')) {
+        setError('فشل المصادقة. يرجى تسجيل الدخول مرة أخرى.');
+      } else {
+        setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
+      }
       // Set empty array as fallback
       setOffers([]);
     } finally {
