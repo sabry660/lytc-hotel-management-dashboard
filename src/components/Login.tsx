@@ -32,7 +32,19 @@ export default function Login({ onLoginSuccess }: LoginProps) {
         password: password
       };
       
+      // Save login request to localStorage
+      localStorage.setItem('login_username', username);
+      localStorage.setItem('login_password', password);
+      
       const response = await apiService.login(credentials);
+      
+      // Log response structure
+      console.log('Login Response:', response);
+      console.log('Token:', response.token);
+      console.log('User ID:', response.userId);
+      console.log('Username:', response.username);
+      console.log('Role:', response.role);
+      console.log('Token Type:', response.tokenType);
       
       setIsLoading(false);
       

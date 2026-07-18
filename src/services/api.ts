@@ -118,8 +118,10 @@ class APIService {
       'Content-Type': 'application/json',
     };
 
-    if (includeAuth && this.token) {
+    // Always try to send token if available
+    if (this.token) {
       headers['Authorization'] = `Bearer ${this.token}`;
+      console.log('Sending token in Authorization header:', this.token.substring(0, 20) + '...');
     }
 
     return headers;
