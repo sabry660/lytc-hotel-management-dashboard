@@ -17,8 +17,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleCredentialsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCredentialsSubmit = async () => {
     if (!username || !password) {
       setErrorMessage('الرجاء إدخال اسم المستخدم وكلمة المرور');
       return;
@@ -83,8 +82,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     }
   };
 
-  const handle2faSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handle2faSubmit = async () => {
     const otpCode = otp.join('');
     if (otpCode.length < 6) {
       setErrorMessage('الرجاء إدخال رمز التحقق المكون من 6 أرقام');
@@ -165,7 +163,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                   </div>
                 )}
 
-                <form onSubmit={handleCredentialsSubmit} className="space-y-6">
+                <div className="space-y-6">
                   {/* Email Input */}
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-gray-400 block mr-1">اسم المستخدم</label>
@@ -233,7 +231,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
 
                   {/* Submit Button */}
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={handleCredentialsSubmit}
                     disabled={isLoading}
                     className="w-full relative group overflow-hidden py-3 px-4 bg-gradient-to-r from-[#AA7B30] via-[#D4AF37] to-[#E6C587] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-sm rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] disabled:opacity-50"
                   >
@@ -246,7 +245,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                       <span>تسجيل الدخول الآمن</span>
                     )}
                   </button>
-                </form>
+                </div>
               </motion.div>
             ) : (
               <motion.div
@@ -271,7 +270,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                   </div>
                 )}
 
-                <form onSubmit={handle2faSubmit} className="space-y-6">
+                <div className="space-y-6">
                   {/* OTP Inputs */}
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-gray-400 text-center block mb-2">أدخل الرمز المكون من 6 أرقام</label>
@@ -314,7 +313,8 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                       تغيير الحساب
                     </button>
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handle2faSubmit}
                       disabled={isLoading}
                       className="w-2/3 py-3 px-4 bg-gradient-to-r from-[#AA7B30] via-[#D4AF37] to-[#E6C587] text-black font-extrabold text-sm rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(212,175,55,0.4)]"
                     >
@@ -328,7 +328,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
                       )}
                     </button>
                   </div>
-                </form>
+                </div>
               </motion.div>
             )}
           </AnimatePresence>

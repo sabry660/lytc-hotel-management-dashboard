@@ -44,9 +44,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
     setItems(newItems);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = async () => {
     if (items.length === 0) {
       setErrorMessage('الرجاء إضافة عنصر واحد على الأقل');
       return;
@@ -125,7 +123,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
             </div>
 
             {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-5">
               {errorMessage && (
                 <div className="p-3 bg-red-950/20 border border-red-500/20 rounded-lg text-red-400 text-xs">
                   {errorMessage}
@@ -259,7 +257,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                   )}
                 </button>
               </div>
-            </form>
+            </div>
           </motion.div>
         </motion.div>
       )}
