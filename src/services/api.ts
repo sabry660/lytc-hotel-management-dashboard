@@ -10,13 +10,11 @@ interface LoginRequest {
 }
 
 interface LoginResponse {
-  token?: string;
-  refreshToken?: string;
-  user?: {
-    id: number;
-    username: string;
-    role: string;
-  };
+  token: string;
+  role: string;
+  userId: number;
+  username: string;
+  tokenType: string;
 }
 
 interface CreateSpecialOfferRequest {

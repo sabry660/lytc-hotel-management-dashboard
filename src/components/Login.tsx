@@ -36,9 +36,13 @@ export default function Login({ onLoginSuccess }: LoginProps) {
       
       setIsLoading(false);
       
-      // If login successful, proceed to 2FA or directly to dashboard
+      // Backend doesn't use 2FA, proceed directly to dashboard
       if (response.token) {
-        setStep('2fa');
+        onLoginSuccess({
+          name: response.username,
+          email: email,
+          role: response.role
+        });
       }
     } catch (error) {
       setIsLoading(false);
