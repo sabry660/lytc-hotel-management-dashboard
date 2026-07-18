@@ -49,14 +49,7 @@ export default function ReservationsSection() {
       setTodayArrivals(response.content || []);
     } catch (error: any) {
       console.error('Failed to load today arrivals:', error);
-      // Dummy data fallback - using StayDetailsResponse format
-      setTodayArrivals([
-        { stayId: 1, checkInTime: '2026-07-18T14:00:00', expectedCheckOutDate: '2026-07-22', checkOutTime: '', status: 'RESERVED', stars: 0, notes: '', roomCharge: 1200, totalCharge: 1200, guestId: 1, guestName: 'محمد أحمد', guestPhone: '0501234567', roomId: 1, roomNumber: '101', floor: 1, description: 'غرفة ملكية', maxAdults: 2, maxKids: 2, numAdults: 2, numKids: 0 },
-        { stayId: 2, checkInTime: '2026-07-18T15:00:00', expectedCheckOutDate: '2026-07-25', checkOutTime: '', status: 'RESERVED', stars: 0, notes: '', roomCharge: 3500, totalCharge: 3500, guestId: 2, guestName: 'فاطمة علي', guestPhone: '0507654321', roomId: 2, roomNumber: '205', floor: 2, description: 'جناح', maxAdults: 4, maxKids: 2, numAdults: 3, numKids: 1 },
-        { stayId: 3, checkInTime: '2026-07-18T16:00:00', expectedCheckOutDate: '2026-07-20', checkOutTime: '', status: 'RESERVED', stars: 0, notes: '', roomCharge: 800, totalCharge: 800, guestId: 3, guestName: 'عمر خالد', guestPhone: '0509876543', roomId: 3, roomNumber: '302', floor: 3, description: 'غرفة عادية', maxAdults: 2, maxKids: 1, numAdults: 2, numKids: 0 },
-        { stayId: 4, checkInTime: '2026-07-18T17:00:00', expectedCheckOutDate: '2026-07-23', checkOutTime: '', status: 'RESERVED', stars: 0, notes: '', roomCharge: 1800, totalCharge: 1800, guestId: 4, guestName: 'سارة محمد', guestPhone: '0503456789', roomId: 4, roomNumber: '401', floor: 4, description: 'غرفة ملكية', maxAdults: 2, maxKids: 2, numAdults: 2, numKids: 1 },
-        { stayId: 5, checkInTime: '2026-07-18T18:00:00', expectedCheckOutDate: '2026-07-21', checkOutTime: '', status: 'RESERVED', stars: 0, notes: '', roomCharge: 1000, totalCharge: 1000, guestId: 5, guestName: 'أحمد علي', guestPhone: '0502345678', roomId: 5, roomNumber: '505', floor: 5, description: 'غرفة عادية', maxAdults: 2, maxKids: 1, numAdults: 1, numKids: 1 }
-      ]);
+      setTodayArrivals([]);
     }
   };
 

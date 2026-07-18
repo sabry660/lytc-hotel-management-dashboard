@@ -40,14 +40,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       setStats(response);
     } catch (error) {
       console.error('Failed to load stats:', error);
-      // Dummy data fallback
-      setStats({
-        totalOrders: 234,
-        pendingOrders: 18,
-        completedOrders: 216,
-        totalRevenue: 67800,
-        todayRevenue: 4500
-      });
+      setStats(null);
     }
   };
 
@@ -57,11 +50,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       setPendingOrders(response || []);
     } catch (error) {
       console.error('Failed to load pending orders:', error);
-      // Dummy data fallback
-      setPendingOrders([
-        { orderId: 1, guestName: 'محمد أحمد', tableNumber: '5', items: 'مشاوي، سلاطة', totalAmount: 150, orderTime: '12:00', status: 'PENDING' },
-        { orderId: 2, guestName: 'سارة خالد', tableNumber: '8', items: 'بيتزا، مشروب', totalAmount: 85, orderTime: '12:30', status: 'PENDING' }
-      ]);
+      setPendingOrders([]);
     }
   };
 
@@ -71,12 +60,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       setMenuItems(response.content || []);
     } catch (error) {
       console.error('Failed to load menu:', error);
-      // Dummy data fallback
-      setMenuItems([
-        { id: 1, name: 'مشاوي', price: 80, category: 'طعام' },
-        { id: 2, name: 'بيتزا', price: 60, category: 'طعام' },
-        { id: 3, name: 'سلاطة', price: 35, category: 'طعام' }
-      ]);
+      setMenuItems([]);
     }
   };
 
@@ -91,11 +75,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       setOrders(transformedOrders);
     } catch (error: any) {
       console.error('Failed to load orders:', error);
-      // Dummy data fallback
-      setOrders([
-        { id: 1, roomNumber: '101', tableNumber: '1', guestName: 'محمد أحمد', items: ['مشاوي', 'سلاطة'], total: 115, status: 'ordered', orderTime: new Date().toISOString() },
-        { id: 2, roomNumber: '205', tableNumber: '2', guestName: 'سارة خالد', items: ['بيتزا'], total: 60, status: 'preparing', orderTime: new Date().toISOString() }
-      ]);
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +83,29 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
 
   const handleCreateOrderSuccess = () => {
     loadOrders();
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, status: string) => {
+    try {
+      console.log('Updating restaurant order status:', orderId, status);
+      await apiService.updateRestaurantOrderStatus(parseInt(orderId), status);
+      loadOrders();
+      loadPendingOrders();
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+      alert('فشل تحديث حالة الطلب. الرجاء المحاولة مرة أخرى.');
+    }
+  };
+
+  const handleUpdateMenuItem = async (id: number, itemData: any) => {
+    try {
+      console.log('Updating restaurant menu item:', id, itemData);
+      await apiService.updateRestaurantMenuItem(id, itemData);
+      loadMenu();
+    } catch (error) {
+      console.error('Failed to update menu item:', error);
+      alert('فشل تحديث العنصر. الرجاء المحاولة مرة أخرى.');
+    }
   };
 
   const totalRestaurantSales = orders.reduce((sum, order) => sum + order.total, 0);

@@ -40,14 +40,7 @@ export default function CafeSection({ orders: initialOrders = [], onUpdateOrderS
       setStats(response);
     } catch (error) {
       console.error('Failed to load stats:', error);
-      // Dummy data fallback
-      setStats({
-        totalOrders: 189,
-        pendingOrders: 8,
-        completedOrders: 181,
-        totalRevenue: 32400,
-        todayRevenue: 2100
-      });
+      setStats(null);
     }
   };
 
@@ -57,11 +50,7 @@ export default function CafeSection({ orders: initialOrders = [], onUpdateOrderS
       setPendingOrders(response || []);
     } catch (error) {
       console.error('Failed to load pending orders:', error);
-      // Dummy data fallback
-      setPendingOrders([
-        { orderId: 1, guestName: 'عمر يوسف', tableNumber: '2', items: 'قهوة، كيك', totalAmount: 40, orderTime: '13:00', status: 'PENDING' },
-        { orderId: 2, guestName: 'نورة أحمد', tableNumber: '4', items: 'شاي، بسكويت', totalAmount: 25, orderTime: '13:15', status: 'PENDING' }
-      ]);
+      setPendingOrders([]);
     }
   };
 
@@ -71,12 +60,7 @@ export default function CafeSection({ orders: initialOrders = [], onUpdateOrderS
       setMenuItems(response.content || []);
     } catch (error) {
       console.error('Failed to load menu:', error);
-      // Dummy data fallback
-      setMenuItems([
-        { id: 1, name: 'قهوة', price: 20, category: 'مشروبات' },
-        { id: 2, name: 'شاي', price: 15, category: 'مشروبات' },
-        { id: 3, name: 'كيك', price: 25, category: 'حلويات' }
-      ]);
+      setMenuItems([]);
     }
   };
 
@@ -89,11 +73,7 @@ export default function CafeSection({ orders: initialOrders = [], onUpdateOrderS
       setOrders(transformedOrders);
     } catch (error: any) {
       console.error('Failed to load orders:', error);
-      // Dummy data fallback
-      setOrders([
-        { id: 1, roomNumber: '101', tableNumber: '1', guestName: 'عمر يوسف', items: ['قهوة', 'كيك'], total: 45, status: 'ordered', orderTime: new Date().toISOString() },
-        { id: 2, roomNumber: '205', tableNumber: '2', guestName: 'نورة أحمد', items: ['شاي'], total: 15, status: 'preparing', orderTime: new Date().toISOString() }
-      ]);
+      setOrders([]);
     } finally {
       setIsLoading(false);
     }
@@ -101,6 +81,29 @@ export default function CafeSection({ orders: initialOrders = [], onUpdateOrderS
 
   const handleCreateOrderSuccess = () => {
     loadOrders();
+  };
+
+  const handleUpdateOrderStatus = async (orderId: string, status: string) => {
+    try {
+      console.log('Updating cafe order status:', orderId, status);
+      await apiService.updateCafeOrderStatus(parseInt(orderId), status);
+      loadOrders();
+      loadPendingOrders();
+    } catch (error) {
+      console.error('Failed to update order status:', error);
+      alert('فشل تحديث حالة الطلب. الرجاء المحاولة مرة أخرى.');
+    }
+  };
+
+  const handleUpdateMenuItem = async (id: number, itemData: any) => {
+    try {
+      console.log('Updating cafe menu item:', id, itemData);
+      await apiService.updateCafeMenuItem(id, itemData);
+      loadMenu();
+    } catch (error) {
+      console.error('Failed to update menu item:', error);
+      alert('فشل تحديث العنصر. الرجاء المحاولة مرة أخرى.');
+    }
   };
 
   const totalCafeSales = orders.reduce((sum, order) => sum + order.total, 0);

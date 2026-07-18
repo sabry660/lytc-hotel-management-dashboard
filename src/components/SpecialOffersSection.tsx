@@ -33,7 +33,6 @@ export default function SpecialOffersSection() {
       } else {
         setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
       }
-      // Set empty array as fallback
       setOffers([]);
     } finally {
       setIsLoading(false);
