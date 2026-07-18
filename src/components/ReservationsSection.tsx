@@ -95,15 +95,15 @@ export default function ReservationsSection() {
     try {
       const newStay: CreateStayRequest = {
         guestName,
-        phone: '0500000000', // Valid phone format
+        phone: '0500000000',
         roomNumber: selectedRoomNumber,
         numAdults: adults,
         numKids: children,
         expectedCheckInDate: checkIn,
         expectedCheckOutDate: checkOut,
-        dateRangeValid: true,
       };
 
+      console.log('Creating stay with data:', newStay);
       await apiService.createStay(newStay);
 
       // Reset form

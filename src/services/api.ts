@@ -730,11 +730,15 @@ class APIService {
    * POST /api/dashboard/front-desk/stays
    */
   async createStay(stay: CreateStayRequest): Promise<StayDetailsResponse> {
+    console.log('API: Creating stay with body:', JSON.stringify(stay, null, 2));
     return this.authenticatedFetch<StayDetailsResponse>(
       `${this.baseURL}/api/dashboard/front-desk/stays`,
       {
         method: 'POST',
         body: JSON.stringify(stay),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
     );
   }
