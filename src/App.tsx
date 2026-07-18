@@ -382,15 +382,7 @@ export default function App() {
       case 'الغرف':
         return <RoomsSection />;
       case 'الحجوزات':
-        return (
-          <ReservationsSection
-            reservations={reservations}
-            rooms={rooms}
-            guests={guests}
-            onAddReservation={handleAddReservation}
-            onUpdateReservationStatus={handleUpdateReservationStatus}
-          />
-        );
+        return <ReservationsSection />;
       case 'النزلاء':
         return <GuestsSection guests={guests} reservations={reservations} />;
       case 'إدارة الضيوف':

@@ -83,6 +83,63 @@ interface PatchRoomRequest {
   status?: string;
 }
 
+// Stays related types
+interface StayDetailsResponse {
+  stayId: number;
+  checkInTime: string;
+  expectedCheckOutDate: string;
+  checkOutTime: string;
+  status: string;
+  stars: number;
+  notes: string;
+  roomCharge: number;
+  totalCharge: number;
+  guestId: number;
+  guestName: string;
+  guestPhone: string;
+  roomId: number;
+  roomNumber: string;
+  floor: number;
+  description: string;
+  maxAdults: number;
+  maxKids: number;
+  numAdults: number;
+  numKids: number;
+}
+
+interface CreateStayRequest {
+  guestName: string;
+  phone: string;
+  roomNumber: string;
+  numAdults: number;
+  numKids?: number;
+  expectedCheckInDate: string;
+  expectedCheckOutDate: string;
+  dateRangeValid?: boolean;
+}
+
+interface CreateSpecialOrderRequest {
+  specialOfferId: number;
+  agreedPrice: number;
+}
+
+interface SpecialOrderResponse {
+  id: number;
+  stayId: number;
+  specialOfferId: number;
+  agreedPrice: number;
+  status: string;
+}
+
+interface PageStayDetailsResponse {
+  content: StayDetailsResponse[];
+  totalPages: number;
+  totalElements: number;
+  number: number;
+  size: number;
+  empty: boolean;
+}
+
 interface OrderItemRequest {
   menuItemId: number;
   quantity: number;
@@ -551,6 +608,122 @@ class APIService {
       }
     );
   }
+
+  // ==================== STAYS APIs ====================
+
+  /**
+   * Get Stays
+   * GET /api/dashboard/front-desk/stays
+   */
+  async getStays(
+    page: number = 0,
+    size: number = 10
+  ): Promise<PageStayDetailsResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      size: size.toString(),
+    });
+
+    return this.authenticatedFetch<PageStayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays?${params.toString()}`,
+      {
+        method: 'GET',
+      }
+    );
+  }
+
+  /**
+   * Create Stay
+   * POST /api/dashboard/front-desk/stays
+   */
+  async createStay(stay: CreateStayRequest): Promise<StayDetailsResponse> {
+    return this.authenticatedFetch<StayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays`,
+      {
+        method: 'POST',
+        body: JSON.stringify(stay),
+      }
+    );
+  }
+
+  /**
+   * Check-in Stay
+   * PUT /api/dashboard/front-desk/stays/{stayId}/checkin
+   */
+  async checkInStay(stayId: number): Promise<StayDetailsResponse> {
+    return this.authenticatedFetch<StayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/${stayId}/checkin`,
+      {
+        method: 'PUT',
+      }
+    );
+  }
+
+  /**
+   * Check-out Stay
+   * PUT /api/dashboard/front-desk/stays/{stayId}/checkout
+   */
+  async checkOutStay(stayId: number): Promise<StayDetailsResponse> {
+    return this.authenticatedFetch<StayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/${stayId}/checkout`,
+      {
+        method: 'PUT',
+      }
+    );
+  }
+
+  /**
+   * Get Stay Orders
+   * GET /api/dashboard/front-desk/stays/{stayId}/orders
+   */
+  async getStayOrders(stayId: number): Promise<any[]> {
+    return this.authenticatedFetch<any[]>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/${stayId}/orders`,
+      {
+        method: 'GET',
+      }
+    );
+  }
+
+  /**
+   * Get Stay Special Orders
+   * GET /api/dashboard/front-desk/stays/{stayId}/special-orders
+   */
+  async getStaySpecialOrders(stayId: number): Promise<SpecialOrderResponse[]> {
+    return this.authenticatedFetch<SpecialOrderResponse[]>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/${stayId}/special-orders`,
+      {
+        method: 'GET',
+      }
+    );
+  }
+
+  /**
+   * Create Stay Special Order
+   * POST /api/dashboard/front-desk/stays/{stayId}/special-orders
+   */
+  async createStaySpecialOrder(stayId: number, order: CreateSpecialOrderRequest): Promise<SpecialOrderResponse> {
+    return this.authenticatedFetch<SpecialOrderResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/${stayId}/special-orders`,
+      {
+        method: 'POST',
+        body: JSON.stringify(order),
+      }
+    );
+  }
+
+  /**
+   * Get Checkout Today Stays
+   * GET /api/dashboard/front-desk/stays/checkout-today
+   */
+  async getCheckoutTodayStays(): Promise<PageStayDetailsResponse> {
+    return this.authenticatedFetch<PageStayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/checkout-today`,
+      {
+        method: 'GET',
+      }
+    );
+  }
 }
 
 // Export singleton instance
@@ -570,4 +743,9 @@ export type {
   CreateRoomRequest,
   UpdateRoomRequest,
   PatchRoomRequest,
+  StayDetailsResponse,
+  CreateStayRequest,
+  CreateSpecialOrderRequest,
+  SpecialOrderResponse,
+  PageStayDetailsResponse,
 };
