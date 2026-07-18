@@ -50,11 +50,13 @@ export default function SpecialOffersSection() {
 
   const handleUpdate = async (id: number, offerData: { title?: string; description?: string }) => {
     try {
+      console.log('Updating special offer:', id, offerData);
       await apiService.updateSpecialOffer(id, offerData);
       loadOffers();
       setEditingOffer(null);
     } catch (error) {
       console.error('Failed to update offer:', error);
+      alert('فشل تحديث العرض. الرجاء المحاولة مرة أخرى.');
     }
   };
 

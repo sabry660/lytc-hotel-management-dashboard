@@ -189,6 +189,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
 
   const handleUpdateRoom = async (roomId: string, roomData: any) => {
     try {
+      console.log('Updating room:', roomId, roomData);
       const roomResponse = await apiService.updateRoom(parseInt(roomId), roomData);
       // Update local state with the updated room
       setRooms(rooms.map(room => 
@@ -198,6 +199,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       setEditingRoom(null);
     } catch (error) {
       console.error('Failed to update room:', error);
+      alert('فشل تحديث الغرفة. الرجاء المحاولة مرة أخرى.');
     }
   };
 
