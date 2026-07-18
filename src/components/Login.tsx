@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { KeyRound, Mail, ShieldCheck, Hotel, Sparkles, Building, Lock, Languages, Eye, EyeOff } from 'lucide-react';
+import { apiService, LoginRequest } from '../services/api';
 
 interface LoginProps {
   onLoginSuccess: (user: { name: string; email: string; role: string }) => void;
@@ -16,7 +17,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleCredentialsSubmit = (e: React.FormEvent) => {
+  const handleCredentialsSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       setErrorMessage('الرجاء إدخال البريد الإلكتروني وكلمة المرور');
@@ -25,11 +26,25 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     setIsLoading(true);
     setErrorMessage('');
     
-    // Simulate luxury loader
-    setTimeout(() => {
+    try {
+      const credentials: LoginRequest = {
+        username: email,
+        password: password
+      };
+      
+      const response = await apiService.login(credentials);
+      
       setIsLoading(false);
-      setStep('2fa');
-    }, 1500);
+      
+      // If login successful, proceed to 2FA or directly to dashboard
+      if (response.token) {
+        setStep('2fa');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage('فشل تسجيل الدخول. الرجاء التحقق من بيانات الاعتماد والمحاولة مرة أخرى.');
+      console.error('Login error:', error);
+    }
   };
 
   const handleOtpChange = (index: number, value: string) => {
@@ -52,7 +67,7 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     }
   };
 
-  const handle2faSubmit = (e: React.FormEvent) => {
+  const handle2faSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const otpCode = otp.join('');
     if (otpCode.length < 6) {
@@ -63,14 +78,22 @@ export default function Login({ onLoginSuccess }: LoginProps) {
     setIsLoading(true);
     setErrorMessage('');
 
-    setTimeout(() => {
+    try {
+      // For now, we'll skip actual 2FA verification and proceed to dashboard
+      // In production, this would call a 2FA verification endpoint
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setIsLoading(false);
       onLoginSuccess({
         name: 'عبد الله بن خالد آل عبد الرحمن',
         email: email,
         role: 'المدير العام للمجموعة'
       });
-    }, 1500);
+    } catch (error) {
+      setIsLoading(false);
+      setErrorMessage('فشل التحقق من الرمز. الرجاء المحاولة مرة أخرى.');
+      console.error('2FA error:', error);
+    }
   };
 
   return (
