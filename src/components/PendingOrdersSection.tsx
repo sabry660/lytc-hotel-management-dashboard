@@ -39,12 +39,12 @@ export default function PendingOrdersSection() {
         { orderId: 2, guestName: 'فاطمة علي', roomNumber: '205', items: 'عصير برتقال', totalAmount: 30, orderTime: '11:15', status: 'PENDING' }
       ]);
       setRestaurantOrders([
-        { orderId: 3, guestName: 'محمد أحمد', tableNumber: '5', items: 'مشاوي، سلاطة', totalAmount: 150, orderTime: '12:00', status: 'PENDING' },
-        { orderId: 4, guestName: 'سارة خالد', tableNumber: '8', items: 'بيتزا، مشروب', totalAmount: 85, orderTime: '12:30', status: 'PENDING' }
+        { orderId: 3, guestName: 'محمد أحمد', roomNumber: '301', items: 'مشاوي، سلاطة', totalAmount: 150, orderTime: '12:00', status: 'PENDING' },
+        { orderId: 4, guestName: 'سارة خالد', roomNumber: '302', items: 'بيتزا، مشروب', totalAmount: 85, orderTime: '12:30', status: 'PENDING' }
       ]);
       setCafeOrders([
-        { orderId: 5, guestName: 'عمر يوسف', tableNumber: '2', items: 'قهوة، كيك', totalAmount: 40, orderTime: '13:00', status: 'PENDING' },
-        { orderId: 6, guestName: 'نورة أحمد', tableNumber: '4', items: 'شاي، بسكويت', totalAmount: 25, orderTime: '13:15', status: 'PENDING' }
+        { orderId: 5, guestName: 'عمر يوسف', roomNumber: '401', items: 'قهوة، كيك', totalAmount: 40, orderTime: '13:00', status: 'PENDING' },
+        { orderId: 6, guestName: 'نورة أحمد', roomNumber: '402', items: 'شاي، بسكويت', totalAmount: 25, orderTime: '13:15', status: 'PENDING' }
       ]);
     } finally {
       setIsLoading(false);

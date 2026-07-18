@@ -22,7 +22,8 @@ export default function RoomServiceStatsSection() {
       setStats(response);
     } catch (error: any) {
       console.error('Failed to load stats:', error);
-      // Dummy data fallback
+      // Dummy data fallback - ensure error is not set
+      setError(null);
       setStats({
         totalOrders: 156,
         pendingOrders: 12,

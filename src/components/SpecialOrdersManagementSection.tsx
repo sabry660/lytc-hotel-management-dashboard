@@ -25,11 +25,11 @@ export default function SpecialOrdersManagementSection() {
       console.error('Failed to load special orders:', error);
       // Dummy data fallback
       setSpecialOrders([
-        { id: 1, stayId: 101, description: 'طلب عشاء خاص', amount: 500, status: 'PENDING' },
-        { id: 2, stayId: 205, description: 'طلب سياحة خاصة', amount: 1200, status: 'COMPLETED' },
-        { id: 3, stayId: 302, description: 'طلب خدمة غرف إضافية', amount: 300, status: 'PENDING' },
-        { id: 4, stayId: 401, description: 'طلب تجهيز غرفة اجتماعات', amount: 800, status: 'COMPLETED' },
-        { id: 5, stayId: 505, description: 'طلب خدمة نقل', amount: 200, status: 'PENDING' }
+        { id: 1, stayId: 101, specialOfferId: 1, agreedPrice: 500, status: 'PENDING' },
+        { id: 2, stayId: 205, specialOfferId: 2, agreedPrice: 1200, status: 'CONFIRMED' },
+        { id: 3, stayId: 302, specialOfferId: 3, agreedPrice: 300, status: 'PENDING' },
+        { id: 4, stayId: 401, specialOfferId: 4, agreedPrice: 800, status: 'CONFIRMED' },
+        { id: 5, stayId: 505, specialOfferId: 5, agreedPrice: 200, status: 'PENDING' }
       ]);
     } finally {
       setIsLoading(false);
