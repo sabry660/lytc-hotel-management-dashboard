@@ -95,12 +95,13 @@ export default function ReservationsSection() {
     try {
       const newStay: CreateStayRequest = {
         guestName,
-        phone: '0000000000', // Placeholder phone
+        phone: '0500000000', // Valid phone format
         roomNumber: selectedRoomNumber,
         numAdults: adults,
         numKids: children,
         expectedCheckInDate: checkIn,
         expectedCheckOutDate: checkOut,
+        dateRangeValid: true,
       };
 
       await apiService.createStay(newStay);
@@ -118,7 +119,11 @@ export default function ReservationsSection() {
       loadStays();
     } catch (error: any) {
       console.error('Failed to create stay:', error);
-      setCreateStayError('فشل إنشاء الحجز. الرجاء المحاولة مرة أخرى.');
+      if (error.message) {
+        setCreateStayError(`فشل إنشاء الحجز: ${error.message}`);
+      } else {
+        setCreateStayError('فشل إنشاء الحجز. الرجاء المحاولة مرة أخرى.');
+      }
     } finally {
       setIsCreatingStay(false);
     }
