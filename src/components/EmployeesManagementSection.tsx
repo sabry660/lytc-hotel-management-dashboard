@@ -86,7 +86,7 @@ export default function EmployeesManagementSection() {
   };
 
   // Filter employees based on search
-  const filteredEmployees = employees.filter(employee => {
+  const filteredEmployees = (employees || []).filter(employee => {
     const matchesSearch = employee.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           employee.job.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           employee.department.toLowerCase().includes(searchQuery.toLowerCase());

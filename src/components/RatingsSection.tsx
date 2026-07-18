@@ -30,7 +30,7 @@ export default function RatingsSection() {
   };
 
   // Filter rated stays based on search
-  const filteredRatedStays = ratedStays.filter(stay => {
+  const filteredRatedStays = (ratedStays || []).filter(stay => {
     const matchesSearch = stay.guestName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           stay.roomNumber.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;

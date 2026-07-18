@@ -30,7 +30,7 @@ export default function VipGuestsSection() {
   };
 
   // Filter vips based on search
-  const filteredVips = vips.filter(vip => {
+  const filteredVips = (vips || []).filter(vip => {
     const matchesSearch = vip.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           vip.phone?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           vip.nationality?.toLowerCase().includes(searchQuery.toLowerCase());

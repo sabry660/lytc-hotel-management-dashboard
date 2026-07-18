@@ -84,7 +84,7 @@ export default function UsersManagementSection() {
   };
 
   // Filter users based on search
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = (users || []).filter(user => {
     const matchesSearch = user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           user.role.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesSearch;
