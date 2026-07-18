@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   BedDouble, Sparkles, AlertTriangle, Hammer, CheckCircle2, User, Filter, Layers, 
   DollarSign, Grid3X3, List, Search, ArrowUpDown, ChevronLeft, Eye, Edit, 
-  Calendar, MapPin, Users, Clock, MoreVertical, X, Save, Building2, Image as ImageIcon, Star, Loader2
+  Calendar, MapPin, Users, Clock, MoreVertical, X, Save, Building2, Image as ImageIcon, Star, Loader2, Plus
 } from 'lucide-react';
 import { Room } from '../types';
 import { apiService, RoomResponse } from '../services/api';
@@ -29,6 +29,20 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
   const [selectedRooms, setSelectedRooms] = useState<Set<string>>(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
+  
+  // Create Room Modal State
+  const [createRoomModalOpen, setCreateRoomModalOpen] = useState(false);
+  const [newRoom, setNewRoom] = useState({
+    roomNumber: '',
+    maxAdults: 2,
+    maxKids: 0,
+    description: '',
+    floor: 2,
+    price: 0,
+    status: 'AVAILABLE' as 'AVAILABLE' | 'OCCUPIED' | 'CLEANING' | 'MAINTENANCE',
+  });
+  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
+  const [createRoomError, setCreateRoomError] = useState<string | null>(null);
 
   const floors = [2, 3, 4, 5];
 
@@ -68,6 +82,46 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       setRooms([]);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCreateRoom = async () => {
+    if (!newRoom.roomNumber || newRoom.price <= 0) {
+      setCreateRoomError('يرجى إدخال رقم الغرفة والسعر');
+      return;
+    }
+
+    setIsCreatingRoom(true);
+    setCreateRoomError(null);
+    try {
+      await apiService.createRoom({
+        roomNumber: newRoom.roomNumber,
+        maxAdults: newRoom.maxAdults,
+        maxKids: newRoom.maxKids,
+        description: newRoom.description,
+        floor: newRoom.floor,
+        price: newRoom.price,
+      });
+      
+      // Reset form and close modal
+      setNewRoom({
+        roomNumber: '',
+        maxAdults: 2,
+        maxKids: 0,
+        description: '',
+        floor: 2,
+        price: 0,
+        status: 'AVAILABLE',
+      });
+      setCreateRoomModalOpen(false);
+      
+      // Reload rooms
+      loadRooms();
+    } catch (error: any) {
+      console.error('Failed to create room:', error);
+      setCreateRoomError('فشل إنشاء الغرفة. الرجاء المحاولة مرة أخرى.');
+    } finally {
+      setIsCreatingRoom(false);
     }
   };
 
@@ -180,6 +234,15 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
             <span className="text-amber-500 font-mono">{rooms.filter(r => r.status === 'cleaning').length}</span>
           </div>
         </div>
+        
+        {/* Add Room Button */}
+        <button
+          onClick={() => setCreateRoomModalOpen(true)}
+          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-300"
+        >
+          <Plus size={16} />
+          <span>إضافة غرفة</span>
+        </button>
       </div>
 
       {/* Floor Selector */}
@@ -932,6 +995,143 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
             </motion.div>
           </motion.div>
         )}
+
+        {/* Create Room Modal */}
+        <AnimatePresence>
+          {createRoomModalOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+              onClick={() => setCreateRoomModalOpen(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                className="bg-[#0b0b0b] border border-gray-900 rounded-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="p-6 space-y-5">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-black text-[#E6C587]">إضافة غرفة جديدة</h2>
+                    <button
+                      onClick={() => setCreateRoomModalOpen(false)}
+                      className="text-gray-500 hover:text-white transition"
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  {createRoomError && (
+                    <div className="text-red-500 text-xs font-bold bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+                      {createRoomError}
+                    </div>
+                  )}
+
+                  {/* Room Number */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">رقم الغرفة *</label>
+                    <input
+                      type="text"
+                      value={newRoom.roomNumber}
+                      onChange={(e) => setNewRoom({ ...newRoom, roomNumber: e.target.value })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                      placeholder="مثال: 101"
+                      disabled={isCreatingRoom}
+                    />
+                  </div>
+
+                  {/* Floor */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">الطابق</label>
+                    <select
+                      value={newRoom.floor}
+                      onChange={(e) => setNewRoom({ ...newRoom, floor: parseInt(e.target.value) })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                      disabled={isCreatingRoom}
+                    >
+                      {floors.map((floor) => (
+                        <option key={floor} value={floor}>الطابق {floor}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Price */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">السعر لليلة *</label>
+                    <input
+                      type="number"
+                      value={newRoom.price}
+                      onChange={(e) => setNewRoom({ ...newRoom, price: parseFloat(e.target.value) || 0 })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                      placeholder="مثال: 500"
+                      disabled={isCreatingRoom}
+                    />
+                  </div>
+
+                  {/* Max Adults */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">أقصى عدد بالغين</label>
+                    <input
+                      type="number"
+                      value={newRoom.maxAdults}
+                      onChange={(e) => setNewRoom({ ...newRoom, maxAdults: parseInt(e.target.value) || 1 })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                      min="1"
+                      disabled={isCreatingRoom}
+                    />
+                  </div>
+
+                  {/* Max Kids */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">أقصى عدد أطفال</label>
+                    <input
+                      type="number"
+                      value={newRoom.maxKids}
+                      onChange={(e) => setNewRoom({ ...newRoom, maxKids: parseInt(e.target.value) || 0 })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                      min="0"
+                      disabled={isCreatingRoom}
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="text-xs font-bold text-gray-400 block mb-2">الوصف</label>
+                    <textarea
+                      value={newRoom.description}
+                      onChange={(e) => setNewRoom({ ...newRoom, description: e.target.value })}
+                      className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none resize-none"
+                      rows={3}
+                      placeholder="وصف الغرفة..."
+                      disabled={isCreatingRoom}
+                    />
+                  </div>
+
+                  <div className="flex gap-3 pt-4 border-t border-gray-800">
+                    <button
+                      onClick={handleCreateRoom}
+                      disabled={isCreatingRoom}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-[#AA7B30] via-[#D4AF37] to-[#E6C587] text-black font-bold rounded-xl hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isCreatingRoom ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+                      <span>{isCreatingRoom ? 'جاري الإنشاء...' : 'إضافة الغرفة'}</span>
+                    </button>
+                    <button
+                      onClick={() => setCreateRoomModalOpen(false)}
+                      disabled={isCreatingRoom}
+                      className="flex-1 px-6 py-3 bg-[#121212] border border-gray-800 text-gray-400 font-bold rounded-xl hover:text-white hover:border-gray-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      إلغاء
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </AnimatePresence>
     </div>
   );
