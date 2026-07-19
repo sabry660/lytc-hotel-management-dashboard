@@ -19,6 +19,8 @@ import LoadingState from './components/LoadingState';
 import ErrorState from './components/ErrorState';
 import ExportButtons from './components/ExportButtons';
 import NotificationToast from './components/NotificationToast';
+import AnalyticsLineChart from './components/LineChart';
+import AnalyticsBarChart from './components/BarChart';
 
 export default function AnalyticsPage() {
   const [report, setReport] = useState<AnalyticsReport | null>(null);
@@ -762,6 +764,35 @@ export default function AnalyticsPage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="p-6 bg-[#090909] border border-gray-900 rounded-xl">
+          <AnalyticsLineChart 
+            data={[
+              { name: 'يناير', value: 65 },
+              { name: 'فبراير', value: 72 },
+              { name: 'مارس', value: 68 },
+              { name: 'أبريل', value: 75 },
+              { name: 'مايو', value: 82 },
+              { name: 'يونيو', value: 88 }
+            ]}
+            color="#D4AF37"
+            title="نمو الزوار"
+          />
+        </div>
+        <div className="p-6 bg-[#090909] border border-gray-900 rounded-xl">
+          <AnalyticsBarChart 
+            data={[
+              { name: 'Facebook', value: report.facebookAnalytics.followers },
+              { name: 'Instagram', value: report.instagramAnalytics.followers },
+              { name: 'Snapchat', value: report.snapchatAnalytics.subscribers }
+            ]}
+            color="#D4AF37"
+            title="متابعي التواصل الاجتماعي"
+          />
         </div>
       </div>
 
