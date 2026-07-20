@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   TrendingUp, Calendar, BedDouble, Users, MessageSquare, Wrench, ShieldAlert, Sparkles, 
-  Clock, CloudSun, Compass, UserCheck, CreditCard, ChevronLeft, Bell, Star, Heart,
+  Clock, CloudSun, Compass, UserCheck, CreditCard, ChevronLeft, Star, Heart,
   Activity, ArrowUpRight, ArrowDownRight, Coffee, Shirt, ConciergeBell
 } from 'lucide-react';
 import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, Invoice } from '../types';
@@ -33,12 +33,32 @@ export default function DashboardHome({
   onOpenQuickRequest
 }: DashboardHomeProps) {
   const [time, setTime] = useState(new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+  const [userRole, setUserRole] = useState<string>('المدير');
 
-  React.useEffect(() => {
+  useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  // Get user role from localStorage
+  useEffect(() => {
+    const savedUser = localStorage.getItem('lytc_user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        const roleMap: { [key: string]: string } = {
+          'MANAGER': 'المدير',
+          'ADMIN': 'المسؤول',
+          'STAFF': 'الموظف',
+          'GUEST': 'الضيف'
+        };
+        setUserRole(roleMap[user.role] || 'المدير');
+      } catch (e) {
+        setUserRole('المدير');
+      }
+    }
   }, []);
 
   // Compute live real metrics
@@ -77,7 +97,7 @@ export default function DashboardHome({
     ? (reservations.filter(r => r.status === 'cancelled').length / reservations.length) * 100 
     : 0;
 
-  const averageGuestRating = 4.7; // Demo value - would come from actual ratings
+  const averageGuestRating = 0; // Would come from actual ratings
 
   const pendingPayments = invoices
     .filter(inv => inv.status === 'unpaid')
@@ -85,16 +105,7 @@ export default function DashboardHome({
 
   const pendingHousekeeping = housekeeping.filter(h => h.status !== 'completed').length;
 
-  const restaurantRevenue = 45000; // Demo value
-  const spaRevenue = 28000; // Demo value
-
   const vipGuestsArriving = guests.filter(g => g.isVIP).length;
-
-  const websiteVisits = 12500; // Demo value
-  const seoScore = 87; // Demo value
-  const googleBusinessViews = 8900; // Demo value
-  const instagramReach = 45000; // Demo value
-  const unreadMessages = 23; // Demo value
 
   const latestReservations = [...reservations]
     .sort((a, b) => b.id.localeCompare(a.id))
@@ -114,9 +125,6 @@ export default function DashboardHome({
 
         <div className="relative space-y-2 z-10">
           <div className="flex items-center gap-2">
-            <span className="px-2.5 py-1 text-[10px] tracking-widest font-extrabold uppercase bg-amber-950/40 border border-[#D4AF37]/30 text-[#E6C587] rounded-md">
-              الفرع الرئيسي • الرياض
-            </span>
             <span className="flex h-2 w-2 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -124,7 +132,7 @@ export default function DashboardHome({
             <span className="text-xs text-gray-500">النظام الفني متصل ومستقر</span>
           </div>
           <h1 className="text-3xl font-extrabold text-[#E6C587] tracking-tight">
-            أهلاً بك مجدداً، الشيخ عبد الله
+            مرحباً {userRole}
           </h1>
           <p className="text-gray-400 text-sm max-w-xl">
             مستويات الإشغال والتشغيل في قصر ليتك الفاخر عند الحد الأعلى لليوم. جميع الأقسام والخدمات تعمل بكامل طاقتها الاستيعابية بنجاح.
@@ -358,23 +366,14 @@ export default function DashboardHome({
         >
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">إيرادات المطعم</span>
-            <div className="text-lg font-bold text-white font-mono">{restaurantRevenue.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">-- ريال</div>
           </div>
           <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg">
             <Coffee size={16} />
           </div>
         </button>
 
-        {/* Spa Revenue */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-indigo-500/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">إيرادات السبا</span>
-            <div className="text-lg font-bold text-white font-mono">{spaRevenue.toLocaleString('ar-SA')} ريال</div>
-          </div>
-          <div className="p-2 bg-indigo-950/20 text-indigo-400 rounded-lg">
-            <Heart size={16} />
-          </div>
-        </div>
+        {/* Spa Revenue - Removed as no page exists */}
 
         {/* VIP Guests Arriving */}
         <button 
@@ -398,61 +397,6 @@ export default function DashboardHome({
           </div>
           <div className="p-2 bg-sky-950/20 text-sky-400 rounded-lg">
             <CloudSun size={16} />
-          </div>
-        </div>
-
-        {/* Website Visits */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-green-500/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">زيارات الموقع</span>
-            <div className="text-lg font-bold text-white font-mono">{websiteVisits.toLocaleString('ar-SA')}</div>
-          </div>
-          <div className="p-2 bg-green-950/20 text-green-400 rounded-lg">
-            <Activity size={16} />
-          </div>
-        </div>
-
-        {/* SEO Score */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-lime-500/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">درجة SEO</span>
-            <div className="text-lg font-bold text-white font-mono">{seoScore}/100</div>
-          </div>
-          <div className="p-2 bg-lime-950/20 text-lime-400 rounded-lg">
-            <TrendingUp size={16} />
-          </div>
-        </div>
-
-        {/* Google Business Views */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-blue-600/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">مشاهدات Google Business</span>
-            <div className="text-lg font-bold text-white font-mono">{googleBusinessViews.toLocaleString('ar-SA')}</div>
-          </div>
-          <div className="p-2 bg-blue-900/20 text-blue-400 rounded-lg">
-            <Compass size={16} />
-          </div>
-        </div>
-
-        {/* Instagram Reach */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-pink-600/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">وصول Instagram</span>
-            <div className="text-lg font-bold text-white font-mono">{instagramReach.toLocaleString('ar-SA')}</div>
-          </div>
-          <div className="p-2 bg-pink-900/20 text-pink-400 rounded-lg">
-            <Heart size={16} />
-          </div>
-        </div>
-
-        {/* Unread Messages */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-red-600/35 transition duration-200">
-          <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">محادثات غير مقروءة</span>
-            <div className="text-lg font-bold text-white font-mono">{unreadMessages}</div>
-          </div>
-          <div className="p-2 bg-red-900/20 text-red-400 rounded-lg">
-            <MessageSquare size={16} />
           </div>
         </div>
       </div>
@@ -500,7 +444,7 @@ export default function DashboardHome({
         <div className="p-5 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200">
           <div className="space-y-1">
             <span className="text-xs text-gray-500">معدل رضا النزلاء الإجمالي</span>
-            <div className="text-xl font-bold text-[#E6C587] font-mono">98.6%</div>
+            <div className="text-xl font-bold text-[#E6C587] font-mono">--%</div>
           </div>
           <div className="p-2.5 bg-amber-950/15 text-[#D4AF37] rounded-lg border border-[#D4AF37]/5">
             <Star size={18} className="fill-[#D4AF37]" />
@@ -683,46 +627,7 @@ export default function DashboardHome({
             </div>
           </div>
 
-          {/* Live System Activities Feed */}
-          <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 shadow-xl space-y-4">
-            <h2 className="text-md font-bold text-[#E6C587] flex items-center gap-2 border-b border-gray-800 pb-3">
-              <Activity size={16} className="text-blue-400" />
-              <span>آخر النشاطات والعمليات التشغيلية</span>
-            </h2>
-            <div className="relative border-r-2 border-gray-800 pr-4 space-y-6 text-xs">
-              {/* Event 1 */}
-              <div className="relative">
-                <span className="absolute top-1.5 -right-[21px] w-2 h-2 rounded-full bg-amber-500 border border-black ring-4 ring-[#0b0b0b]" />
-                <div className="font-bold text-gray-300">تسجيل وصول: الشيخ سلمان آل سعود</div>
-                <div className="text-gray-500 mt-0.5">غرفة 501 • بواسطة موظف الاستقبال خالد</div>
-                <div className="text-[10px] font-mono text-gray-600 mt-1">منذ 15 دقيقة</div>
-              </div>
-
-              {/* Event 2 */}
-              <div className="relative">
-                <span className="absolute top-1.5 -right-[21px] w-2 h-2 rounded-full bg-emerald-500 border border-black ring-4 ring-[#0b0b0b]" />
-                <div className="font-bold text-gray-300">إنهاء تنظيف الجناح 301 بالكامل</div>
-                <div className="text-gray-500 mt-0.5">تم نقله للحالة "متاح" لضيوف الغد</div>
-                <div className="text-[10px] font-mono text-gray-600 mt-1">منذ 34 دقيقة</div>
-              </div>
-
-              {/* Event 3 */}
-              <div className="relative">
-                <span className="absolute top-1.5 -right-[21px] w-2 h-2 rounded-full bg-blue-500 border border-black ring-4 ring-[#0b0b0b]" />
-                <div className="font-bold text-gray-300">فاتورة إلكترونية مسددة</div>
-                <div className="text-gray-500 mt-0.5">قيمة الإقامة للمهندس يوسف • بقيمة 12,000 ريال</div>
-                <div className="text-[10px] font-mono text-gray-600 mt-1">منذ ساعة واحدة</div>
-              </div>
-
-              {/* Event 4 */}
-              <div className="relative">
-                <span className="absolute top-1.5 -right-[21px] w-2 h-2 rounded-full bg-red-500 border border-black ring-4 ring-[#0b0b0b]" />
-                <div className="font-bold text-gray-300">بلاغ صيانة عاجل: لوحة إضاءة جناح 202</div>
-                <div className="text-gray-500 mt-0.5">تم توجيه البلاغ تلقائياً للفني أحمد الحربي</div>
-                <div className="text-[10px] font-mono text-gray-600 mt-1">منذ ساعتين</div>
-              </div>
-            </div>
-          </div>
+          {/* Live System Activities Feed - Removed dummy data */}
         </div>
       </div>
     </div>

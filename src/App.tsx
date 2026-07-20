@@ -53,8 +53,28 @@ export default function App() {
     const saved = localStorage.getItem('lytc_user');
     return saved ? JSON.parse(saved) : null;
   });
+  const [userRoleDisplay, setUserRoleDisplay] = useState<string>('المدير');
   const [isAppLoading, setIsAppLoading] = useState(true);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  // Update role display based on user role
+  useEffect(() => {
+    const savedUser = localStorage.getItem('lytc_user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        const roleMap: { [key: string]: string } = {
+          'MANAGER': 'المدير',
+          'ADMIN': 'المسؤول',
+          'STAFF': 'الموظف',
+          'GUEST': 'الضيف'
+        };
+        setUserRoleDisplay(roleMap[user.role] || 'المدير');
+      } catch (e) {
+        setUserRoleDisplay('المدير');
+      }
+    }
+  }, []);
 
   // Active view tab state with # routing
   const [activeTab, setActiveTab] = useState<'لوحة التحكم' | 'الحجوزات' | 'الغرف' | 'النزلاء' | 'طلبات النزلاء' | 'خدمة الغرف' | 'المطعم' | 'الصيانة' | 'المدفوعات' | 'إدارة المستخدمين' | 'إدارة الموظفين' | 'النزلاء VIP' | 'التقييمات' | 'الطلبات الخاصة' | 'الحجوزات القادمة' | 'إحصائيات خدمة الغرف' | 'إحصائيات المطعم' | 'إحصائيات المقهى' | 'الطلبات المعلقة' | 'العروض والمزايا' | 'الموظفين' | 'إدارة الضيوف' | 'التحليلات الذكية'>(() => {
@@ -548,8 +568,8 @@ export default function App() {
               ع
             </div>
             <div>
-              <span className="text-gray-300 font-bold block">الشيخ عبد الله</span>
-              <span className="text-[10px] text-gray-500 block">المدير العام</span>
+              <span className="text-gray-300 font-bold block">مرحباً {userRoleDisplay}</span>
+              <span className="text-[10px] text-gray-500 block">نظام إدارة الفندق</span>
             </div>
           </div>
           <button
