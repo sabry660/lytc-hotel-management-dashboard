@@ -179,9 +179,7 @@ export default function DashboardHome({
               <Calendar size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-4 text-xs text-emerald-400">
-            <ArrowUpRight size={14} />
-            <span className="font-bold">+12%</span>
+          <div className="flex items-center gap-1.5 mt-4 text-xs text-gray-400">
             <span className="text-gray-600">مقارنة بالأسبوع الماضي</span>
           </div>
         </div>
@@ -244,9 +242,7 @@ export default function DashboardHome({
               <CreditCard size={18} sm:size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-emerald-400">
-            <ArrowUpRight size={12} sm:size={14} />
-            <span className="font-bold">+18.4%</span>
+          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400">
             <span className="text-gray-600">معدل الإيراد اليومي</span>
           </div>
         </div>

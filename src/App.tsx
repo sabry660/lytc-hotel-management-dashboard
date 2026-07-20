@@ -644,72 +644,12 @@ export default function App() {
             </div>
           </div>
 
-          {/* Left Part: Notifications, Quick Clock, User info */}
+          {/* Left Part: Quick Clock */}
           <div className="flex items-center gap-4 relative">
-            
             {/* Clock */}
             <span className="text-xs font-mono text-gray-400 font-bold hidden md:inline-flex bg-[#121212] border border-gray-850 px-3 py-1.5 rounded-lg select-none">
-              الرياض • 5 يوليو
+              {new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long' })}
             </span>
-
-            {/* Notification Center */}
-            <div className="relative">
-              <button
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 bg-[#121212] hover:bg-[#1a1a1a] border border-gray-800 rounded-xl text-gray-300 hover:text-white transition relative"
-              >
-                <Bell size={18} />
-                {notifications.some(n => !n.read) && (
-                  <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-[#121212]" />
-                )}
-              </button>
-
-              <AnimatePresence>
-                {showNotifications && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute left-0 mt-3 w-80 bg-[#0b0b0b] border border-gray-800 rounded-xl shadow-2xl p-4 space-y-3 z-50 text-right"
-                  >
-                    <div className="flex justify-between items-center border-b border-gray-800 pb-2">
-                      <span className="text-xs font-bold text-white">مركز التنبيهات المباشر</span>
-                      <button
-                        onClick={() => {
-                          setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-                        }}
-                        className="text-[10px] text-[#D4AF37] hover:underline"
-                      >
-                        قراءة الكل
-                      </button>
-                    </div>
-
-                    <div className="space-y-2.5 max-h-64 overflow-y-auto">
-                      {notifications.map((n) => (
-                        <div key={n.id} className={`p-2.5 rounded-lg text-xs transition duration-150 ${n.read ? 'bg-transparent text-gray-500' : 'bg-white/[0.02] text-gray-200'}`}>
-                          <div className="font-bold">{n.title}</div>
-                          <div className="text-[10px] text-gray-500 font-mono mt-1 flex justify-between items-center">
-                            <span>{n.time}</span>
-                            {!n.read && <span className="h-1.5 w-1.5 rounded-full bg-blue-400" />}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
-            {/* Group Profile Badge */}
-            <div className="flex items-center gap-2 bg-[#121212] border border-gray-800 p-1.5 pr-3 rounded-xl select-none">
-              <div className="text-right hidden sm:block">
-                <span className="text-xs font-bold text-white block">الشيخ عبد الله</span>
-                <span className="text-[9px] text-[#D4AF37] block mt-0.5">المدير العام للمجموعة</span>
-              </div>
-              <div className="w-8 h-8 rounded-lg border border-[#D4AF37]/30 bg-[#1d1d1d] flex items-center justify-center font-bold text-[#E6C587]">
-                ع
-              </div>
-            </div>
           </div>
         </header>
 
@@ -794,12 +734,13 @@ export default function App() {
               </div>
 
               <div className="pt-4 border-t border-gray-900 flex justify-between items-center">
-                <span className="text-xs text-gray-400 font-bold">الشيخ عبد الله</span>
+                <span className="text-xs text-gray-400 font-bold">مرحباً {userRoleDisplay}</span>
                 <button
                   onClick={handleLogout}
-                  className="p-1.5 bg-red-950/20 text-red-400 rounded-lg"
+                  className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-950/20 rounded-lg transition"
+                  title="تسجيل الخروج"
                 >
-                  <LogOut size={14} />
+                  <LogOut size={16} />
                 </button>
               </div>
             </motion.aside>
