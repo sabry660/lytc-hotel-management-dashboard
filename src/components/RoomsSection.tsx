@@ -198,6 +198,22 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       const room = rooms.find(r => r.id === roomId);
       if (!room) return;
 
+      // If trying to book, check current status first
+      if (status === 'available') {
+        if (room.status === 'available') {
+          alert('الغرفة متاحة بالفعل');
+          return;
+        }
+        
+        const confirmBooking = confirm(
+          `حالة الغرفة الحالية: ${getStatusLabel(room.status)}\n\nهل تريد تغيير الحالة إلى "متاحة"؟`
+        );
+        
+        if (!confirmBooking) {
+          return;
+        }
+      }
+
       // Map frontend status to backend status
       const backendStatus = status.toUpperCase() as 'AVAILABLE' | 'OCCUPIED' | 'CLEANING' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
       
@@ -206,9 +222,26 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       
       // Reload rooms to get updated state from backend
       await loadRooms();
+      
+      // Show success message
+      alert(`تم تغيير حالة الغرفة بنجاح إلى "${getStatusLabel(status)}"`);
     } catch (error) {
       console.error('Failed to update room status:', error);
       alert('فشل تحديث حالة الغرفة. الرجاء المحاولة مرة أخرى.');
+    }
+  };
+
+  const handleDeleteRoom = async (roomId: string) => {
+    if (!confirm('هل أنت متأكد من حذف هذه الغرفة؟')) {
+      return;
+    }
+
+    try {
+      await apiService.deleteRoom(parseInt(roomId));
+      await loadRooms();
+    } catch (error) {
+      console.error('Failed to delete room:', error);
+      alert('فشل حذف الغرفة. الرجاء المحاولة مرة أخرى.');
     }
   };
 
@@ -428,9 +461,9 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-transparent to-transparent" />
                   
-                  {/* Status Badge */}
+                  {/* Status Badge - More Prominent */}
                   <div className="absolute top-3 right-3">
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border backdrop-blur-md ${getStatusColor(room.status)}`}>
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border backdrop-blur-md shadow-lg ${getStatusColor(room.status)}`}>
                       {getStatusIcon(room.status)}
                       <span>{getStatusLabel(room.status)}</span>
                     </span>
@@ -442,6 +475,15 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                       الطابق {room.floor}
                     </span>
                   </div>
+
+                  {/* Status Indicator Bar - Bottom */}
+                  <div className={`absolute bottom-0 left-0 right-0 h-1 ${
+                    room.status === 'available' ? 'bg-emerald-500' :
+                    room.status === 'occupied' ? 'bg-blue-500' :
+                    room.status === 'cleaning' ? 'bg-amber-500' :
+                    room.status === 'maintenance' ? 'bg-red-500' :
+                    'bg-gray-500'
+                  }`} />
                 </div>
 
                 {/* Room Info */}
@@ -610,6 +652,13 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                     >
                       <Calendar size={14} />
                       <span>حجز</span>
+                    </button>
+                    <button
+                      onClick={() => handleDeleteRoom(room.id)}
+                      className="flex items-center justify-center gap-2 px-4 py-2 bg-red-950/40 border border-red-500/20 rounded-lg text-xs font-bold text-red-400 hover:bg-red-950/60 transition"
+                    >
+                      <Trash2 size={14} />
+                      <span>حذف</span>
                     </button>
                   </div>
                 </div>

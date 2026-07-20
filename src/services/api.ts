@@ -706,6 +706,19 @@ class APIService {
     );
   }
 
+  /**
+   * Delete Room
+   * DELETE /api/dashboard/front-desk/rooms/{id}
+   */
+  async deleteRoom(id: number): Promise<void> {
+    return this.authenticatedFetch<void>(
+      `${this.baseURL}/api/dashboard/front-desk/rooms/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  }
+
   // ==================== STAYS APIs ====================
 
   /**
