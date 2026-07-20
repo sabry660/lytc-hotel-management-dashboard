@@ -507,13 +507,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                       <Eye size={14} />
                       <span>التفاصيل</span>
                     </button>
-                    <button
-                      onClick={() => handleEditRoom(room)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-lg text-xs font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20 transition"
-                    >
-                      <Edit size={14} />
-                      <span>تعديل</span>
-                    </button>
                   </div>
                 </div>
               </div>
@@ -619,13 +612,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                     >
                       <Eye size={14} />
                       <span>التفاصيل</span>
-                    </button>
-                    <button
-                      onClick={() => handleEditRoom(room)}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded-lg text-xs font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20 transition"
-                    >
-                      <Edit size={14} />
-                      <span>تعديل</span>
                     </button>
                     <button
                       onClick={() => onUpdateRoomStatus(room.id, 'available')}

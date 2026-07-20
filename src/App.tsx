@@ -10,7 +10,6 @@ import DashboardHome from './components/DashboardHome';
 import RoomsSection from './components/RoomsSection';
 import ReservationsSection from './components/ReservationsSection';
 import GuestsSection from './components/GuestsSection';
-import GuestCRMSection from './components/GuestCRMSection';
 import RequestsSection from './components/RequestsSection';
 import HousekeepingSection from './components/HousekeepingSection';
 import MaintenanceSection from './components/MaintenanceSection';
@@ -249,19 +248,10 @@ export default function App() {
 
   const handleUpdateTaskStatus = (taskId: string, status: HousekeepingTask['status']) => {
     setHousekeeping(prev => prev.map(t => t.id === taskId ? { ...t, status } : t));
-    const taskObj = housekeeping.find(t => t.id === taskId);
-    if (taskObj && status === 'completed') {
-      // Change target room to available
-      setRooms(prev => prev.map(r => r.number === taskObj.roomNumber ? { ...r, status: 'available' } : r));
-    }
   };
 
   const handleUpdateTicketStatus = (ticketId: string, status: MaintenanceTicket['status']) => {
     setMaintenance(prev => prev.map(t => t.id === ticketId ? { ...t, status } : t));
-    const ticketObj = maintenance.find(t => t.id === ticketId);
-    if (ticketObj && status === 'completed') {
-      setRooms(prev => prev.map(r => r.number === ticketObj.roomNumber ? { ...r, status: 'available' } : r));
-    }
   };
 
   const handleUpdateOrderStatus = (orderId: string, status: RestaurantOrder['status']) => {
@@ -282,13 +272,6 @@ export default function App() {
     guests.forEach(g => {
       if (g.name.toLowerCase().includes(lower)) {
         results.push({ type: 'نزيل', title: g.name, subtitle: `هاتف: ${g.phone}`, actionTab: 'النزلاء' });
-      }
-    });
-
-    // Search rooms
-    rooms.forEach(r => {
-      if (r.number.includes(lower)) {
-        results.push({ type: 'غرفة', title: `جناح رقم ${r.number}`, subtitle: r.type, actionTab: 'الغرف' });
       }
     });
 
@@ -325,8 +308,6 @@ export default function App() {
         return <ReservationsSection />;
       case 'النزلاء':
         return <GuestsSection guests={guests} reservations={reservations} />;
-      case 'إدارة الضيوف':
-        return <GuestCRMSection guests={guests} />;
       case 'طلبات النزلاء':
         return (
           <RequestsSection
@@ -671,17 +652,13 @@ export default function App() {
                 className="w-full bg-[#121212] border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none"
                 placeholder="مثال: الشيخ سليمان آل سعود"
               />
-              <label className="text-gray-400 block">اختر الغرفة:</label>
-              <select
+              <label className="text-gray-400 block">رقم الغرفة:</label>
+              <input
+                type="text"
                 id="qb-room"
                 className="w-full bg-[#121212] border border-gray-800 rounded-xl px-3 py-2 text-white focus:outline-none"
-              >
-                {rooms.filter(r => r.status === 'available').map(room => (
-                  <option key={room.id} value={room.number}>
-                    جناح {room.number} ({room.pricePerNight} ريال)
-                  </option>
-                ))}
-              </select>
+                placeholder="مثال: 501"
+              />
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setQuickBookOpen(false)}

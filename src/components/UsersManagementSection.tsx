@@ -265,13 +265,6 @@ export default function UsersManagementSection() {
                   <td className="py-3">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => openEditModal(user)}
-                        className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition"
-                        title="تعديل"
-                      >
-                        <Edit size={14} className="text-gray-400" />
-                      </button>
-                      <button
                         onClick={() => handleDeleteUser(user.id)}
                         className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-red-500/30 transition"
                         title="حذف"

@@ -21,15 +21,8 @@ export default function RoomServiceStatsSection() {
       const response = await apiService.getRoomServiceStats();
       setStats(response);
     } catch (error: any) {
-      // Dummy data fallback - ensure error is not set
-      setError(null);
-      setStats({
-        totalOrders: 156,
-        pendingOrders: 12,
-        completedOrders: 144,
-        totalRevenue: 45600,
-        todayRevenue: 3200
-      });
+      console.error('Failed to load room service stats:', error);
+      setError('فشل تحميل الإحصائيات');
     } finally {
       setIsLoading(false);
     }

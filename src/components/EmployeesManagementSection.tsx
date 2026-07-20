@@ -443,13 +443,6 @@ export default function EmployeesManagementSection() {
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t border-gray-800">
                 <button
-                  onClick={openEditModal}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200"
-                >
-                  <Edit size={16} />
-                  <span>تعديل</span>
-                </button>
-                <button
                   onClick={() => handleDeleteEmployee(selectedEmployee.id)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-red-950/20 border border-red-500/30 hover:bg-red-900/30 text-red-400 font-extrabold text-xs rounded-xl transition duration-200"
                 >

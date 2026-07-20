@@ -32,19 +32,8 @@ export default function PendingOrdersSection() {
       setRestaurantOrders(restaurant || []);
       setCafeOrders(cafe || []);
     } catch (error: any) {
-      // Dummy data fallback
-      setRoomServiceOrders([
-        { orderId: 1, guestName: 'أحمد محمد', roomNumber: '101', items: 'شاي، قهوة', totalAmount: 45, orderTime: '10:30', status: 'PENDING' },
-        { orderId: 2, guestName: 'فاطمة علي', roomNumber: '205', items: 'عصير برتقال', totalAmount: 30, orderTime: '11:15', status: 'PENDING' }
-      ]);
-      setRestaurantOrders([
-        { orderId: 3, guestName: 'محمد أحمد', roomNumber: '301', items: 'مشاوي، سلاطة', totalAmount: 150, orderTime: '12:00', status: 'PENDING' },
-        { orderId: 4, guestName: 'سارة خالد', roomNumber: '302', items: 'بيتزا، مشروب', totalAmount: 85, orderTime: '12:30', status: 'PENDING' }
-      ]);
-      setCafeOrders([
-        { orderId: 5, guestName: 'عمر يوسف', roomNumber: '401', items: 'قهوة، كيك', totalAmount: 40, orderTime: '13:00', status: 'PENDING' },
-        { orderId: 6, guestName: 'نورة أحمد', roomNumber: '402', items: 'شاي، بسكويت', totalAmount: 25, orderTime: '13:15', status: 'PENDING' }
-      ]);
+      console.error('Failed to load pending orders:', error);
+      setError('فشل تحميل الطلبات المعلقة');
     } finally {
       setIsLoading(false);
     }
