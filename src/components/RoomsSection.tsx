@@ -77,8 +77,11 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       
       setRooms(transformedRooms);
     } catch (error: any) {
-      console.error('Failed to load rooms:', error);
-      setError('فشل تحميل الغرف. الرجاء المحاولة مرة أخرى.');
+      if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        setError('فشل تحميل الغرف. الرجاء المحاولة مرة أخرى.');
+      }
       setRooms([]);
     } finally {
       setIsLoading(false);

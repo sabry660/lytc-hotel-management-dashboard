@@ -58,9 +58,12 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
     try {
       const response = await apiService.getRestaurantMenu(0, 50);
       setMenuItems(response.content || []);
-    } catch (error) {
-      console.error('Failed to load menu:', error);
-      setMenuItems([]);
+    } catch (error: any) {
+      if (error.message && error.message.includes('NetworkError')) {
+        setMenuItems([]);
+      } else {
+        setMenuItems([]);
+      }
     }
   };
 
@@ -199,7 +202,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-amber-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">متوسط وقت التجهيز</span>
-            <div className="text-lg font-bold text-white font-mono">18 دقيقة</div>
+            <div className="text-lg font-bold text-white font-mono">--</div>
           </div>
           <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg mt-2">
             <Clock size={16} />

@@ -31,11 +31,12 @@ export default function ReservationsSection() {
       const response = await apiService.getStays(0, 50);
       setStays(response.content || []);
     } catch (error: any) {
-      console.error('Failed to load stays:', error);
       if (error.message && error.message.includes('Authentication')) {
         setError('فشل المصادقة. يرجى تسجيل الدخول مرة أخرى.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
       } else {
-        setError('فشل الاتصال بالخادم. الرجاء المحاولة مرة أخرى.');
+        setError('فشل تحميل البيانات. الرجاء المحاولة مرة أخرى.');
       }
       setStays([]);
     } finally {
@@ -48,8 +49,12 @@ export default function ReservationsSection() {
       const response = await apiService.getCheckinTodayStays();
       setTodayArrivals(response.content || []);
     } catch (error: any) {
-      console.error('Failed to load today arrivals:', error);
-      setTodayArrivals([]);
+      if (error.message && error.message.includes('NetworkError')) {
+        // Silently handle network error for arrivals
+        setTodayArrivals([]);
+      } else {
+        setTodayArrivals([]);
+      }
     }
   };
 
