@@ -38,9 +38,14 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
     try {
       const response = await apiService.getRestaurantStats();
       setStats(response);
-    } catch (error) {
-      console.error('Failed to load stats:', error);
-      setStats(null);
+    } catch (error: any) {
+      if (error.message && error.message.includes('500')) {
+        setError('خطأ في الخادم عند تحميل الإحصائيات. يرجى التواصل مع فريق الدعم.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        setStats(null);
+      }
     }
   };
 
@@ -48,9 +53,14 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
     try {
       const response = await apiService.getRestaurantPendingOrders();
       setPendingOrders(response || []);
-    } catch (error) {
-      console.error('Failed to load pending orders:', error);
-      setPendingOrders([]);
+    } catch (error: any) {
+      if (error.message && error.message.includes('500')) {
+        setError('خطأ في الخادم عند تحميل الطلبات المعلقة. يرجى التواصل مع فريق الدعم.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        setPendingOrders([]);
+      }
     }
   };
 
@@ -59,8 +69,10 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       const response = await apiService.getRestaurantMenu(0, 50);
       setMenuItems(response.content || []);
     } catch (error: any) {
-      if (error.message && error.message.includes('NetworkError')) {
-        setMenuItems([]);
+      if (error.message && error.message.includes('500')) {
+        setError('خطأ في الخادم عند تحميل القائمة. يرجى التواصل مع فريق الدعم.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
       } else {
         setMenuItems([]);
       }
@@ -77,8 +89,13 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       const transformedOrders = response.content || [];
       setOrders(transformedOrders);
     } catch (error: any) {
-      console.error('Failed to load orders:', error);
-      setOrders([]);
+      if (error.message && error.message.includes('500')) {
+        setError('خطأ في الخادم عند تحميل الطلبات. يرجى التواصل مع فريق الدعم.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        setOrders([]);
+      }
     } finally {
       setIsLoading(false);
     }
