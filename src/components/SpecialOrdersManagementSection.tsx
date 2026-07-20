@@ -20,7 +20,7 @@ export default function SpecialOrdersManagementSection() {
     setError(null);
     try {
       const response = await apiService.getManagerSpecialOrders();
-      setSpecialOrders(response || []);
+      setSpecialOrders(Array.isArray(response) ? response : []);
     } catch (error: any) {
       // Dummy data fallback
       setSpecialOrders([
@@ -119,7 +119,7 @@ export default function SpecialOrdersManagementSection() {
                   <td className="py-3 text-sm text-white">{order.specialOfferId}</td>
                   <td className="py-3 text-sm text-[#E6C587] font-bold flex items-center gap-2">
                     <DollarSign size={14} />
-                    {order.agreedPrice.toLocaleString('ar-SA')} ريال
+                    {order.agreedPrice?.toLocaleString('ar-SA') || 0} ريال
                   </td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
