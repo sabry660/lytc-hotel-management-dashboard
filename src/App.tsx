@@ -29,17 +29,7 @@ import PendingOrdersSection from './components/PendingOrdersSection';
 import SpecialOffersSection from './components/SpecialOffersSection';
 import AnalyticsPage from './analytics/AnalyticsPage';
 
-import { 
-  INITIAL_ROOMS, 
-  INITIAL_GUESTS, 
-  INITIAL_RESERVATIONS, 
-  INITIAL_REQUESTS, 
-  INITIAL_HOUSEKEEPING, 
-  INITIAL_MAINTENANCE, 
-  INITIAL_RESTAURANT, 
-  INITIAL_INVOICES,
-  HOTEL_INFO 
-} from './data';
+import { HOTEL_INFO } from './data';
 import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice } from './types';
 
 export default function App() {
@@ -113,35 +103,35 @@ export default function App() {
   // Core Entity States
   const [rooms, setRooms] = useState<Room[]>(() => {
     const saved = localStorage.getItem('lytc_rooms');
-    return saved ? JSON.parse(saved) : INITIAL_ROOMS;
+    return saved ? JSON.parse(saved) : [];
   });
   const [reservations, setReservations] = useState<Reservation[]>(() => {
     const saved = localStorage.getItem('lytc_reservations');
-    return saved ? JSON.parse(saved) : INITIAL_RESERVATIONS;
+    return saved ? JSON.parse(saved) : [];
   });
   const [guests, setGuests] = useState<Guest[]>(() => {
     const saved = localStorage.getItem('lytc_guests');
-    return saved ? JSON.parse(saved) : INITIAL_GUESTS;
+    return saved ? JSON.parse(saved) : [];
   });
   const [requests, setRequests] = useState<ServiceRequest[]>(() => {
     const saved = localStorage.getItem('lytc_requests');
-    return saved ? JSON.parse(saved) : INITIAL_REQUESTS;
+    return saved ? JSON.parse(saved) : [];
   });
   const [housekeeping, setHousekeeping] = useState<HousekeepingTask[]>(() => {
     const saved = localStorage.getItem('lytc_housekeeping');
-    return saved ? JSON.parse(saved) : INITIAL_HOUSEKEEPING;
+    return saved ? JSON.parse(saved) : [];
   });
   const [maintenance, setMaintenance] = useState<MaintenanceTicket[]>(() => {
     const saved = localStorage.getItem('lytc_maintenance');
-    return saved ? JSON.parse(saved) : INITIAL_MAINTENANCE;
+    return saved ? JSON.parse(saved) : [];
   });
   const [orders, setOrders] = useState<RestaurantOrder[]>(() => {
     const saved = localStorage.getItem('lytc_orders');
-    return saved ? JSON.parse(saved) : INITIAL_RESTAURANT;
+    return saved ? JSON.parse(saved) : [];
   });
   const [invoices, setInvoices] = useState<Invoice[]>(() => {
     const saved = localStorage.getItem('lytc_invoices');
-    return saved ? JSON.parse(saved) : INITIAL_INVOICES;
+    return saved ? JSON.parse(saved) : [];
   });
 
   // UI Notifications dropdown & Global search

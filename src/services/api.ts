@@ -934,6 +934,20 @@ class APIService {
   }
 
   /**
+   * Update Employee
+   * PUT /api/dashboard/manager/employees/{id}
+   */
+  async updateEmployee(id: number, employee: CreateEmployeeRequest): Promise<EmployeeResponse> {
+    return this.authenticatedFetch<EmployeeResponse>(
+      `${this.baseURL}/api/dashboard/manager/employees/${id}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(employee),
+      }
+    );
+  }
+
+  /**
    * Delete Employee
    * DELETE /api/dashboard/manager/employees/{id}
    */

@@ -22,6 +22,14 @@ export default function EmployeesManagementSection() {
   const [job, setJob] = useState('');
   const [department, setDepartment] = useState('');
 
+  // Edit Employee Form States
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editFullName, setEditFullName] = useState('');
+  const [editPhone, setEditPhone] = useState('');
+  const [editJob, setEditJob] = useState('');
+  const [editDepartment, setEditDepartment] = useState('');
+  const [isUpdatingEmployee, setIsUpdatingEmployee] = useState(false);
+
   useEffect(() => {
     loadEmployees();
   }, []);
@@ -87,6 +95,45 @@ export default function EmployeesManagementSection() {
       console.error('Failed to delete employee:', error);
       alert('فشل حذف الموظف. الرجاء المحاولة مرة أخرى.');
     }
+  };
+
+  const handleUpdateEmployee = async () => {
+    if (!selectedEmployee) return;
+    if (!editFullName || !editPhone || !editJob || !editDepartment) {
+      alert('الرجاء تعبئة جميع الحقول المطلوبة');
+      return;
+    }
+
+    setIsUpdatingEmployee(true);
+
+    try {
+      const updateData: CreateEmployeeRequest = {
+        fullName: editFullName,
+        phone: editPhone,
+        job: editJob,
+        department: editDepartment,
+      };
+
+      await apiService.updateEmployee(selectedEmployee.id, updateData);
+      loadEmployees();
+      setIsEditModalOpen(false);
+      setIsDetailsOverlayOpen(false);
+      setSelectedEmployee(null);
+    } catch (error) {
+      console.error('Failed to update employee:', error);
+      alert('فشل تحديث الموظف. الرجاء المحاولة مرة أخرى.');
+    } finally {
+      setIsUpdatingEmployee(false);
+    }
+  };
+
+  const openEditModal = () => {
+    if (!selectedEmployee) return;
+    setEditFullName(selectedEmployee.fullName);
+    setEditPhone(selectedEmployee.phone);
+    setEditJob(selectedEmployee.job);
+    setEditDepartment(selectedEmployee.department);
+    setIsEditModalOpen(true);
   };
 
   const openDetailsOverlay = (employee: EmployeeResponse) => {
@@ -158,49 +205,55 @@ export default function EmployeesManagementSection() {
           <p className="text-xs text-gray-600 mb-4">ابدأ بإضافة موظف جديد</p>
         </div>
       ) : (
-        <div className="overflow-x-auto pb-2">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">المعرف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الاسم الكامل</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الهاتف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الوظيفة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">القسم</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredEmployees.map((employee) => (
-                <tr 
-                  key={employee.id} 
-                  className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors cursor-pointer"
-                  onClick={() => openDetailsOverlay(employee)}
-                >
-                  <td className="py-3 text-sm text-white">{employee.id}</td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
-                        <User size={14} className="text-[#E6C587]" />
-                      </div>
-                      <span className="text-sm text-white font-bold">{employee.fullName}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 flex items-center gap-2">
-                    <Phone size={14} />
-                    {employee.phone}
-                  </td>
-                  <td className="py-3 text-sm text-white flex items-center gap-2">
-                    <Briefcase size={14} />
-                    {employee.job}
-                  </td>
-                  <td className="py-3 text-sm text-white flex items-center gap-2">
-                    <Building size={14} />
-                    {employee.department}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredEmployees.map((employee, index) => (
+            <motion.div
+              key={employee.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              whileHover={{ scale: 1.02, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => openDetailsOverlay(employee)}
+              className="bg-[#0b0b0b] border border-gray-900 rounded-2xl p-5 cursor-pointer hover:border-[#D4AF37]/30 hover:shadow-[0_8px_30px_rgba(212,175,55,0.1)] transition-all duration-300"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-14 h-14 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <User size={24} className="text-[#E6C587]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base font-bold text-white truncate">{employee.fullName}</h3>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                      employee.status === 'ACTIVE' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
+                      'bg-gray-800 text-gray-400 border border-gray-700'
+                    }`}>
+                      {employee.status === 'ACTIVE' ? 'نشط' : employee.status}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Phone size={14} className="text-[#D4AF37] flex-shrink-0" />
+                  <span className="truncate">{employee.phone}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Briefcase size={14} className="text-[#D4AF37] flex-shrink-0" />
+                  <span className="truncate">{employee.job}</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Building size={14} className="text-[#D4AF37] flex-shrink-0" />
+                  <span className="truncate">{employee.department}</span>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-gray-800 flex justify-end">
+                <span className="text-[10px] text-gray-500">المعرف: {employee.id}</span>
+              </div>
+            </motion.div>
+          ))}
         </div>
       )}
 
@@ -342,11 +395,7 @@ export default function EmployeesManagementSection() {
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t border-gray-800">
                 <button
-                  onClick={() => {
-                    setIsDetailsOverlayOpen(false);
-                    // TODO: Open edit modal
-                    alert('ميزة التعديل قيد التطوير');
-                  }}
+                  onClick={openEditModal}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200"
                 >
                   <Edit size={16} />
@@ -358,6 +407,90 @@ export default function EmployeesManagementSection() {
                 >
                   <Trash2 size={16} />
                   <span>حذف</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Employee Modal */}
+      {isEditModalOpen && selectedEmployee && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[#E6C587]">تعديل الموظف</h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="p-2 bg-gray-900 border border-gray-800 rounded-lg">
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">الاسم الكامل</label>
+                <input
+                  type="text"
+                  value={editFullName}
+                  onChange={(e) => setEditFullName(e.target.value)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">رقم الهاتف</label>
+                <input
+                  type="text"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">الوظيفة</label>
+                <input
+                  type="text"
+                  value={editJob}
+                  onChange={(e) => setEditJob(e.target.value)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">القسم</label>
+                <input
+                  type="text"
+                  value={editDepartment}
+                  onChange={(e) => setEditDepartment(e.target.value)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  onClick={handleUpdateEmployee}
+                  disabled={isUpdatingEmployee}
+                  className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isUpdatingEmployee ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" />
+                      جاري الحفظ...
+                    </>
+                  ) : (
+                    <>
+                      <Save size={14} />
+                      حفظ التغييرات
+                    </>
+                  )}
                 </button>
               </div>
             </div>
