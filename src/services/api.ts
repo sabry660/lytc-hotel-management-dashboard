@@ -872,6 +872,19 @@ class APIService {
   }
 
   /**
+   * Delete User
+   * DELETE /api/dashboard/manager/users/{id}
+   */
+  async deleteUser(id: number): Promise<void> {
+    return this.authenticatedFetch<void>(
+      `${this.baseURL}/api/dashboard/manager/users/${id}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  }
+
+  /**
    * Get Employees
    * GET /api/dashboard/manager/employees
    */

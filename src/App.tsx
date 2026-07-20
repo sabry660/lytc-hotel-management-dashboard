@@ -27,7 +27,6 @@ import RestaurantStatsSection from './components/RestaurantStatsSection';
 import CafeStatsSection from './components/CafeStatsSection';
 import PendingOrdersSection from './components/PendingOrdersSection';
 import SpecialOffersSection from './components/SpecialOffersSection';
-import StaffSection from './components/StaffSection';
 import AnalyticsPage from './analytics/AnalyticsPage';
 
 import { 
@@ -38,11 +37,10 @@ import {
   INITIAL_HOUSEKEEPING, 
   INITIAL_MAINTENANCE, 
   INITIAL_RESTAURANT, 
-  INITIAL_INVOICES, 
-  INITIAL_STAFF,
+  INITIAL_INVOICES,
   HOTEL_INFO 
 } from './data';
-import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice, Staff } from './types';
+import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice } from './types';
 
 export default function App() {
   // Authentication & Loading States
@@ -145,10 +143,6 @@ export default function App() {
     const saved = localStorage.getItem('lytc_invoices');
     return saved ? JSON.parse(saved) : INITIAL_INVOICES;
   });
-  const [staff, setStaff] = useState<Staff[]>(() => {
-    const saved = localStorage.getItem('lytc_staff');
-    return saved ? JSON.parse(saved) : INITIAL_STAFF;
-  });
 
   // UI Notifications dropdown & Global search
   const [notifications, setNotifications] = useState([
@@ -190,9 +184,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('lytc_invoices', JSON.stringify(invoices));
   }, [invoices]);
-  useEffect(() => {
-    localStorage.setItem('lytc_staff', JSON.stringify(staff));
-  }, [staff]);
 
   // Handle simulate luxury booting loading screen
   useEffect(() => {
@@ -349,10 +340,6 @@ export default function App() {
     setInvoices(prev => prev.map(inv => inv.id === invId ? { ...inv, status } : inv));
   };
 
-  const handleUpdateStaffStatus = (staffId: string, status: Staff['status']) => {
-    setStaff(prev => prev.map(person => person.id === staffId ? { ...person, status } : person));
-  };
-
   // Global Search logic
   const searchResults = () => {
     if (!globalSearchQuery) return [];
@@ -427,8 +414,6 @@ export default function App() {
         return <PaymentsSection invoices={invoices} onUpdateInvoiceStatus={handleUpdateInvoiceStatus} />;
       case 'التحليلات الذكية':
         return <AnalyticsPage />;
-      case 'الموظفين':
-        return <StaffSection staff={staff} onUpdateStaffStatus={handleUpdateStaffStatus} />;
       case 'إدارة المستخدمين':
         return <UsersManagementSection />;
       case 'إدارة الموظفين':
@@ -526,7 +511,6 @@ export default function App() {
             { label: 'الصيانة', icon: <Wrench size={16} /> },
             { label: 'المدفوعات', icon: <CreditCard size={16} /> },
             { label: 'التحليلات الذكية', icon: <Brain size={16} /> },
-            { label: 'الموظفين', icon: <Award size={16} /> },
             { label: 'العروض والمزايا', icon: <Sparkles size={16} /> },
             { label: 'إدارة المستخدمين', icon: <User size={16} /> },
             { label: 'إدارة الموظفين', icon: <Award size={16} /> },
@@ -701,7 +685,6 @@ export default function App() {
                     { label: 'التسويق', icon: <Globe size={14} /> },
                     { label: 'تحليلات التسويق', icon: <TrendingUp size={14} /> },
                     { label: 'مركز الذكاء الاصطناعي', icon: <Brain size={14} /> },
-                    { label: 'الموظفين', icon: <Award size={14} /> },
                     { label: 'العروض والمزايا', icon: <Sparkles size={14} /> },
                     { label: 'إدارة الموقع', icon: <Globe size={14} /> },
                     { label: 'إدارة السمعة', icon: <Star size={14} /> },

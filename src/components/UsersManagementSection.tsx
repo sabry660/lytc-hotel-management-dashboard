@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
-  User, Plus, Search, XCircle, AlertCircle, Edit, X, Save, Shield, Loader2
+  User, Plus, Search, XCircle, AlertCircle, Edit, X, Save, Shield, Loader2, Trash2
 } from 'lucide-react';
 import { apiService, UserResponse, CreateUserRequest, UpdateUserRequest } from '../services/api';
 
@@ -11,14 +11,22 @@ export default function UsersManagementSection() {
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
+  const [isUpdatingUser, setIsUpdatingUser] = useState(false);
   const [createUserError, setCreateUserError] = useState<string | null>(null);
+  const [updateUserError, setUpdateUserError] = useState<string | null>(null);
 
   // New User Form States
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST'>('STAFF');
+
+  // Edit User Form States
+  const [editUsername, setEditUsername] = useState('');
+  const [editPassword, setEditPassword] = useState('');
+  const [editRole, setEditRole] = useState<'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST'>('STAFF');
 
   useEffect(() => {
     loadUsers();
@@ -96,6 +104,67 @@ export default function UsersManagementSection() {
         alert('فشل تحديث المستخدم. الرجاء المحاولة مرة أخرى.');
       }
     }
+  };
+
+  const handleEditUser = () => {
+    if (!selectedUser) return;
+    setIsUpdatingUser(true);
+    setUpdateUserError(null);
+
+    try {
+      const updateData: UpdateUserRequest = {};
+      if (editUsername && editUsername !== selectedUser.username) {
+        updateData.username = editUsername;
+      }
+      if (editPassword) {
+        updateData.password = editPassword;
+      }
+      if (editRole && editRole !== selectedUser.role) {
+        updateData.role = editRole;
+      }
+
+      handleUpdateUser(selectedUser.id, updateData);
+      setIsEditModalOpen(false);
+      setSelectedUser(null);
+      setEditUsername('');
+      setEditPassword('');
+      setEditRole('STAFF');
+    } catch (error: any) {
+      if (error.message && error.message.includes('Access denied')) {
+        setUpdateUserError('ليس لديك صلاحية لتحديث المستخدمين. يرجى التواصل مع المسؤول.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        setUpdateUserError('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        setUpdateUserError('فشل تحديث المستخدم. الرجاء المحاولة مرة أخرى.');
+      }
+    } finally {
+      setIsUpdatingUser(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId: number) => {
+    if (!confirm('هل أنت متأكد من حذف هذا المستخدم؟')) return;
+
+    try {
+      await apiService.deleteUser(userId);
+      loadUsers();
+    } catch (error: any) {
+      if (error.message && error.message.includes('Access denied')) {
+        alert('ليس لديك صلاحية لحذف المستخدمين. يرجى التواصل مع المسؤول.');
+      } else if (error.message && error.message.includes('NetworkError')) {
+        alert('فشل الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.');
+      } else {
+        alert('فشل حذف المستخدم. الرجاء المحاولة مرة أخرى.');
+      }
+    }
+  };
+
+  const openEditModal = (user: UserResponse) => {
+    setSelectedUser(user);
+    setEditUsername(user.username);
+    setEditPassword('');
+    setEditRole(user.role as 'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST');
+    setIsEditModalOpen(true);
   };
 
   // Filter users based on search
@@ -196,10 +265,18 @@ export default function UsersManagementSection() {
                   <td className="py-3">
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => setSelectedUser(user)}
+                        onClick={() => openEditModal(user)}
                         className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition"
+                        title="تعديل"
                       >
                         <Edit size={14} className="text-gray-400" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-red-500/30 transition"
+                        title="حذف"
+                      >
+                        <Trash2 size={14} className="text-gray-400 hover:text-red-400" />
                       </button>
                     </div>
                   </td>
@@ -285,6 +362,91 @@ export default function UsersManagementSection() {
                     <>
                       <Save size={14} />
                       حفظ المستخدم
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit User Modal */}
+      {isEditModalOpen && selectedUser && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold text-[#E6C587]">تعديل المستخدم</h3>
+              <button onClick={() => setIsEditModalOpen(false)} className="p-2 bg-gray-900 border border-gray-800 rounded-lg">
+                <X size={18} />
+              </button>
+            </div>
+
+            {updateUserError && (
+              <div className="bg-red-950/40 border border-red-500/30 text-red-200 text-sm p-3 rounded-lg mb-4">
+                {updateUserError}
+              </div>
+            )}
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">اسم المستخدم</label>
+                <input
+                  type="text"
+                  value={editUsername}
+                  onChange={(e) => setEditUsername(e.target.value)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">كلمة المرور (اختياري)</label>
+                <input
+                  type="password"
+                  value={editPassword}
+                  onChange={(e) => setEditPassword(e.target.value)}
+                  placeholder="اتركه فارغاً إذا لم تريد تغييره"
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-gray-500 block mb-2">الدور</label>
+                <select
+                  value={editRole}
+                  onChange={(e) => setEditRole(e.target.value as any)}
+                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                >
+                  <option value="ADMIN">مدير</option>
+                  <option value="MANAGER">مشرف</option>
+                  <option value="STAFF">موظف</option>
+                  <option value="GUEST">ضيف</option>
+                </select>
+              </div>
+
+              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+                <button
+                  type="button"
+                  onClick={() => setIsEditModalOpen(false)}
+                  className="px-4 py-2 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition"
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  onClick={handleEditUser}
+                  disabled={isUpdatingUser}
+                  className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isUpdatingUser ? (
+                    <>
+                      <Loader2 size={14} className="animate-spin" />
+                      جاري الحفظ...
+                    </>
+                  ) : (
+                    <>
+                      <Save size={14} />
+                      حفظ التغييرات
                     </>
                   )}
                 </button>
