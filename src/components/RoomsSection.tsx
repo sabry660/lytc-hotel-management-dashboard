@@ -210,12 +210,12 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
     if (editingRoom) {
       // Use API to update the room
       handleUpdateRoom(editingRoom.id, {
-        roomNumber: editingRoom.roomNumber,
+        number: editingRoom.number,
         maxAdults: editingRoom.maxAdults,
         maxKids: editingRoom.maxKids,
         description: editingRoom.description,
         floor: editingRoom.floor,
-        price: editingRoom.price,
+        pricePerNight: editingRoom.pricePerNight,
         status: editingRoom.status,
       });
     }
@@ -599,8 +599,8 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
 
                   {/* Amenities */}
                   <div className="flex flex-wrap gap-2">
-                    {room.amenities.slice(0, 4).map((amenity, idx) => (
-                      <span key={idx} className="px-2 py-1 bg-[#121212] border border-gray-800 rounded-md text-[10px] text-gray-400">
+                    {room.amenities.filter(a => a).slice(0, 4).map((amenity, idx) => (
+                      <span key={`${room.id}-amenity-${idx}`} className="px-2 py-1 bg-[#121212] border border-gray-800 rounded-md text-[10px] text-gray-400">
                         {amenity}
                       </span>
                     ))}
@@ -711,9 +711,9 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               {/* Room Images */}
               <div className="grid grid-cols-2 gap-4">
                 {selectedRoom.images && selectedRoom.images.length > 0 ? (
-                  selectedRoom.images.map((image, idx) => (
+                  selectedRoom.images.filter(url => url).map((image, idx) => (
                     <img
-                      key={idx}
+                      key={`${selectedRoom.id}-image-${idx}`}
                       src={image}
                       alt={`${selectedRoom.name} ${idx + 1}`}
                       className="w-full h-48 object-cover rounded-xl"
@@ -760,8 +760,8 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                 <h4 className="text-sm font-bold text-[#E6C587]">المميزات والخدمات</h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedRoom.amenities && selectedRoom.amenities.length > 0 ? (
-                    selectedRoom.amenities.map((amenity, idx) => (
-                      <span key={idx} className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg text-xs text-gray-300">
+                    selectedRoom.amenities.filter(a => a).map((amenity, idx) => (
+                      <span key={`${selectedRoom.id}-amenity-${idx}`} className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg text-xs text-gray-300">
                         {amenity}
                       </span>
                     ))
@@ -777,7 +777,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <h4 className="text-sm font-bold text-[#E6C587]">سجل الصيانة</h4>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {selectedRoom.maintenanceLog.map((log, idx) => (
-                      <div key={idx} className="p-3 bg-[#121212] border border-gray-800 rounded-xl">
+                      <div key={`${selectedRoom.id}-maintenance-${idx}`} className="p-3 bg-[#121212] border border-gray-800 rounded-xl">
                         <div className="flex justify-between items-start mb-1">
                           <span className="text-xs text-white font-bold">{log.issue}</span>
                           <span className="text-[10px] text-gray-500">{log.date}</span>
@@ -801,7 +801,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <h4 className="text-sm font-bold text-[#E6C587]">سجل التنظيف</h4>
                   <div className="space-y-2 max-h-40 overflow-y-auto">
                     {selectedRoom.cleaningLog.map((log, idx) => (
-                      <div key={idx} className="p-3 bg-[#121212] border border-gray-800 rounded-xl">
+                      <div key={`${selectedRoom.id}-cleaning-${idx}`} className="p-3 bg-[#121212] border border-gray-800 rounded-xl">
                         <div className="flex justify-between items-start mb-1">
                           <span className="text-xs text-white font-bold">{log.staff}</span>
                           <span className="text-[10px] text-gray-500">{log.date}</span>
@@ -983,7 +983,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <label className="text-xs font-bold text-gray-400 block mb-2">المميزات (مفصولة بفواصل)</label>
                   <input
                     type="text"
-                    value={editingRoom.amenities && editingRoom.amenities.length > 0 ? editingRoom.amenities.join(', ') : ''}
+                    value={editingRoom.amenities && editingRoom.amenities.length > 0 ? editingRoom.amenities.filter(a => a).join(', ') : ''}
                     onChange={(e) => setEditingRoom({ ...editingRoom, amenities: e.target.value.split(',').map(a => a.trim()).filter(a => a) })}
                     className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                   />
@@ -994,7 +994,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <label className="text-xs font-bold text-gray-400 block mb-2">روابط الصور (مفصولة بفواصل)</label>
                   <input
                     type="text"
-                    value={editingRoom.images && editingRoom.images.length > 0 ? editingRoom.images.join(', ') : ''}
+                    value={editingRoom.images && editingRoom.images.length > 0 ? editingRoom.images.filter(url => url).join(', ') : ''}
                     onChange={(e) => setEditingRoom({ ...editingRoom, images: e.target.value.split(',').map(url => url.trim()).filter(url => url) })}
                     className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                   />
