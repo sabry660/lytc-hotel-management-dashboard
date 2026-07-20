@@ -124,7 +124,7 @@ export default function EmployeesManagementSection() {
         department: editDepartment,
       };
 
-      console.log('Updating employee:', selectedEmployee.id, updateData);
+      console.log('Updating employee with PUT:', selectedEmployee.id, updateData);
       await apiService.updateEmployee(selectedEmployee.id, updateData);
       console.log('Employee updated successfully');
 

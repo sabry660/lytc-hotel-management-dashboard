@@ -940,14 +940,17 @@ class APIService {
 
   /**
    * Update Employee
-   * PATCH /api/dashboard/manager/employees/{id}
+   * PUT /api/dashboard/manager/employees/{id}
    */
   async updateEmployee(id: number, employee: CreateEmployeeRequest): Promise<EmployeeResponse> {
     return this.authenticatedFetch<EmployeeResponse>(
       `${this.baseURL}/api/dashboard/manager/employees/${id}`,
       {
-        method: 'PATCH',
+        method: 'PUT',
         body: JSON.stringify(employee),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }
     );
   }
