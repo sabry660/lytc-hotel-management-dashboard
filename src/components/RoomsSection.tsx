@@ -720,6 +720,12 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                 <p className="text-sm text-gray-300">{selectedRoom.description || 'لا يوجد وصف متاح'}</p>
               </div>
 
+              {/* Room ID */}
+              <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
+                <h4 className="text-sm font-bold text-[#E6C587] mb-2">معرف الغرفة</h4>
+                <p className="text-sm text-gray-300 font-mono">{selectedRoom.id}</p>
+              </div>
+
               {/* Info Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs font-semibold">
                 <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
