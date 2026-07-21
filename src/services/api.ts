@@ -1019,9 +1019,9 @@ class APIService {
    * Get Special Orders
    * GET /api/dashboard/manager/special-orders
    */
-  async getManagerSpecialOrders(): Promise<SpecialOrderResponse[]> {
-    return this.authenticatedFetch<SpecialOrderResponse[]>(
-      `${this.baseURL}/api/dashboard/manager/special-orders`,
+  async getManagerSpecialOrders(page: number = 0, size: number = 50): Promise<any> {
+    return this.authenticatedFetch<any>(
+      `${this.baseURL}/api/dashboard/manager/special-orders?page=${page}&size=${size}`,
       {
         method: 'GET',
       }

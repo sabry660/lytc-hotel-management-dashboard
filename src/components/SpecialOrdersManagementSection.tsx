@@ -19,7 +19,7 @@ export default function SpecialOrdersManagementSection() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await apiService.getManagerSpecialOrders();
+      const response = await apiService.getManagerSpecialOrders(0, 50);
       // According to Swagger, this returns PageSpecialOrderResponse
       if (Array.isArray(response)) {
         setSpecialOrders(response);
