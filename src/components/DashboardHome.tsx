@@ -102,44 +102,44 @@ export default function DashboardHome({
   }, []);
 
   // Compute live real metrics from API data
-  const totalBookings = stays.length;
-  const occupiedRoomsCount = rooms.filter(r => r.status === 'occupied').length;
-  const availableRoomsCount = rooms.filter(r => r.status === 'available').length;
+  const totalBookings = (stays || []).length;
+  const occupiedRoomsCount = (rooms || []).filter(r => r.status === 'occupied').length;
+  const availableRoomsCount = (rooms || []).filter(r => r.status === 'available').length;
   const totalRevenue = 0; // No invoice API available yet
 
-  const activeGuestsCount = stays.filter(s => s.status === 'CHECKED_IN').length;
+  const activeGuestsCount = (stays || []).filter(s => s.status === 'CHECKED_IN').length;
 
-  const pendingRequestsCount = specialOrders.filter(s => s.status === 'PENDING').length;
+  const pendingRequestsCount = (specialOrders || []).filter(s => s.status === 'PENDING').length;
   const openMaintenanceCount = 0; // No maintenance API available yet
 
   // New Executive Dashboard KPIs
-  const averageRoomRate = rooms.length > 0 
-    ? rooms.reduce((sum, r) => sum + r.pricePerNight, 0) / rooms.length 
+  const averageRoomRate = (rooms || []).length > 0 
+    ? (rooms || []).reduce((sum, r) => sum + r.pricePerNight, 0) / (rooms || []).length 
     : 0;
   
   const revPAR = availableRoomsCount > 0 
-    ? totalRevenue / (rooms.length - occupiedRoomsCount) 
+    ? totalRevenue / ((rooms || []).length - occupiedRoomsCount) 
     : 0;
 
-  const directBookings = stays.filter(s => s.bookingSource === 'DIRECT' || !s.bookingSource).length;
+  const directBookings = (stays || []).filter(s => s.bookingSource === 'DIRECT' || !s.bookingSource).length;
 
-  const platformBookings = stays.filter(s => s.bookingSource && s.bookingSource !== 'DIRECT').length;
+  const platformBookings = (stays || []).filter(s => s.bookingSource && s.bookingSource !== 'DIRECT').length;
 
-  const cancellationRate = stays.length > 0 
-    ? (stays.filter(s => s.status === 'CANCELLED').length / stays.length) * 100 
+  const cancellationRate = (stays || []).length > 0 
+    ? ((stays || []).filter(s => s.status === 'CANCELLED').length / (stays || []).length) * 100 
     : 0;
 
   const pendingPayments = 0; // No invoice API available yet
 
-  const pendingHousekeeping = rooms.filter(r => r.status === 'cleaning').length;
+  const pendingHousekeeping = (rooms || []).filter(r => r.status === 'cleaning').length;
 
-  const vipGuestsArriving = vips.length;
+  const vipGuestsArriving = (vips || []).length;
 
-  const latestReservations = [...stays]
+  const latestReservations = [...(stays || [])]
     .sort((a, b) => b.id - a.id)
     .slice(0, 4);
 
-  const recentRequests = [...specialOrders]
+  const recentRequests = [...(specialOrders || [])]
     .filter(s => s.status !== 'COMPLETED')
     .slice(0, 4);
 
@@ -256,7 +256,7 @@ export default function DashboardHome({
           </div>
           <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400">
             <span className="font-bold text-emerald-400">
-              {rooms.filter(r => r.status === 'cleaning').length} غرف
+              {(rooms || []).filter(r => r.status === 'cleaning').length} غرف
             </span>
             <span className="text-gray-600">تحت التنظيف حالياً</span>
           </div>
