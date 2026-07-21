@@ -21,12 +21,12 @@ export default function UsersManagementSection() {
   // New User Form States
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST'>('STAFF');
+  const [role, setRole] = useState<'MANAGER' | 'STAFF' | 'CHEF' | 'BARISTA' | 'ROOM_SERVICE'>('STAFF');
 
   // Edit User Form States
   const [editUsername, setEditUsername] = useState('');
   const [editPassword, setEditPassword] = useState('');
-  const [editRole, setEditRole] = useState<'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST'>('STAFF');
+  const [editRole, setEditRole] = useState<'MANAGER' | 'STAFF' | 'CHEF' | 'BARISTA' | 'ROOM_SERVICE'>('STAFF');
 
   useEffect(() => {
     loadUsers();
@@ -163,8 +163,19 @@ export default function UsersManagementSection() {
     setSelectedUser(user);
     setEditUsername(user.username);
     setEditPassword('');
-    setEditRole(user.role as 'ADMIN' | 'MANAGER' | 'STAFF' | 'GUEST');
+    setEditRole(user.role as 'MANAGER' | 'STAFF' | 'CHEF' | 'BARISTA' | 'ROOM_SERVICE');
     setIsEditModalOpen(true);
+  };
+
+  const getRoleLabel = (role: string) => {
+    const roleLabels: { [key: string]: string } = {
+      'MANAGER': 'مدير',
+      'STAFF': 'موظف',
+      'CHEF': 'شيف',
+      'BARISTA': 'باريستا',
+      'ROOM_SERVICE': 'خدمة الغرف'
+    };
+    return roleLabels[role] || role;
   };
 
   // Filter users based on search
@@ -254,12 +265,14 @@ export default function UsersManagementSection() {
                   </td>
                   <td className="py-3">
                     <span className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
-                      user.role === 'ADMIN' ? 'bg-purple-950/20 text-purple-400 border border-purple-500/30' :
                       user.role === 'MANAGER' ? 'bg-blue-950/20 text-blue-400 border border-blue-500/30' :
                       user.role === 'STAFF' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
+                      user.role === 'CHEF' ? 'bg-orange-950/20 text-orange-400 border border-orange-500/30' :
+                      user.role === 'BARISTA' ? 'bg-amber-950/20 text-amber-400 border border-amber-500/30' :
+                      user.role === 'ROOM_SERVICE' ? 'bg-purple-950/20 text-purple-400 border border-purple-500/30' :
                       'bg-gray-800 text-gray-400 border border-gray-700'
                     }`}>
-                      {user.role === 'ADMIN' ? 'مدير' : user.role === 'MANAGER' ? 'مشرف' : user.role === 'STAFF' ? 'موظف' : user.role}
+                      {getRoleLabel(user.role)}
                     </span>
                   </td>
                   <td className="py-3">
@@ -325,10 +338,11 @@ export default function UsersManagementSection() {
                   onChange={(e) => setRole(e.target.value as any)}
                   className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                 >
-                  <option value="ADMIN">مدير</option>
-                  <option value="MANAGER">مشرف</option>
+                  <option value="MANAGER">مدير</option>
                   <option value="STAFF">موظف</option>
-                  <option value="GUEST">ضيف</option>
+                  <option value="CHEF">شيف</option>
+                  <option value="BARISTA">باريستا</option>
+                  <option value="ROOM_SERVICE">خدمة الغرف</option>
                 </select>
               </div>
 
@@ -410,10 +424,11 @@ export default function UsersManagementSection() {
                   onChange={(e) => setEditRole(e.target.value as any)}
                   className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                 >
-                  <option value="ADMIN">مدير</option>
-                  <option value="MANAGER">مشرف</option>
+                  <option value="MANAGER">مدير</option>
                   <option value="STAFF">موظف</option>
-                  <option value="GUEST">ضيف</option>
+                  <option value="CHEF">شيف</option>
+                  <option value="BARISTA">باريستا</option>
+                  <option value="ROOM_SERVICE">خدمة الغرف</option>
                 </select>
               </div>
 

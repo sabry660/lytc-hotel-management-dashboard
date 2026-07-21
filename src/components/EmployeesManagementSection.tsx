@@ -257,9 +257,10 @@ export default function EmployeesManagementSection() {
                   <div className="flex items-center gap-2 mt-1">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       employee.status === 'ACTIVE' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
+                      employee.status === 'INACTIVE' ? 'bg-red-950/20 text-red-400 border border-red-500/30' :
                       'bg-gray-800 text-gray-400 border border-gray-700'
                     }`}>
-                      {employee.status === 'ACTIVE' ? 'نشط' : employee.status}
+                      {employee.status === 'ACTIVE' ? 'نشط' : employee.status === 'INACTIVE' ? 'غير نشط' : employee.status}
                     </span>
                   </div>
                 </div>
@@ -283,9 +284,10 @@ export default function EmployeesManagementSection() {
               <div className="mt-4 pt-4 border-t border-gray-800 flex justify-end">
                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                   employee.status === 'ACTIVE' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
+                  employee.status === 'INACTIVE' ? 'bg-red-950/20 text-red-400 border border-red-500/30' :
                   'bg-gray-800 text-gray-400 border border-gray-700'
                 }`}>
-                  {employee.status === 'ACTIVE' ? 'نشط' : employee.status}
+                  {employee.status === 'ACTIVE' ? 'نشط' : employee.status === 'INACTIVE' ? 'غير نشط' : employee.status}
                 </span>
               </div>
             </motion.div>

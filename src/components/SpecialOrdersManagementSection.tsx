@@ -20,16 +20,18 @@ export default function SpecialOrdersManagementSection() {
     setError(null);
     try {
       const response = await apiService.getManagerSpecialOrders();
-      setSpecialOrders(Array.isArray(response) ? response : []);
+      // According to Swagger, this returns PageSpecialOrderResponse
+      if (Array.isArray(response)) {
+        setSpecialOrders(response);
+      } else if (response && typeof response === 'object' && 'content' in response) {
+        setSpecialOrders((response as any).content || []);
+      } else {
+        setSpecialOrders([]);
+      }
     } catch (error: any) {
-      // Dummy data fallback
-      setSpecialOrders([
-        { id: 1, stayId: 101, specialOfferId: 1, agreedPrice: 500, status: 'PENDING' },
-        { id: 2, stayId: 205, specialOfferId: 2, agreedPrice: 1200, status: 'CONFIRMED' },
-        { id: 3, stayId: 302, specialOfferId: 3, agreedPrice: 300, status: 'PENDING' },
-        { id: 4, stayId: 401, specialOfferId: 4, agreedPrice: 800, status: 'CONFIRMED' },
-        { id: 5, stayId: 505, specialOfferId: 5, agreedPrice: 200, status: 'PENDING' }
-      ]);
+      console.error('Failed to load special orders:', error);
+      setError('فشل تحميل الطلبات الخاصة. الرجاء المحاولة مرة أخرى.');
+      setSpecialOrders([]);
     } finally {
       setIsLoading(false);
     }

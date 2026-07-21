@@ -21,7 +21,6 @@ import RatingsSection from './components/RatingsSection';
 import SpecialOrdersManagementSection from './components/SpecialOrdersManagementSection';
 import RestaurantStatsSection from './components/RestaurantStatsSection';
 import CafeStatsSection from './components/CafeStatsSection';
-import PendingOrdersSection from './components/PendingOrdersSection';
 import SpecialOffersSection from './components/SpecialOffersSection';
 import AnalyticsPage from './analytics/AnalyticsPage';
 
@@ -61,7 +60,7 @@ export default function App() {
   }, []);
 
   // Active view tab state with # routing
-  const [activeTab, setActiveTab] = useState<'لوحة التحكم' | 'الحجوزات' | 'الغرف' | 'النزلاء' | 'المطعم' | 'المدفوعات' | 'إدارة المستخدمين' | 'إدارة الموظفين' | 'النزلاء VIP' | 'التقييمات' | 'الطلبات الخاصة' | 'إحصائيات المطعم' | 'إحصائيات المقهى' | 'الطلبات المعلقة' | 'العروض والمزايا' | 'الموظفين' | 'إدارة الضيوف' | 'التحليلات الذكية'>(() => {
+  const [activeTab, setActiveTab] = useState<'لوحة التحكم' | 'الحجوزات' | 'الغرف' | 'النزلاء' | 'المطعم' | 'المدفوعات' | 'إدارة المستخدمين' | 'إدارة الموظفين' | 'النزلاء VIP' | 'التقييمات' | 'الطلبات الخاصة' | 'إحصائيات المطعم' | 'إحصائيات المقهى' | 'العروض والمزايا' | 'الموظفين' | 'إدارة الضيوف' | 'التحليلات الذكية'>(() => {
     const hash = window.location.hash.replace('#', '');
     if (hash) {
       try {
@@ -319,8 +318,6 @@ export default function App() {
         return <RestaurantStatsSection />;
       case 'إحصائيات المقهى':
         return <CafeStatsSection />;
-      case 'الطلبات المعلقة':
-        return <PendingOrdersSection />;
       case 'العروض والمزايا':
         return <SpecialOffersSection />;
     }
@@ -401,8 +398,7 @@ export default function App() {
             { label: 'التقييمات', icon: <Star size={16} /> },
             { label: 'الطلبات الخاصة', icon: <ShoppingBag size={16} /> },
             { label: 'إحصائيات المطعم', icon: <BarChart3 size={16} /> },
-            { label: 'إحصائيات المقهى', icon: <BarChart3 size={16} /> },
-            { label: 'الطلبات المعلقة', icon: <Clock size={16} /> }
+            { label: 'إحصائيات المقهى', icon: <BarChart3 size={16} /> }
           ].map((item) => (
             <button
               key={item.label}
