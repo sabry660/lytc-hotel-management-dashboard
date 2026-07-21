@@ -548,7 +548,7 @@ export default function DashboardHome({
                         </span>
                       </td>
                       <td className="py-3.5 text-left font-mono font-bold text-[#E6C587]">
-                        {res.amount.toLocaleString('ar-SA')} ريال
+                        {res.amount ? res.amount.toLocaleString('ar-SA') : '0'} ريال
                       </td>
                     </tr>
                   ))}
