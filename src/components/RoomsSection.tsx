@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   BedDouble, Sparkles, AlertTriangle, Hammer, CheckCircle2, User, Filter, Layers, 
   DollarSign, Grid3X3, List, Search, ArrowUpDown, ChevronLeft, Eye, Edit, 
-  Calendar, MapPin, Users, Clock, MoreVertical, X, Save, Building2, Image as ImageIcon, Star, Loader2, Plus
+  Calendar, MapPin, Users, Clock, MoreVertical, X, Save, Building2, Image as ImageIcon, Star, Loader2, Plus, Trash2
 } from 'lucide-react';
 import { Room } from '../types';
 import { apiService, RoomResponse } from '../services/api';
@@ -198,33 +198,16 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       const room = rooms.find(r => r.id === roomId);
       if (!room) return;
 
-      // If trying to book, check current status first
-      if (status === 'available') {
-        if (room.status === 'available') {
-          alert('الغرفة متاحة بالفعل');
-          return;
-        }
-        
-        const confirmBooking = confirm(
-          `حالة الغرفة الحالية: ${getStatusLabel(room.status)}\n\nهل تريد تغيير الحالة إلى "متاحة"؟`
-        );
-        
-        if (!confirmBooking) {
-          return;
-        }
-      }
-
       // Map frontend status to backend status
-      const backendStatus = status.toUpperCase() as 'AVAILABLE' | 'OCCUPIED' | 'CLEANING' | 'MAINTENANCE' | 'OUT_OF_SERVICE';
+      const backendStatus = status.toUpperCase() as 'AVAILABLE' | 'OCCUPIED' | 'CLEANING' | 'MAINTENANCE';
       
-      console.log('Updating room status:', roomId, 'to:', backendStatus);
       await apiService.patchRoom(parseInt(roomId), { status: backendStatus });
       
-      // Reload rooms to get updated state from backend
-      await loadRooms();
+      // Reload rooms to get updated data from backend
+      loadRooms();
       
-      // Show success message
-      alert(`تم تغيير حالة الغرفة بنجاح إلى "${getStatusLabel(status)}"`);
+      // Update local state immediately for better UX
+      setRooms(prev => prev.map(r => r.id === roomId ? { ...r, status } : r));
     } catch (error) {
       console.error('Failed to update room status:', error);
       alert('فشل تحديث حالة الغرفة. الرجاء المحاولة مرة أخرى.');
@@ -266,22 +249,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
         <div>
           <h1 className="text-2xl font-black text-[#E6C587]">إدارة وتتبع وحدات الفندق</h1>
           <p className="text-gray-500 text-xs mt-1">تتبع حالة كافة الغرف والأجنحة الفاخرة، والتحكم في مهام الصيانة والتنظيف المباشر.</p>
-        </div>
-        
-        {/* Quick Stats Ticker */}
-        <div className="flex gap-4 text-xs font-semibold">
-          <div className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg">
-            <span className="text-gray-500 ml-1.5">متاحة:</span>
-            <span className="text-emerald-400 font-mono">{rooms.filter(r => r.status === 'available').length}</span>
-          </div>
-          <div className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg">
-            <span className="text-gray-500 ml-1.5">مشغولة:</span>
-            <span className="text-blue-400 font-mono">{rooms.filter(r => r.status === 'occupied').length}</span>
-          </div>
-          <div className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg">
-            <span className="text-gray-500 ml-1.5">تنظيف:</span>
-            <span className="text-amber-500 font-mono">{rooms.filter(r => r.status === 'cleaning').length}</span>
-          </div>
         </div>
         
         {/* Add Room Button */}
@@ -507,14 +474,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                     <div className="flex items-center gap-2 text-gray-400">
                       <DollarSign size={14} className="text-[#D4AF37]" />
                       <span>{room.pricePerNight.toLocaleString('ar-SA')} ريال</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Clock size={14} className="text-[#D4AF37]" />
-                      <span>{room.lastUpdated}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Layers size={14} className="text-[#D4AF37]" />
-                      <span>إشغال {room.occupancyRate}%</span>
                     </div>
                   </div>
 
@@ -762,7 +721,11 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               </div>
 
               {/* Info Grid */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-semibold">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs font-semibold">
+                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
+                  <span className="text-gray-500 block">رقم الغرفة</span>
+                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.number}</span>
+                </div>
                 <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
                   <span className="text-gray-500 block">الطابق</span>
                   <span className="text-white text-sm font-bold block mt-1">{selectedRoom.floor || '-'}</span>
@@ -772,12 +735,16 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <span className="text-[#E6C587] text-sm font-bold block mt-1">{selectedRoom.pricePerNight ? selectedRoom.pricePerNight.toLocaleString('ar-SA') : '-'} ريال</span>
                 </div>
                 <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">السعة</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.capacity ? `${selectedRoom.capacity} نزلاء` : '-'}</span>
+                  <span className="text-gray-500 block">السعة (بالغين)</span>
+                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.maxAdults !== undefined ? selectedRoom.maxAdults : '-'}</span>
                 </div>
                 <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">معدل الإشغال</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.occupancyRate !== undefined ? `${selectedRoom.occupancyRate}%` : '-'}</span>
+                  <span className="text-gray-500 block">السعة (أطفال)</span>
+                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.maxKids !== undefined ? selectedRoom.maxKids : '-'}</span>
+                </div>
+                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
+                  <span className="text-gray-500 block">الحالة</span>
+                  <span className={`text-sm font-bold block mt-1 ${getStatusColor(selectedRoom.status).split(' ')[0]}`}>{getStatusLabel(selectedRoom.status)}</span>
                 </div>
               </div>
 
@@ -857,8 +824,8 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               {/* Status Modification */}
               <div className="space-y-3 pt-4 border-t border-gray-800">
                 <h4 className="text-sm font-bold text-gray-400">تغيير الحالة</h4>
-                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                  {(['available', 'occupied', 'cleaning', 'maintenance', 'out_of_service'] as Room['status'][]).map((status) => (
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {(['available', 'occupied', 'cleaning', 'maintenance'] as Room['status'][]).map((status) => (
                     <button
                       key={status}
                       onClick={() => {

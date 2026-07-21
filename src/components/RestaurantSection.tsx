@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { RestaurantOrder } from '../types';
 import CreateOrderModal from './CreateOrderModal';
+import CreateMenuItemModal from './CreateMenuItemModal';
 import { apiService } from '../services/api';
 
 interface RestaurantSectionProps {
@@ -20,6 +21,7 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
   const [filter, setFilter] = useState<'all' | RestaurantOrder['status']>('all');
   const [selectedOrder, setSelectedOrder] = useState<RestaurantOrder | null>(null);
   const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false);
+  const [isCreateMenuItemModalOpen, setIsCreateMenuItemModalOpen] = useState(false);
   const [orders, setOrders] = useState<RestaurantOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -105,6 +107,10 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
     loadOrders();
   };
 
+  const handleCreateMenuItemSuccess = () => {
+    loadMenu();
+  };
+
   const handleUpdateOrderStatus = async (orderId: string, status: string) => {
     try {
       await apiService.updateRestaurantOrderStatus(parseInt(orderId), status);
@@ -150,15 +156,17 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-900 pb-5">
         <div>
-          <h1 className="text-2xl font-black text-[#E6C587]">المطعم الفاخر والمطبخ الملكي</h1>
+          <h1 className="text-2xl font-black text-[#E6C587]">الطلبات</h1>
           <p className="text-gray-500 text-xs mt-1">تتبع طلبات الطعام المباشرة لجميع الطاولات والأجنحة، ومراقبة حالة المطبخ والمبيعات الإجمالية.</p>
         </div>
-        <button 
-          onClick={() => setIsCreateOrderModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
-          <Plus size={15} />
-          <span>طلب جديد</span>
-        </button>
+        {viewMode === 'menu' && (
+          <button 
+            onClick={() => setIsCreateMenuItemModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
+            <Plus size={15} />
+            <span>Create Item</span>
+          </button>
+        )}
       </div>
 
       {/* View Mode Toggles */}
@@ -305,32 +313,20 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
               </div>
 
               <div className="flex gap-2">
-                {order.status === 'ordered' && (
-                  <button
-                    onClick={() => onUpdateOrderStatus && onUpdateOrderStatus(order.id, 'preparing')}
-                    className="px-2.5 py-1 bg-amber-950/40 text-amber-500 border border-amber-500/20 hover:bg-amber-900/30 rounded-lg text-[10px] font-bold flex items-center gap-1"
-                  >
-                    <Play size={11} />
-                    <span>تجهيز</span>
-                  </button>
-                )}
-
-                {order.status === 'preparing' && (
-                  <button
-                    onClick={() => onUpdateOrderStatus && onUpdateOrderStatus(order.id, 'delivered')}
-                    className="px-2.5 py-1 bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-900/30 rounded-lg text-[10px] font-bold flex items-center gap-1"
-                  >
-                    <Check size={11} />
-                    <span>توصيل</span>
-                  </button>
-                )}
-
-                {order.status === 'delivered' && (
-                  <span className="text-emerald-400 font-bold flex items-center gap-1 text-[11px]">
-                    <CheckCircle2 size={12} />
-                    <span>بألف عافية</span>
-                  </span>
-                )}
+                <select
+                  value={order.status}
+                  onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                  className={`px-2 py-1 rounded-lg text-[10px] font-bold border ${
+                    order.status === 'PENDING' ? 'bg-amber-950/40 text-amber-500 border-amber-500/20' :
+                    order.status === 'COMPLETED' ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/20' :
+                    order.status === 'CANCELLED' ? 'bg-red-950/40 text-red-400 border-red-500/20' :
+                    'bg-blue-950/40 text-blue-400 border-blue-500/20'
+                  }`}
+                >
+                  <option value="PENDING">قيد الانتظار</option>
+                  <option value="COMPLETED">مكتمل</option>
+                  <option value="CANCELLED">ملغي</option>
+                </select>
               </div>
             </div>
           </div>
@@ -360,14 +356,32 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
       {viewMode === 'menu' && (
         <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6">
           <h3 className="text-lg font-bold text-[#E6C587] mb-4">قائمة الطعام</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {['مشاوي ملكية', 'أطباق بحرية فاخرة', 'حلويات شرقية', 'مشروبات باردة', 'قهوة مختصة', 'مقبلات متنوعة'].map((item, idx) => (
-              <div key={idx} className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
-                <div className="text-sm font-bold text-white">{item}</div>
-                <div className="text-xs text-gray-500 mt-1">متوفر</div>
-              </div>
-            ))}
-          </div>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 size={24} className="text-[#D4AF37] animate-spin" />
+            </div>
+          ) : menuItems.length === 0 ? (
+            <div className="text-center py-16">
+              <ChefHat size={48} className="text-gray-700 mx-auto mb-4" />
+              <h3 className="text-sm font-bold text-gray-400 mb-2">لا توجد عناصر في القائمة</h3>
+              <p className="text-xs text-gray-600 mb-4">ابدأ بإضافة عنصر جديد</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {menuItems.map((item) => (
+                <div key={item.id} className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
+                  <div className="text-sm font-bold text-white">{item.name}</div>
+                  <div className="text-xs text-gray-500 mt-1">{item.description || 'بدون وصف'}</div>
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="text-xs text-[#E6C587] font-mono">{item.price} ريال</div>
+                    <div className={`text-xs ${item.available ? 'text-emerald-400' : 'text-red-400'}`}>
+                      {item.available ? 'متوفر' : 'غير متوفر'}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -543,6 +557,15 @@ export default function RestaurantSection({ orders: initialOrders = [], onUpdate
           handleCreateOrderSuccess();
         }}
         roomNumber="101" // This should come from props or context
+      />
+
+      {/* Create Menu Item Modal */}
+      <CreateMenuItemModal
+        isOpen={isCreateMenuItemModalOpen}
+        onClose={() => setIsCreateMenuItemModalOpen(false)}
+        onSuccess={() => {
+          handleCreateMenuItemSuccess();
+        }}
       />
     </div>
   );
