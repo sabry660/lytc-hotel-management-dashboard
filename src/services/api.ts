@@ -750,6 +750,27 @@ class APIService {
   }
 
   /**
+   * Get Stays Checking Out Today
+   * GET /api/dashboard/front-desk/stays/checkout-today
+   */
+  async getStaysCheckOutToday(
+    page: number = 0,
+    size: number = 50
+  ): Promise<PageStayDetailsResponse> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      size: size.toString(),
+    });
+
+    return this.authenticatedFetch<PageStayDetailsResponse>(
+      `${this.baseURL}/api/dashboard/front-desk/stays/checkout-today?${params.toString()}`,
+      {
+        method: 'GET',
+      }
+    );
+  }
+
+  /**
    * Create Stay
    * POST /api/dashboard/front-desk/stays
    */

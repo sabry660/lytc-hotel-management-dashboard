@@ -376,7 +376,7 @@ export default function App() {
       case 'الطلبات':
         return <OrdersSection />;
       case 'المدفوعات':
-        return <PaymentsSection invoices={invoices} onUpdateInvoiceStatus={handleUpdateInvoiceStatus} />;
+        return <PaymentsSection />;
       case 'التحليلات الذكية':
         return <AnalyticsPage />;
       case 'إدارة المستخدمين':

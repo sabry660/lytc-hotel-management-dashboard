@@ -1,22 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
   CreditCard, DollarSign, ArrowUpRight, ArrowDownRight, Printer, AlertCircle, RefreshCw, FileText,
   TrendingUp, BarChart3, Filter, Search, Plus, X, Save, Download, Percent, 
   Calendar, CheckCircle2, Clock, Wallet, Building2, CreditCard as CardIcon, 
-  Receipt, Calculator, PieChart
+  Receipt, Calculator, PieChart, Loader2
 } from 'lucide-react';
 import { Invoice } from '../types';
+import { apiService } from '../services/api';
 
 interface PaymentsSectionProps {
-  invoices: Invoice[];
-  onUpdateInvoiceStatus: (invId: string, status: Invoice['status']) => void;
+  invoices?: Invoice[];
+  onUpdateInvoiceStatus?: (invId: string, status: Invoice['status']) => void;
 }
 
-export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: PaymentsSectionProps) {
+export default function PaymentsSection({ invoices: initialInvoices, onUpdateInvoiceStatus }: PaymentsSectionProps) {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [viewMode, setViewMode] = useState<'invoices' | 'taxes' | 'gateways' | 'installments'>('invoices');
   const [filter, setFilter] = useState<'all' | Invoice['status']>('all');
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    loadCheckOutStays();
+  }, []);
+
+  const loadCheckOutStays = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await apiService.getStaysCheckOutToday(0, 50);
+      
+      // Transform stays to invoice format
+      const transformedInvoices = (response.content || []).map((stay: any) => ({
+        id: stay.stayId.toString(),
+        guestName: stay.guestName || '-',
+        roomNumber: stay.roomNumber || '-',
+        amount: stay.totalCharge || 0,
+        status: 'unpaid' as Invoice['status'],
+        date: stay.expectedCheckOutDate || new Date().toISOString().split('T')[0],
+        method: 'بطاقة ائتمان',
+        tax: 0,
+        vat: 0,
+      }));
+      
+      setInvoices(transformedInvoices);
+    } catch (error: any) {
+      console.error('Failed to load checkout stays:', error);
+      setError('فشل تحميل بيانات المغادرين اليوم');
+      setInvoices([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const filteredInvoices = filter === 'all' ? (invoices || []) : (invoices || []).filter(inv => inv.status === filter);
 
@@ -124,48 +161,63 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
           </h2>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-right text-sm">
-              <thead>
-                <tr className="border-b border-gray-800 text-gray-500 pb-2">
-                  <th className="py-3 font-bold">رقم الفاتورة</th>
-                  <th className="py-3 font-bold">اسم النزيل</th>
-                  <th className="py-3 font-bold">رقم الجناح</th>
-                  <th className="py-3 font-bold">طريقة السداد</th>
-                  <th className="py-3 font-bold">الحالة</th>
-                  <th className="py-3 font-bold text-left">القيمة الإجمالية</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-800/40">
-                {invoices.map((inv) => (
-                  <tr
-                    key={inv.id}
-                    onClick={() => setSelectedInvoice(inv)}
-                    className={`hover:bg-white/[0.01] transition duration-150 cursor-pointer ${
-                      selectedInvoice?.id === inv.id ? 'bg-white/[0.02]' : ''
-                    }`}
-                  >
-                    <td className="py-4 font-mono font-bold text-[#D4AF37]">{inv.id}</td>
-                    <td className="py-4 font-bold text-white">{inv.guestName}</td>
-                    <td className="py-4 font-mono text-gray-400">{inv.roomNumber}</td>
-                    <td className="py-4 text-xs text-gray-300">{inv.method}</td>
-                    <td className="py-4">
-                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
-                        inv.status === 'paid' ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/10' :
-                        inv.status === 'unpaid' ? 'bg-yellow-950/40 text-yellow-500 border border-yellow-500/10' :
-                        'bg-red-950/40 text-red-400 border border-red-500/10'
-                      }`}>
-                        {inv.status === 'paid' ? 'مسددة بالكامل' :
-                         inv.status === 'unpaid' ? 'غير مسددة' :
-                         'مرتجعة'}
-                      </span>
-                    </td>
-                    <td className="py-4 text-left font-mono font-black text-white">
-                      {inv.amount.toLocaleString('ar-SA')} ريال
-                    </td>
+            {isLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="text-[#D4AF37] animate-spin" size={32} />
+              </div>
+            ) : error ? (
+              <div className="flex items-center justify-center py-12 text-red-400">
+                <AlertCircle size={32} className="ml-2" />
+                <span>{error}</span>
+              </div>
+            ) : invoices.length === 0 ? (
+              <div className="flex items-center justify-center py-12 text-gray-500">
+                <span>لا توجد فواتير للمغادرين اليوم</span>
+              </div>
+            ) : (
+              <table className="w-full text-right text-sm">
+                <thead>
+                  <tr className="border-b border-gray-800 text-gray-500 pb-2">
+                    <th className="py-3 font-bold">رقم الفاتورة</th>
+                    <th className="py-3 font-bold">اسم النزيل</th>
+                    <th className="py-3 font-bold">رقم الجناح</th>
+                    <th className="py-3 font-bold">طريقة السداد</th>
+                    <th className="py-3 font-bold">الحالة</th>
+                    <th className="py-3 font-bold text-left">القيمة الإجمالية</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-800/40">
+                  {invoices.map((inv) => (
+                    <tr
+                      key={inv.id}
+                      onClick={() => setSelectedInvoice(inv)}
+                      className={`hover:bg-white/[0.01] transition duration-150 cursor-pointer ${
+                        selectedInvoice?.id === inv.id ? 'bg-white/[0.02]' : ''
+                      }`}
+                    >
+                      <td className="py-4 font-mono font-bold text-[#D4AF37]">{inv.id}</td>
+                      <td className="py-4 font-bold text-white">{inv.guestName}</td>
+                      <td className="py-4 font-mono text-gray-400">{inv.roomNumber}</td>
+                      <td className="py-4 text-xs text-gray-300">{inv.method}</td>
+                      <td className="py-4">
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                          inv.status === 'paid' ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/10' :
+                          inv.status === 'unpaid' ? 'bg-yellow-950/40 text-yellow-500 border border-yellow-500/10' :
+                          'bg-red-950/40 text-red-400 border border-red-500/10'
+                        }`}>
+                          {inv.status === 'paid' ? 'مسددة بالكامل' :
+                           inv.status === 'unpaid' ? 'غير مسددة' :
+                           'مرتجعة'}
+                        </span>
+                      </td>
+                      <td className="py-4 text-left font-mono font-black text-white">
+                        {inv.amount.toLocaleString('ar-SA')} ريال
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
 
@@ -337,22 +389,8 @@ export default function PaymentsSection({ invoices, onUpdateInvoiceStatus }: Pay
       {viewMode === 'installments' && (
         <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6">
           <h3 className="text-lg font-bold text-[#E6C587] mb-4">خطط الأقساط</h3>
-          <div className="space-y-3">
-            {[
-              { guest: 'الشيخ عبد العزيز', amount: 15000, remaining: 5000, installments: 3 },
-              { guest: 'السيدة فاطمة', amount: 25000, remaining: 10000, installments: 5 }
-            ].map((plan, idx) => (
-              <div key={idx} className="p-4 bg-[#121212] border border-gray-800 rounded-xl flex justify-between items-center">
-                <div>
-                  <div className="text-sm font-bold text-white">{plan.guest}</div>
-                  <div className="text-xs text-gray-500">المبلغ الكلي: {plan.amount.toLocaleString('ar-SA')} ريال</div>
-                </div>
-                <div className="text-left">
-                  <div className="text-sm font-bold text-amber-400">{plan.remaining.toLocaleString('ar-SA')} ريال</div>
-                  <div className="text-xs text-gray-500">{plan.installments} أقساط متبقية</div>
-                </div>
-              </div>
-            ))}
+          <div className="text-center py-12 text-gray-500">
+            <span>لا توجد خطط أقساط نشطة حالياً</span>
           </div>
         </div>
       )}
