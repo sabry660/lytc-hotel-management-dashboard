@@ -88,7 +88,7 @@ export default function DashboardHome({
           pricePerNight: room.price || 0,
           images: room.images || [],
           name: `جناح ${room.roomNumber}`,
-          lastUpdated: new Date().toLocaleDateString('ar-SA'),
+          lastUpdated: new Date().toLocaleDateString('ar-SA', { calendar: 'gregory' }),
           occupancyRate: room.status === 'OCCUPIED' ? 100 : 0
         }));
         setRooms(transformedRooms);
@@ -204,7 +204,7 @@ export default function DashboardHome({
             <div className="text-2xl font-black font-mono text-[#E6C587] tracking-widest mt-1">
               {time}
             </div>
-            <div className="text-[10px] text-gray-500 mt-0.5">{new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</div>
+            <div className="text-[10px] text-gray-500 mt-0.5">{new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'gregory' })}</div>
           </div>
         </div>
       </div>

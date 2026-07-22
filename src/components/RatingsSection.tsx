@@ -133,11 +133,11 @@ export default function RatingsSection() {
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <Calendar size={14} className="text-[#D4AF37]" />
-                  <span>الدخول: {stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA') : '-'}</span>
+                  <span>الدخول: {stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-gray-400">
                   <Calendar size={14} className="text-[#D4AF37]" />
-                  <span>المغادرة: {stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA') : '-'}</span>
+                  <span>المغادرة: {stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</span>
                 </div>
                 {stay.notes && (
                   <div className="pt-2 border-t border-gray-800">

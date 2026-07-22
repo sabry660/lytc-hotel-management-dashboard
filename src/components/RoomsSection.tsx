@@ -161,7 +161,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       case 'occupied': return 'مشغولة';
       case 'cleaning': return 'جاري التنظيف';
       case 'maintenance': return 'صيانة';
-      case 'out_of_service': return 'خارج الخدمة';
     }
   };
 
@@ -171,7 +170,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       case 'occupied': return 'bg-blue-950/40 text-blue-400 border-blue-500/20';
       case 'cleaning': return 'bg-amber-950/40 text-amber-500 border-amber-500/20';
       case 'maintenance': return 'bg-red-950/40 text-red-400 border-red-500/20';
-      case 'out_of_service': return 'bg-gray-900 text-gray-400 border-gray-800';
     }
   };
 
@@ -181,7 +179,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
       case 'occupied': return <User className="w-3.5 h-3.5" />;
       case 'cleaning': return <Sparkles className="w-3.5 h-3.5" />;
       case 'maintenance': return <Hammer className="w-3.5 h-3.5" />;
-      case 'out_of_service': return <AlertTriangle className="w-3.5 h-3.5" />;
     }
   };
 
@@ -346,22 +343,6 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
         </div>
 
         <div className="flex items-center gap-2">
-          {/* View Toggle */}
-          <div className="flex bg-[#121212] border border-gray-800 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('grid')}
-              className={`p-2 rounded-md transition ${viewMode === 'grid' ? 'bg-[#D4AF37] text-black' : 'text-gray-400 hover:text-white'}`}
-            >
-              <Grid3X3 size={16} />
-            </button>
-            <button
-              onClick={() => setViewMode('list')}
-              className={`p-2 rounded-md transition ${viewMode === 'list' ? 'bg-[#D4AF37] text-black' : 'text-gray-400 hover:text-white'}`}
-            >
-              <List size={16} />
-            </button>
-          </div>
-
           {/* Bulk Actions */}
           {selectedRooms.size > 0 && (
             <div className="flex items-center gap-2">

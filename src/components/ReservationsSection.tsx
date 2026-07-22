@@ -12,7 +12,7 @@ export default function ReservationsSection() {
   const [todayArrivals, setTodayArrivals] = useState<StayDetailsResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'all' | 'arrivals' | 'departures' | 'upcoming'>('all');
+  const [activeTab, setActiveTab] = useState<'all' | 'active' | 'closed' | 'booked'>('all');
   const [viewMode, setViewMode] = useState<'list' | 'calendar' | 'timeline'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +61,7 @@ export default function ReservationsSection() {
   // New Reservation Form States
   const [guestName, setGuestName] = useState('');
   const [selectedRoomNumber, setSelectedRoomNumber] = useState('');
+  const [availableRooms, setAvailableRooms] = useState<any[]>([]);
   const [checkIn, setCheckIn] = useState('2026-07-19');
   const [checkOut, setCheckOut] = useState('2026-07-26');
   const [adults, setAdults] = useState(2);
@@ -75,11 +76,27 @@ export default function ReservationsSection() {
 
     if (!matchesSearch) return false;
     if (activeTab === 'all') return true;
-    if (activeTab === 'arrivals') return todayArrivals.some(a => a.stayId === stay.stayId);
-    if (activeTab === 'departures') return stay.status === 'CHECKED_IN';
-    if (activeTab === 'upcoming') return stay.status === 'RESERVED';
+    if (activeTab === 'active') return stay.status === 'CHECKED_IN';
+    if (activeTab === 'closed') return stay.status === 'CHECKED_OUT';
+    if (activeTab === 'booked') return stay.status === 'RESERVED';
     return true;
   });
+
+  const loadAvailableRooms = async () => {
+    try {
+      const response = await apiService.getRooms();
+      const available = response.content.filter((room: any) => room.status === 'available');
+      setAvailableRooms(available);
+    } catch (error) {
+      console.error('Failed to load available rooms:', error);
+      setAvailableRooms([]);
+    }
+  };
+
+  const handleOpenModal = () => {
+    loadAvailableRooms();
+    setIsModalOpen(true);
+  };
 
   const handleCreateReservation = async () => {
     if (!guestName || !selectedRoomNumber) {
@@ -205,28 +222,28 @@ export default function ReservationsSection() {
             كافة الحجوزات ({stays.length})
           </button>
           <button
-            onClick={() => setActiveTab('arrivals')}
+            onClick={() => setActiveTab('active')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'arrivals' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'active' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
             }`}
           >
-            وصول اليوم
+            نشط
           </button>
           <button
-            onClick={() => setActiveTab('departures')}
+            onClick={() => setActiveTab('closed')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'departures' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'closed' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
             }`}
           >
-            مغادرة اليوم
+            مغلق
           </button>
           <button
-            onClick={() => setActiveTab('upcoming')}
+            onClick={() => setActiveTab('booked')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'upcoming' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'booked' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
             }`}
           >
-            قادمة
+            محجوز
           </button>
         </div>
 
@@ -293,16 +310,11 @@ export default function ReservationsSection() {
                     </div>
                   </td>
                   <td className="py-3 text-sm text-white">{stay.roomNumber}</td>
-                  <td className="py-3 text-sm text-gray-400">{stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA') : '-'}</td>
-                  <td className="py-3 text-sm text-gray-400">{stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA') : '-'}</td>
+                  <td className="py-3 text-sm text-gray-400">{stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
+                  <td className="py-3 text-sm text-gray-400">{stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
                   <td className="py-3">
-                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
-                      stay.status === 'CHECKED_IN' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
-                      stay.status === 'CHECKED_OUT' ? 'bg-gray-800 text-gray-400 border border-gray-700' :
-                      stay.status === 'RESERVED' ? 'bg-blue-950/20 text-blue-400 border border-blue-500/30' :
-                      'bg-red-950/20 text-red-400 border border-red-500/30'
-                    }`}>
-                      {stay.status === 'CHECKED_IN' ? 'مقيم' : stay.status === 'CHECKED_OUT' ? 'مغادر' : stay.status === 'RESERVED' ? 'محجوز' : stay.status}
+                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold text-gray-400 border border-gray-800">
+                      {stay.status === 'CHECKED_IN' ? 'نشط' : stay.status === 'CHECKED_OUT' ? 'مغلق' : stay.status === 'RESERVED' ? 'محجوز' : stay.status}
                     </span>
                   </td>
                   <td className="py-3 text-sm text-[#E6C587] font-bold">{stay.totalCharge ? stay.totalCharge.toLocaleString('ar-SA', { maximumFractionDigits: 0 }) : '0'} ريال</td>
@@ -311,16 +323,16 @@ export default function ReservationsSection() {
                       <button
                         onClick={() => handleCheckIn(stay.stayId)}
                         disabled={stay.status === 'CHECKED_IN'}
-                        className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50"
+                        className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold text-gray-400 hover:text-white"
                       >
-                        <CheckCircle2 size={14} className="text-emerald-400" />
+                        موافقة
                       </button>
                       <button
                         onClick={() => handleCheckOut(stay.stayId)}
                         disabled={stay.status === 'CHECKED_OUT'}
-                        className="p-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50"
+                        className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold text-gray-400 hover:text-white"
                       >
-                        <XCircle size={14} className="text-red-400" />
+                        رفض
                       </button>
                     </div>
                   </td>
@@ -361,13 +373,18 @@ export default function ReservationsSection() {
 
               <div>
                 <label className="text-xs text-gray-500 block mb-2">رقم الغرفة</label>
-                <input
-                  type="text"
+                <select
                   value={selectedRoomNumber}
                   onChange={(e) => setSelectedRoomNumber(e.target.value)}
                   className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
-                  placeholder="مثال: 101"
-                />
+                >
+                  <option value="">اختر غرفة متاحة</option>
+                  {availableRooms.map((room) => (
+                    <option key={room.id} value={room.number}>
+                      {room.number} - {room.type} ({room.pricePerNight} ريال/ليلة)
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

@@ -325,7 +325,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                   إلغاء
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleSubmit}
                   disabled={isLoading || items.length === 0}
                   className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
                 >
