@@ -223,6 +223,13 @@ interface VipResponse {
   notes: string;
 }
 
+interface CreateVipRequest {
+  fullName: string;
+  phone?: string;
+  nationality?: string;
+  notes?: string;
+}
+
 interface PageVipResponse {
   content: VipResponse[];
   totalPages: number;
@@ -1003,6 +1010,20 @@ class APIService {
   }
 
   /**
+   * Create VIP Guest
+   * POST /api/dashboard/manager/vips
+   */
+  async createVip(vip: CreateVipRequest): Promise<VipResponse> {
+    return this.authenticatedFetch<VipResponse>(
+      `${this.baseURL}/api/dashboard/manager/vips`,
+      {
+        method: 'POST',
+        body: JSON.stringify(vip),
+      }
+    );
+  }
+
+  /**
    * Get Rated Stays
    * GET /api/dashboard/manager/stays/rated
    */
@@ -1251,14 +1272,15 @@ export type {
   PageStayDetailsResponse,
   UserResponse,
   CreateUserRequest,
+  CreateVipRequest,
+  VipResponse,
+  PageVipResponse,
   UpdateUserRequest,
   PageUserResponse,
   EmployeeResponse,
   CreateEmployeeRequest,
   UpdateEmployeeStatusRequest,
   PageEmployeeResponse,
-  VipResponse,
-  PageVipResponse,
   DashboardStatsResponse,
   PendingOrdersResponse,
 };
