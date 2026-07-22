@@ -93,62 +93,68 @@ export default function RatingsSection() {
           <p className="text-xs text-gray-600 mb-4">لا يوجد حالياً حجوزات مقيّمة</p>
         </div>
       ) : (
-        <div className="overflow-x-auto pb-2">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">معرف الحجز</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">اسم الضيف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الغرفة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">تاريخ الدخول</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">تاريخ المغادرة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">التقييم</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الملاحظات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredRatedStays.map((stay) => (
-                <tr key={stay.stayId} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
-                  <td className="py-3 text-sm text-white">{stay.stayId}</td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
-                        <User size={14} className="text-[#E6C587]" />
-                      </div>
-                      <span className="text-sm text-white font-bold">{stay.guestName}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {filteredRatedStays.map((stay) => (
+            <motion.div
+              key={stay.stayId}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-[#0b0b0b] border border-gray-900 rounded-xl overflow-hidden hover:border-[#D4AF37]/35 transition duration-300"
+            >
+              {/* Header */}
+              <div className="p-4 border-b border-gray-900">
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
+                      <User size={18} className="text-[#E6C587]" />
                     </div>
-                  </td>
-                  <td className="py-3 text-sm text-white flex items-center gap-2">
-                    <Building size={14} />
-                    {stay.roomNumber}
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 flex items-center gap-2">
-                    <Calendar size={14} />
-                    {stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA') : '-'}
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 flex items-center gap-2">
-                    <Calendar size={14} />
-                    {stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA') : '-'}
-                  </td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          size={16}
-                          className={star <= (stay.stars || 0) ? 'text-[#E6C587] fill-[#E6C587]' : 'text-gray-600'}
-                        />
-                      ))}
-                      <span className="text-sm text-white font-bold mr-2">{stay.stars || 0}/5</span>
+                    <div>
+                      <h3 className="text-sm font-bold text-white">{stay.guestName}</h3>
+                      <span className="text-[10px] text-gray-500 font-mono">#{stay.stayId}</span>
                     </div>
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 max-w-xs truncate">
-                    {stay.notes || '-'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        size={14}
+                        className={star <= (stay.stars || 0) ? 'text-[#E6C587] fill-[#E6C587]' : 'text-gray-600'}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-4 space-y-3">
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <Building size={14} className="text-[#D4AF37]" />
+                  <span>الغرفة: {stay.roomNumber}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <Calendar size={14} className="text-[#D4AF37]" />
+                  <span>الدخول: {stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA') : '-'}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <Calendar size={14} className="text-[#D4AF37]" />
+                  <span>المغادرة: {stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA') : '-'}</span>
+                </div>
+                {stay.notes && (
+                  <div className="pt-2 border-t border-gray-800">
+                    <p className="text-xs text-gray-300 leading-relaxed">{stay.notes}</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Footer */}
+              <div className="px-4 py-3 bg-[#121212]/50 border-t border-gray-900">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-gray-500">التقييم</span>
+                  <span className="text-sm font-bold text-[#E6C587]">{stay.stars || 0}/5</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
       )}
     </div>

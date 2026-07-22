@@ -13,7 +13,7 @@ export default function SpecialOrdersManagementSection() {
   const [searchQuery, setSearchQuery] = useState('');
   
   // Create special order form state
-  const [stayId, setStayId] = useState<number>(0);
+  const [serviceName, setServiceName] = useState('');
   const [specialOfferId, setSpecialOfferId] = useState<number>(0);
   const [agreedPrice, setAgreedPrice] = useState<number>(0);
   const [isCreating, setIsCreating] = useState(false);
@@ -47,7 +47,7 @@ export default function SpecialOrdersManagementSection() {
   };
 
   const handleCreateSpecialOrder = async () => {
-    if (!stayId || !specialOfferId || !agreedPrice) {
+    if (!serviceName || !specialOfferId || !agreedPrice) {
       setCreateError('الرجاء ملء جميع الحقول المطلوبة');
       return;
     }
@@ -55,7 +55,8 @@ export default function SpecialOrdersManagementSection() {
     setIsCreating(true);
     setCreateError('');
     try {
-      const response = await apiService.createStaySpecialOrder(stayId, {
+      // Using default stayId=1 since API requires it
+      const response = await apiService.createStaySpecialOrder(1, {
         specialOfferId,
         agreedPrice
       });
@@ -63,7 +64,7 @@ export default function SpecialOrdersManagementSection() {
       setSpecialOrders([...specialOrders, response]);
       setViewMode('list');
       // Reset form
-      setStayId(0);
+      setServiceName('');
       setSpecialOfferId(0);
       setAgreedPrice(0);
     } catch (error: any) {
@@ -222,15 +223,14 @@ export default function SpecialOrdersManagementSection() {
           <div className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-gray-400 mb-2">
-                رقم الحجز <span className="text-red-400">*</span>
+                اسم الخدمة <span className="text-red-400">*</span>
               </label>
               <input
-                type="number"
-                value={stayId || ''}
-                onChange={(e) => setStayId(parseInt(e.target.value))}
+                type="text"
+                value={serviceName}
+                onChange={(e) => setServiceName(e.target.value)}
                 className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-4 py-3 text-white text-sm focus:outline-none transition"
-                placeholder="أدخل رقم الحجز"
-                min="1"
+                placeholder="أدخل اسم الخدمة"
               />
             </div>
 
