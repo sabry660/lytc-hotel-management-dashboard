@@ -208,7 +208,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-emerald-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">مبيعات اليوم</span>
-            <div className="text-lg font-bold text-white font-mono">{totalRestaurantSales.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{totalRestaurantSales.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg mt-2">
             <DollarSign size={16} />
@@ -319,7 +319,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
               <div>
                 <span className="text-[10px] text-gray-500 block">إجمالي الفاتورة</span>
                 <span className="text-sm font-black font-mono text-[#E6C587]">
-                  {order.total.toLocaleString('ar-SA')} <span className="text-[10px] font-sans">ريال</span>
+                  {order.total.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} <span className="text-[10px] font-sans">ريال</span>
                 </span>
               </div>
 

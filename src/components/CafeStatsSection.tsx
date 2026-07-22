@@ -99,7 +99,7 @@ export default function CafeStatsSection() {
               </div>
               <span className="text-xs text-gray-500">إجمالي الإيرادات</span>
             </div>
-            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.totalRevenue?.toLocaleString('ar-SA') || 0}</h3>
+            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.totalRevenue?.toLocaleString('ar-SA', { maximumFractionDigits: 0 }) || 0}</h3>
             <p className="text-xs text-gray-600 mt-2">ريال</p>
           </div>
 
@@ -110,7 +110,7 @@ export default function CafeStatsSection() {
               </div>
               <span className="text-xs text-gray-500">إيرادات اليوم</span>
             </div>
-            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.todayRevenue?.toLocaleString('ar-SA') || 0}</h3>
+            <h3 className="text-3xl font-black text-[#E6C587]">{stats?.todayRevenue?.toLocaleString('ar-SA', { maximumFractionDigits: 0 }) || 0}</h3>
             <p className="text-xs text-gray-600 mt-2">ريال</p>
           </div>
         </div>

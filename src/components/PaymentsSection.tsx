@@ -112,7 +112,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-emerald-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">إجمالي المدفوعات</span>
-            <div className="text-lg font-bold text-white font-mono">{totalPayments.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{totalPayments.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg mt-2">
             <ArrowUpRight size={16} />
@@ -122,7 +122,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-amber-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">ضريبة القيمة المضافة (15%)</span>
-            <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg mt-2">
             <Percent size={16} />
@@ -132,7 +132,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-red-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">المدفوعات المعلقة</span>
-            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-red-950/20 text-red-400 rounded-lg mt-2">
             <AlertCircle size={16} />
@@ -142,7 +142,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-purple-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">المستردات</span>
-            <div className="text-lg font-bold text-white font-mono">{refundedPayments.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{refundedPayments.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-purple-950/20 text-purple-400 rounded-lg mt-2">
             <ArrowDownRight size={16} />
@@ -211,7 +211,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
                         </span>
                       </td>
                       <td className="py-4 text-left font-mono font-black text-white">
-                        {inv.amount.toLocaleString('ar-SA')} ريال
+                        {inv.amount.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال
                       </td>
                     </tr>
                   ))}
@@ -252,7 +252,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
                 <div className="flex justify-between items-center pt-2">
                   <span className="text-gray-500">القيمة الإجمالية الصافية:</span>
                   <span className="text-[#E6C587] text-lg font-black font-mono">
-                    {selectedInvoice.amount.toLocaleString('ar-SA')} ريال
+                    {selectedInvoice.amount.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال
                   </span>
                 </div>
               </div>
@@ -315,7 +315,7 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
                             <p>طريقة الدفع: ${selectedInvoice.method}</p>
                           </div>
                           <div class="total">
-                            الإجمالي: ${selectedInvoice.amount.toLocaleString('ar-SA')} ريال
+                            الإجمالي: ${selectedInvoice.amount.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال
                           </div>
                         </body>
                         </html>
@@ -351,14 +351,14 @@ export default function PaymentsSection({ invoices: initialInvoices, onUpdateInv
                 <span className="text-sm font-bold text-white">ضريبة القيمة المضافة (VAT)</span>
                 <span className="text-xs text-amber-400">15%</span>
               </div>
-              <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA')} ريال</div>
+              <div className="text-lg font-bold text-white font-mono">{totalVAT.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
             </div>
             <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-bold text-white">ضريبة الخدمات السياحية</span>
                 <span className="text-xs text-amber-400">5%</span>
               </div>
-              <div className="text-lg font-bold text-white font-mono">{(totalPayments * 0.05).toLocaleString('ar-SA')} ريال</div>
+              <div className="text-lg font-bold text-white font-mono">{(totalPayments * 0.05).toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
             </div>
           </div>
         </div>

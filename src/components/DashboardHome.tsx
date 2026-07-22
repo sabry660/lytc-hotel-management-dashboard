@@ -291,7 +291,7 @@ export default function DashboardHome({
             <div>
               <p className="text-[10px] sm:text-xs text-gray-500 font-bold">إجمالي الإيرادات المباشرة</p>
               <h3 className="text-2xl sm:text-3xl font-black text-white mt-1 sm:mt-2 font-mono">
-                {totalRevenue.toLocaleString('ar-SA')} <span className="text-[10px] sm:text-xs text-[#D4AF37] font-sans">ريال</span>
+                {totalRevenue.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} <span className="text-[10px] sm:text-xs text-[#D4AF37] font-sans">ريال</span>
               </h3>
             </div>
             <div className="p-2 sm:p-3 bg-amber-950/20 text-[#D4AF37] rounded-xl border border-[#D4AF37]/10">
@@ -365,7 +365,7 @@ export default function DashboardHome({
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-orange-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">المدفوعات المستحقة</span>
-            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA')} ريال</div>
+            <div className="text-lg font-bold text-white font-mono">{pendingPayments.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</div>
           </div>
           <div className="p-2 bg-orange-950/20 text-orange-400 rounded-lg">
             <CreditCard size={16} />

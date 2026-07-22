@@ -175,7 +175,7 @@ export default function GuestsSection({ guests, reservations }: GuestsSectionPro
                         <span className="text-xs font-bold text-white block">جناح رقم {res.roomNumber}</span>
                         <span className="text-[10px] text-gray-500 font-mono block mt-0.5">{res.checkIn} ── {res.checkOut}</span>
                       </div>
-                      <span className="text-xs font-bold font-mono text-[#E6C587]">{res.amount.toLocaleString('ar-SA')} ريال</span>
+                      <span className="text-xs font-bold font-mono text-[#E6C587]">{res.amount.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} ريال</span>
                     </div>
                   ))}
                 </div>
