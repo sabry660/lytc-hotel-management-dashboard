@@ -750,7 +750,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                 </div>
                 <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
                   <span className="text-gray-500 block">الحالة</span>
-                  <span className={`text-sm font-bold block mt-1 ${getStatusColor(selectedRoom.status).split(' ')[0]}`}>{getStatusLabel(selectedRoom.status)}</span>
+                  <span className={`text-sm font-bold block mt-1 ${getStatusColor(selectedRoom.status || 'available')}`}>{getStatusLabel(selectedRoom.status || 'available')}</span>
                 </div>
               </div>
 

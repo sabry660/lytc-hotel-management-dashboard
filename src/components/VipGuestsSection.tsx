@@ -122,45 +122,43 @@ export default function VipGuestsSection() {
           <p className="text-xs text-gray-600 mb-4">لا يوجد حالياً نزلاء مميزين في النظام</p>
         </div>
       ) : (
-        <div className="overflow-x-auto pb-2">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">المعرف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الاسم الكامل</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الهاتف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الجنسية</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">ملاحظات</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredVips.map((vip) => (
-                <tr key={vip.id} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
-                  <td className="py-3 text-sm text-white">{vip.id}</td>
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
-                        <Crown size={14} className="text-[#E6C587]" />
-                      </div>
-                      <span className="text-sm text-white font-bold">{vip.fullName}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 flex items-center gap-2">
-                    <Phone size={14} />
-                    {vip.phone}
-                  </td>
-                  <td className="py-3 text-sm text-white flex items-center gap-2">
-                    <Globe size={14} />
-                    {vip.nationality}
-                  </td>
-                  <td className="py-3 text-sm text-gray-400 flex items-center gap-2">
-                    <FileText size={14} />
-                    {vip.notes || '-'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredVips.map((vip) => (
+            <div key={vip.id} className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 hover:border-[#D4AF37]/35 transition duration-300">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-xl flex items-center justify-center">
+                    <Crown size={24} className="text-[#E6C587]" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-bold text-white">{vip.fullName}</h3>
+                    <span className="text-xs text-gray-500 font-mono">ID: {vip.id}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                {vip.phone && (
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Phone size={16} className="text-[#D4AF37]" />
+                    <span>{vip.phone}</span>
+                  </div>
+                )}
+                {vip.nationality && (
+                  <div className="flex items-center gap-2 text-sm text-gray-400">
+                    <Globe size={16} className="text-[#D4AF37]" />
+                    <span>{vip.nationality}</span>
+                  </div>
+                )}
+                {vip.notes && (
+                  <div className="flex items-start gap-2 text-sm text-gray-400">
+                    <FileText size={16} className="text-[#D4AF37] mt-0.5" />
+                    <span className="line-clamp-2">{vip.notes}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
-  ShoppingBag, Search, XCircle, AlertCircle, Building, DollarSign, Loader2
+  ShoppingBag, Search, XCircle, AlertCircle, Building, DollarSign, Loader2, Globe
 } from 'lucide-react';
 import { apiService, SpecialOrderResponse } from '../services/api';
 
 export default function SpecialOrdersManagementSection() {
   const [specialOrders, setSpecialOrders] = useState<SpecialOrderResponse[]>([]);
+  const [portalOrders, setPortalOrders] = useState<SpecialOrderResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     loadSpecialOrders();
+    loadPortalOrders();
   }, []);
 
   const loadSpecialOrders = async () => {
@@ -37,8 +39,22 @@ export default function SpecialOrdersManagementSection() {
     }
   };
 
+  const loadPortalOrders = async () => {
+    try {
+      // Fetch portal orders for a sample room (this should be dynamic based on context)
+      const response = await apiService.getGuestSpecialOrders('101');
+      setPortalOrders(response || []);
+    } catch (error: any) {
+      console.error('Failed to load portal orders:', error);
+      setPortalOrders([]);
+    }
+  };
+
+  // Combine both orders
+  const allOrders = [...specialOrders, ...portalOrders];
+
   // Filter special orders based on search
-  const filteredSpecialOrders = (specialOrders || []).filter(order => {
+  const filteredSpecialOrders = allOrders.filter(order => {
     const matchesSearch = order.id.toString().includes(searchQuery) ||
                           order.stayId.toString().includes(searchQuery);
     return matchesSearch;
@@ -104,37 +120,48 @@ export default function SpecialOrdersManagementSection() {
               </tr>
             </thead>
             <tbody>
-              {filteredSpecialOrders.map((order) => (
-                <tr key={order.id} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
-                  <td className="py-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
-                        <ShoppingBag size={14} className="text-[#E6C587]" />
+              {filteredSpecialOrders.map((order) => {
+                const isPortalOrder = portalOrders.some(po => po.id === order.id);
+                return (
+                  <tr key={order.id} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
+                    <td className="py-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
+                          <ShoppingBag size={14} className="text-[#E6C587]" />
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="text-sm text-white font-bold">{order.id}</span>
+                          {isPortalOrder && (
+                            <span className="text-[10px] text-blue-400 flex items-center gap-1">
+                              <Globe size={10} />
+                              من البوابة
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <span className="text-sm text-white font-bold">{order.id}</span>
-                    </div>
-                  </td>
-                  <td className="py-3 text-sm text-white flex items-center gap-2">
-                    <Building size={14} />
-                    {order.stayId}
-                  </td>
-                  <td className="py-3 text-sm text-white">{order.specialOfferId}</td>
-                  <td className="py-3 text-sm text-[#E6C587] font-bold flex items-center gap-2">
-                    <DollarSign size={14} />
-                    {order.agreedPrice?.toLocaleString('ar-SA') || 0} ريال
-                  </td>
-                  <td className="py-3">
-                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
-                      order.status === 'CONFIRMED' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
-                      order.status === 'PENDING' ? 'bg-yellow-950/20 text-yellow-400 border border-yellow-500/30' :
-                      order.status === 'CANCELLED' ? 'bg-red-950/20 text-red-400 border border-red-500/30' :
-                      'bg-gray-800 text-gray-400 border border-gray-700'
-                    }`}>
-                      {order.status === 'CONFIRMED' ? 'مؤكد' : order.status === 'PENDING' ? 'قيد الانتظار' : order.status === 'CANCELLED' ? 'ملغي' : order.status}
-                    </span>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="py-3 text-sm text-white flex items-center gap-2">
+                      <Building size={14} />
+                      {order.stayId}
+                    </td>
+                    <td className="py-3 text-sm text-white">{order.specialOfferId}</td>
+                    <td className="py-3 text-sm text-[#E6C587] font-bold flex items-center gap-2">
+                      <DollarSign size={14} />
+                      {order.agreedPrice?.toLocaleString('ar-SA') || 0} ريال
+                    </td>
+                    <td className="py-3">
+                      <span className={`px-2 py-1 rounded-lg text-[10px] font-bold ${
+                        order.status === 'CONFIRMED' ? 'bg-emerald-950/20 text-emerald-400 border border-emerald-500/30' :
+                        order.status === 'PENDING' ? 'bg-yellow-950/20 text-yellow-400 border border-yellow-500/30' :
+                        order.status === 'CANCELLED' ? 'bg-red-950/20 text-red-400 border border-red-500/30' :
+                        'bg-gray-800 text-gray-400 border border-gray-700'
+                      }`}>
+                        {order.status === 'CONFIRMED' ? 'مؤكد' : order.status === 'PENDING' ? 'قيد الانتظار' : order.status === 'CANCELLED' ? 'ملغي' : order.status}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

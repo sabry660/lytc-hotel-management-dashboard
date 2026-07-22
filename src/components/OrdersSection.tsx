@@ -130,6 +130,15 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
   const totalRestaurantSales = (orders || []).reduce((sum, order) => sum + order.total, 0);
   const filteredOrders = filter === 'all' ? (orders || []) : (orders || []).filter(o => o.status === filter);
 
+  // Calculate average preparation time
+  const preparingOrders = (orders || []).filter(o => o.status === 'preparing' || o.status === 'delivered');
+  const avgPrepTime = preparingOrders.length > 0 
+    ? Math.round(preparingOrders.reduce((sum, order) => {
+        const timeDiff = new Date().getTime() - new Date(order.time).getTime();
+        return sum + timeDiff;
+      }, 0) / preparingOrders.length / 60000) // Convert to minutes
+    : 0;
+
   const getStatusColor = (status: RestaurantOrder['status']) => {
     switch (status) {
       case 'ordered': return 'text-amber-400 bg-amber-950/20 border-amber-500/30';
@@ -161,7 +170,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
             onClick={() => setIsCreateMenuItemModalOpen(true)}
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
             <Plus size={15} />
-            <span>Create Item</span>
+            <span>إضافة عنصر</span>
           </button>
         )}
       </div>
@@ -219,7 +228,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
         <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl hover:border-amber-500/35 transition duration-200">
           <div className="space-y-1">
             <span className="text-[10px] text-gray-500">متوسط وقت التجهيز</span>
-            <div className="text-lg font-bold text-white font-mono">--</div>
+            <div className="text-lg font-bold text-white font-mono">{avgPrepTime > 0 ? `${avgPrepTime} دقيقة` : '--'}</div>
           </div>
           <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg mt-2">
             <Clock size={16} />

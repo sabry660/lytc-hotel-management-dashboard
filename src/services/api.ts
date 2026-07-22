@@ -989,6 +989,16 @@ class APIService {
   }
 
   /**
+   * Get Guest Special Orders (Portal Orders)
+   * GET /api/guest/stays/special-orders
+   */
+  async getGuestSpecialOrders(roomNumber: string): Promise<SpecialOrderResponse[]> {
+    return this.authenticatedFetch<SpecialOrderResponse[]>(
+      `${this.baseURL}/api/guest/stays/special-orders?roomNumber=${roomNumber}`
+    );
+  }
+
+  /**
    * Get VIP Guests
    * GET /api/dashboard/manager/vips
    */
