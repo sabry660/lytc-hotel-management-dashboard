@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Plus, Trash2, Save, Loader2, Utensils, Coffee, Sparkles } from 'lucide-react';
+import { X, Plus, Trash2, Save, Loader2, Utensils, Coffee, Sparkles, Search } from 'lucide-react';
 import { apiService, CreateOrderRequest, OrderItemRequest } from '../services/api';
 
 interface CreateOrderModalProps {
@@ -18,17 +18,48 @@ interface OrderItem {
   price?: number;
 }
 
+interface MenuItem {
+  id: number;
+  name: string;
+  description?: string;
+  price: number;
+  category?: string;
+  available?: boolean;
+}
+
 export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumber }: CreateOrderModalProps) {
   const [category, setCategory] = useState<'FOOD' | 'DRINK' | 'SERVICE'>('FOOD');
   const [items, setItems] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [isLoadingMenu, setIsLoadingMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const categories = [
     { value: 'FOOD', label: 'طعام', icon: Utensils },
     { value: 'DRINK', label: 'مشروبات', icon: Coffee },
     { value: 'SERVICE', label: 'خدمات', icon: Sparkles },
   ];
+
+  useEffect(() => {
+    if (isOpen) {
+      loadMenuItems();
+    }
+  }, [isOpen, category]);
+
+  const loadMenuItems = async () => {
+    setIsLoadingMenu(true);
+    try {
+      const response = await apiService.getGuestMenu(category, 0, 100);
+      setMenuItems(response.content || []);
+    } catch (error) {
+      console.error('Failed to load menu items:', error);
+      setMenuItems([]);
+    } finally {
+      setIsLoadingMenu(false);
+    }
+  };
 
   const addItem = () => {
     setItems([...items, { menuItemId: 0, quantity: 1 }]);
@@ -41,6 +72,16 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
   const updateItem = (index: number, field: keyof OrderItem, value: any) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
+    
+    // When selecting a menu item, also set name and price
+    if (field === 'menuItemId') {
+      const selectedItem = menuItems.find(item => item.id === value);
+      if (selectedItem) {
+        newItems[index].name = selectedItem.name;
+        newItems[index].price = selectedItem.price;
+      }
+    }
+    
     setItems(newItems);
   };
 
@@ -177,18 +218,36 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                   {items.map((item, index) => (
                     <div key={index} className="bg-[#121212] border border-gray-800 rounded-xl p-4 space-y-3">
                       <div className="flex justify-between items-start">
-                        <div className="flex-1 grid grid-cols-3 gap-3">
+                        <div className="flex-1 space-y-3">
+                          {/* Menu Item Selector */}
                           <div>
-                            <label className="block text-[10px] text-gray-500 mb-1">معرف العنصر</label>
-                            <input
-                              type="number"
-                              value={item.menuItemId}
-                              onChange={(e) => updateItem(index, 'menuItemId', parseInt(e.target.value))}
-                              className="w-full bg-[#0b0b0b] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-3 py-2 text-white text-xs focus:outline-none transition"
-                              placeholder="معرف العنصر"
-                              min="1"
-                            />
+                            <label className="block text-[10px] text-gray-500 mb-1">اختر العنصر</label>
+                            {isLoadingMenu ? (
+                              <div className="flex items-center justify-center py-2">
+                                <Loader2 size={16} className="text-[#D4AF37] animate-spin" />
+                              </div>
+                            ) : (
+                              <select
+                                value={item.menuItemId}
+                                onChange={(e) => updateItem(index, 'menuItemId', parseInt(e.target.value))}
+                                className="w-full bg-[#0b0b0b] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-3 py-2 text-white text-xs focus:outline-none transition"
+                              >
+                                <option value={0}>-- اختر عنصر --</option>
+                                {menuItems
+                                  .filter(menuItem => 
+                                    searchQuery === '' || 
+                                    menuItem.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                  )
+                                  .map((menuItem) => (
+                                    <option key={menuItem.id} value={menuItem.id}>
+                                      {menuItem.name} - {menuItem.price} ريال
+                                    </option>
+                                  ))}
+                              </select>
+                            )}
                           </div>
+                          
+                          {/* Quantity */}
                           <div>
                             <label className="block text-[10px] text-gray-500 mb-1">الكمية</label>
                             <input
@@ -200,6 +259,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                               min="1"
                             />
                           </div>
+                          
+                          {/* Notes */}
                           <div>
                             <label className="block text-[10px] text-gray-500 mb-1">ملاحظات</label>
                             <input
@@ -210,6 +271,19 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                               placeholder="ملاحظات (اختياري)"
                             />
                           </div>
+                          
+                          {/* Selected Item Info */}
+                          {item.name && (
+                            <div className="p-2 bg-[#0b0b0b] border border-[#D4AF37]/20 rounded-lg">
+                              <div className="flex justify-between items-center">
+                                <span className="text-xs text-white font-bold">{item.name}</span>
+                                <span className="text-xs text-[#D4AF37] font-mono">{item.price} ريال</span>
+                              </div>
+                              <div className="text-[10px] text-gray-500 mt-1">
+                                الإجمالي: {(item.price || 0) * item.quantity} ريال
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <button
                           type="button"
