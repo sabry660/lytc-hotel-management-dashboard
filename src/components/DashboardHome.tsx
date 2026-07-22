@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, Invoice } from '../types';
 import { apiService } from '../services/api';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 interface DashboardHomeProps {
   onNavigate: (tab: string) => void;
@@ -18,6 +19,7 @@ export default function DashboardHome({
   onOpenQuickBook,
   onOpenQuickRequest
 }: DashboardHomeProps) {
+  const { colors, isDark } = useThemeColors();
   const [time, setTime] = useState(new Date().toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
   const [userRole, setUserRole] = useState<string>('المدير');
   const [isLoading, setIsLoading] = useState(true);
@@ -173,7 +175,7 @@ export default function DashboardHome({
       ) : (
         <>
       {/* Upper Welcoming Banner */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-[#0c0c0c] via-[#121212] to-[#0a0a0a] border border-[#D4AF37]/15 relative overflow-hidden shadow-[0_15px_35px_rgba(0,0,0,0.6)]">
+      <div className={`flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 p-6 lg:p-8 rounded-2xl border relative overflow-hidden ${isDark ? 'bg-gradient-to-br from-[#0c0c0c] via-[#121212] to-[#0a0a0a] border-[#D4AF37]/15 shadow-[0_15px_35px_rgba(0,0,0,0.6)]' : 'bg-gradient-to-br from-white via-gray-50 to-gray-100 border-[#D4AF37]/20 shadow-[0_15px_35px_rgba(0,0,0,0.1)]'}`}>
         {/* Abstract Golden Circles Backdrop */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-radial-gradient from-[#D4AF37]/5 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-12 w-48 h-48 bg-radial-gradient from-blue-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
@@ -184,27 +186,27 @@ export default function DashboardHome({
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-xs text-gray-500">النظام الفني متصل ومستقر</span>
+            <span className="text-xs" style={{ color: colors.text.muted }}>النظام الفني متصل ومستقر</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-[#E6C587] tracking-tight">
+          <h1 className="text-3xl font-extrabold tracking-tight" style={{ color: colors.primary.goldLight }}>
             مرحباً {userRole}
           </h1>
-          <p className="text-gray-400 text-sm max-w-xl">
+          <p className="text-sm max-w-xl" style={{ color: colors.text.secondary }}>
             مستويات الإشغال والتشغيل في قصر ليتك الفاخر عند الحد الأعلى لليوم. جميع الأقسام والخدمات تعمل بكامل طاقتها الاستيعابية بنجاح.
           </p>
         </div>
 
         {/* Live Clock Widget */}
-        <div className="flex items-center gap-6 bg-[#000000]/30 border border-gray-800 p-4 rounded-xl backdrop-blur-md relative z-10 self-stretch lg:self-auto justify-between lg:justify-start">
+        <div className={`flex items-center gap-6 border p-4 rounded-xl backdrop-blur-md relative z-10 self-stretch lg:self-auto justify-between lg:justify-start ${isDark ? 'bg-[#000000]/30 border-gray-800' : 'bg-white/50 border-gray-200'}`}>
           <div className="text-left">
-            <div className="flex items-center gap-2 text-gray-400 text-xs">
-              <Clock size={14} className="text-[#D4AF37]" />
+            <div className="flex items-center gap-2 text-xs" style={{ color: colors.text.muted }}>
+              <Clock size={14} style={{ color: colors.primary.gold }} />
               <span>الوقت المحلي للرياض</span>
             </div>
-            <div className="text-2xl font-black font-mono text-[#E6C587] tracking-widest mt-1">
+            <div className="text-2xl font-black font-mono tracking-widest mt-1" style={{ color: colors.primary.goldLight }}>
               {time}
             </div>
-            <div className="text-[10px] text-gray-500 mt-0.5">{new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'gregory' })}</div>
+            <div className="text-[10px] mt-0.5" style={{ color: colors.text.disabled }}>{new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', calendar: 'gregory' })}</div>
           </div>
         </div>
       </div>
@@ -212,82 +214,82 @@ export default function DashboardHome({
       {/* KPI Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* KPI 1: Reservations */}
-        <div className="p-4 sm:p-6 bg-[#0c0c0c] border border-gray-900 rounded-xl hover:border-[#D4AF37]/35 transition-all duration-300 relative group overflow-hidden">
+        <div className={`p-4 sm:p-6 border rounded-xl hover:border-[#D4AF37]/35 transition-all duration-300 relative group overflow-hidden ${isDark ? 'bg-[#0c0c0c] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-[#D4AF37]" />
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-[10px] sm:text-xs text-gray-500 font-bold">إجمالي الحجوزات النشطة</p>
-              <h3 className="text-2xl sm:text-3xl font-black text-white mt-1 sm:mt-2 font-mono">{totalBookings}</h3>
+              <p className="text-[10px] sm:text-xs font-bold" style={{ color: colors.text.muted }}>إجمالي الحجوزات النشطة</p>
+              <h3 className="text-2xl sm:text-3xl font-black mt-1 sm:mt-2 font-mono" style={{ color: colors.text.primary }}>{totalBookings}</h3>
             </div>
-            <div className="p-3 bg-amber-950/20 text-[#D4AF37] rounded-xl border border-[#D4AF37]/10">
+            <div className="p-3 rounded-xl border" style={{ background: isDark ? 'rgba(245, 158, 11, 0.2)' : 'rgba(245, 158, 11, 0.1)', color: colors.primary.gold, borderColor: `${colors.primary.gold}10` }}>
               <Calendar size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-4 text-xs text-gray-400">
-            <span className="text-gray-600">مقارنة بالأسبوع الماضي</span>
+          <div className="flex items-center gap-1.5 mt-4 text-xs" style={{ color: colors.text.muted }}>
+            <span style={{ color: colors.text.disabled }}>مقارنة بالأسبوع الماضي</span>
           </div>
         </div>
 
         {/* KPI 2: Occupied Rooms */}
-        <div className="p-4 sm:p-6 bg-[#0c0c0c] border border-gray-900 rounded-xl hover:border-blue-500/35 transition-all duration-300 relative group overflow-hidden">
+        <div className={`p-4 sm:p-6 border rounded-xl hover:border-blue-500/35 transition-all duration-300 relative group overflow-hidden ${isDark ? 'bg-[#0c0c0c] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500" />
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-[10px] sm:text-xs text-gray-500 font-bold">الغرف المشغولة الآن</p>
-              <h3 className="text-2xl sm:text-3xl font-black text-white mt-1 sm:mt-2 font-mono">
-                {occupiedRoomsCount} <span className="text-[10px] sm:text-xs text-gray-500 font-sans">/ {rooms.length}</span>
+              <p className="text-[10px] sm:text-xs font-bold" style={{ color: colors.text.muted }}>الغرف المشغولة الآن</p>
+              <h3 className="text-2xl sm:text-3xl font-black mt-1 sm:mt-2 font-mono" style={{ color: colors.text.primary }}>
+                {occupiedRoomsCount} <span className="text-[10px] sm:text-xs font-sans" style={{ color: colors.text.muted }}>/ {rooms.length}</span>
               </h3>
             </div>
-            <div className="p-2 sm:p-3 bg-blue-950/20 text-blue-400 rounded-xl border border-blue-500/10">
+            <div className={`p-2 sm:p-3 rounded-xl border ${isDark ? 'bg-blue-950/20 text-blue-400 border-blue-500/10' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
               <BedDouble size={18} sm:size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400">
-            <span className="font-bold text-[#D4AF37]">
+          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs" style={{ color: colors.text.muted }}>
+            <span className="font-bold" style={{ color: colors.primary.gold }}>
               {Math.round((occupiedRoomsCount / rooms.length) * 100)}%
             </span>
-            <span className="text-gray-600">معدل الإشغال الإجمالي</span>
+            <span style={{ color: colors.text.disabled }}>معدل الإشغال الإجمالي</span>
           </div>
         </div>
 
         {/* KPI 3: Available Rooms */}
-        <div className="p-4 sm:p-6 bg-[#0c0c0c] border border-gray-900 rounded-xl hover:border-emerald-500/35 transition-all duration-300 relative group overflow-hidden">
+        <div className={`p-4 sm:p-6 border rounded-xl hover:border-emerald-500/35 transition-all duration-300 relative group overflow-hidden ${isDark ? 'bg-[#0c0c0c] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500" />
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-[10px] sm:text-xs text-gray-500 font-bold">الغرف المتاحة للحجز</p>
-              <h3 className="text-2xl sm:text-3xl font-black text-emerald-400 mt-1 sm:mt-2 font-mono">
+              <p className="text-[10px] sm:text-xs font-bold" style={{ color: colors.text.muted }}>الغرف المتاحة للحجز</p>
+              <h3 className="text-2xl sm:text-3xl font-black mt-1 sm:mt-2 font-mono" style={{ color: isDark ? '#34D399' : '#059669' }}>
                 {availableRoomsCount}
               </h3>
             </div>
-            <div className="p-2 sm:p-3 bg-emerald-950/20 text-emerald-400 rounded-xl border border-emerald-500/10">
+            <div className={`p-2 sm:p-3 rounded-xl border ${isDark ? 'bg-emerald-950/20 text-emerald-400 border-emerald-500/10' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
               <UserCheck size={18} sm:size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400">
-            <span className="font-bold text-emerald-400">
+          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs" style={{ color: colors.text.muted }}>
+            <span className="font-bold" style={{ color: isDark ? '#34D399' : '#059669' }}>
               {(rooms || []).filter(r => r.status === 'cleaning').length} غرف
             </span>
-            <span className="text-gray-600">تحت التنظيف حالياً</span>
+            <span style={{ color: colors.text.disabled }}>تحت التنظيف حالياً</span>
           </div>
         </div>
 
         {/* KPI 4: Active Guests */}
-        <div className="p-4 sm:p-6 bg-[#0c0c0c] border border-gray-900 rounded-xl hover:border-purple-500/35 transition-all duration-300 relative group overflow-hidden">
+        <div className={`p-4 sm:p-6 border rounded-xl hover:border-purple-500/35 transition-all duration-300 relative group overflow-hidden ${isDark ? 'bg-[#0c0c0c] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="absolute top-0 left-0 w-1.5 h-full bg-purple-500" />
           <div className="flex justify-between items-start">
             <div>
-              <p className="text-[10px] sm:text-xs text-gray-500 font-bold">النزلاء المقيمين الآن</p>
-              <h3 className="text-2xl sm:text-3xl font-black text-white mt-1 sm:mt-2 font-mono">
+              <p className="text-[10px] sm:text-xs font-bold" style={{ color: colors.text.muted }}>النزلاء المقيمين الآن</p>
+              <h3 className="text-2xl sm:text-3xl font-black mt-1 sm:mt-2 font-mono" style={{ color: colors.text.primary }}>
                 {activeGuestsCount}
               </h3>
             </div>
-            <div className="p-2 sm:p-3 bg-purple-950/20 text-purple-400 rounded-xl border border-purple-500/10">
+            <div className={`p-2 sm:p-3 rounded-xl border ${isDark ? 'bg-purple-950/20 text-purple-400 border-purple-500/10' : 'bg-purple-50 text-purple-600 border-purple-200'}`}>
               <Users size={18} sm:size={22} />
             </div>
           </div>
-          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400">
-            <span className="text-gray-600">نزيل نشط حالياً</span>
+          <div className="flex items-center gap-1.5 mt-3 sm:mt-4 text-[10px] sm:text-xs" style={{ color: colors.text.muted }}>
+            <span style={{ color: colors.text.disabled }}>نزيل نشط حالياً</span>
           </div>
         </div>
       </div>
@@ -295,45 +297,45 @@ export default function DashboardHome({
       {/* Expanded Executive Dashboard KPI Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Average Room Rate */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-purple-500/35 transition duration-200">
+        <div className={`p-4 border rounded-xl flex items-center justify-between hover:border-purple-500/35 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">متوسط سعر الغرفة</span>
-            <div className="text-lg font-bold text-white font-mono">{Math.round(averageRoomRate)} ريال</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>متوسط سعر الغرفة</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{Math.round(averageRoomRate)} ريال</div>
           </div>
-          <div className="p-2 bg-purple-950/20 text-purple-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-purple-950/20 text-purple-400' : 'bg-purple-50 text-purple-600'}`}>
             <TrendingUp size={16} />
           </div>
         </div>
 
         {/* Direct Bookings */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-emerald-500/35 transition duration-200">
+        <div className={`p-4 border rounded-xl flex items-center justify-between hover:border-emerald-500/35 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">الحجوزات المباشرة</span>
-            <div className="text-lg font-bold text-white font-mono">{directBookings}</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>الحجوزات المباشرة</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{directBookings}</div>
           </div>
-          <div className="p-2 bg-emerald-950/20 text-emerald-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-emerald-950/20 text-emerald-400' : 'bg-emerald-50 text-emerald-600'}`}>
             <Calendar size={16} />
           </div>
         </div>
 
         {/* Platform Bookings */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-blue-500/35 transition duration-200">
+        <div className={`p-4 border rounded-xl flex items-center justify-between hover:border-blue-500/35 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">حجوزات المنصات</span>
-            <div className="text-lg font-bold text-white font-mono">{platformBookings}</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>حجوزات المنصات</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{platformBookings}</div>
           </div>
-          <div className="p-2 bg-blue-950/20 text-blue-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-blue-950/20 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
             <Compass size={16} />
           </div>
         </div>
 
         {/* Cancellation Rate */}
-        <div className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-red-500/35 transition duration-200">
+        <div className={`p-4 border rounded-xl flex items-center justify-between hover:border-red-500/35 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">معدل الإلغاء</span>
-            <div className="text-lg font-bold text-white font-mono">{cancellationRate.toFixed(1)}%</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>معدل الإلغاء</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{cancellationRate.toFixed(1)}%</div>
           </div>
-          <div className="p-2 bg-red-950/20 text-red-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-red-950/20 text-red-400' : 'bg-red-50 text-red-600'}`}>
             <ArrowDownRight size={16} />
           </div>
         </div>
@@ -344,13 +346,13 @@ export default function DashboardHome({
         {/* Pending Housekeeping */}
         <button 
           onClick={() => onNavigate('الغرف')}
-          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-teal-500/35 transition duration-200 w-full"
+          className={`p-4 border rounded-xl flex items-center justify-between hover:border-teal-500/35 transition duration-200 w-full ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}
         >
           <div className="space-y-1 text-right">
-            <span className="text-[10px] text-gray-500">غرف تحت التنظيف</span>
-            <div className="text-lg font-bold text-white font-mono">{pendingHousekeeping}</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>غرف تحت التنظيف</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{pendingHousekeeping}</div>
           </div>
-          <div className="p-2 bg-teal-950/20 text-teal-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-teal-950/20 text-teal-400' : 'bg-teal-50 text-teal-600'}`}>
             <Sparkles size={16} />
           </div>
         </button>
@@ -358,13 +360,13 @@ export default function DashboardHome({
         {/* VIP Guests Arriving */}
         <button 
           onClick={() => onNavigate('النزلاء')}
-          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-rose-500/35 transition duration-200 w-full"
+          className={`p-4 border rounded-xl flex items-center justify-between hover:border-rose-500/35 transition duration-200 w-full ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}
         >
           <div className="space-y-1 text-right">
-            <span className="text-[10px] text-gray-500">الضيوف المهمون القادمين</span>
-            <div className="text-lg font-bold text-white font-mono">{vipGuestsArriving}</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>الضيوف المهمون القادمين</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{vipGuestsArriving}</div>
           </div>
-          <div className="p-2 bg-rose-950/20 text-rose-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-rose-950/20 text-rose-400' : 'bg-rose-50 text-rose-600'}`}>
             <ShieldAlert size={16} />
           </div>
         </button>
@@ -372,13 +374,13 @@ export default function DashboardHome({
         {/* Pending Special Orders */}
         <button 
           onClick={() => onNavigate('الطلبات الخاصة')}
-          className="p-4 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-amber-500/35 transition duration-200 w-full"
+          className={`p-4 border rounded-xl flex items-center justify-between hover:border-amber-500/35 transition duration-200 w-full ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}
         >
           <div className="space-y-1">
-            <span className="text-[10px] text-gray-500">الطلبات الخاصة المعلقة</span>
-            <div className="text-lg font-bold text-white font-mono">{pendingRequestsCount}</div>
+            <span className="text-[10px]" style={{ color: colors.text.muted }}>الطلبات الخاصة المعلقة</span>
+            <div className="text-lg font-bold font-mono" style={{ color: colors.text.primary }}>{pendingRequestsCount}</div>
           </div>
-          <div className="p-2 bg-amber-950/20 text-amber-400 rounded-lg">
+          <div className={`p-2 rounded-lg ${isDark ? 'bg-amber-950/20 text-amber-400' : 'bg-amber-50 text-amber-600'}`}>
             <ConciergeBell size={16} />
           </div>
         </button>
@@ -387,38 +389,38 @@ export default function DashboardHome({
       {/* KPI Secondary Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Mini KPI 1 */}
-        <div className="p-5 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200">
+        <div className={`p-5 border rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-xs text-gray-500">النزلاء المقيمين الآن</span>
-            <div className="text-xl font-bold text-white font-mono">{activeGuestsCount} نزيل</div>
+            <span className="text-xs" style={{ color: colors.text.muted }}>النزلاء المقيمين الآن</span>
+            <div className="text-xl font-bold font-mono" style={{ color: colors.text.primary }}>{activeGuestsCount} نزيل</div>
           </div>
-          <div className="p-2.5 bg-gray-800/40 text-blue-400 rounded-lg">
+          <div className={`p-2.5 rounded-lg ${isDark ? 'bg-gray-800/40 text-blue-400' : 'bg-blue-50 text-blue-600'}`}>
             <Users size={18} />
           </div>
         </div>
 
         {/* Mini KPI 2 */}
-        <div className="p-5 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200">
+        <div className={`p-5 border rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-xs text-gray-500">الطلبات الجديدة المعلقة</span>
-            <div className="text-xl font-bold text-white font-mono">
-              {pendingRequestsCount} <span className="text-xs text-gray-500 font-sans">طلب</span>
+            <span className="text-xs" style={{ color: colors.text.muted }}>الطلبات الجديدة المعلقة</span>
+            <div className="text-xl font-bold font-mono" style={{ color: colors.text.primary }}>
+              {pendingRequestsCount} <span className="text-xs font-sans" style={{ color: colors.text.muted }}>طلب</span>
             </div>
           </div>
-          <div className="p-2.5 bg-gray-800/40 text-amber-500 rounded-lg">
+          <div className={`p-2.5 rounded-lg ${isDark ? 'bg-gray-800/40 text-amber-500' : 'bg-amber-50 text-amber-600'}`}>
             <MessageSquare size={18} />
           </div>
         </div>
 
         {/* Mini KPI 3 */}
-        <div className="p-5 bg-[#090909] border border-gray-900 rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200">
+        <div className={`p-5 border rounded-xl flex items-center justify-between hover:border-gray-800 transition duration-200 ${isDark ? 'bg-[#090909] border-gray-900' : 'bg-white border-gray-200'}`}>
           <div className="space-y-1">
-            <span className="text-xs text-gray-500">غرف تحت التنظيف</span>
-            <div className="text-xl font-bold text-white font-mono">
-              {pendingHousekeeping} <span className="text-xs text-gray-500 font-sans">غرفة</span>
+            <span className="text-xs" style={{ color: colors.text.muted }}>غرف تحت التنظيف</span>
+            <div className="text-xl font-bold font-mono" style={{ color: colors.text.primary }}>
+              {pendingHousekeeping} <span className="text-xs font-sans" style={{ color: colors.text.muted }}>غرفة</span>
             </div>
           </div>
-          <div className="p-2.5 bg-gray-800/40 text-teal-400 rounded-lg">
+          <div className={`p-2.5 rounded-lg ${isDark ? 'bg-gray-800/40 text-teal-400' : 'bg-teal-50 text-teal-600'}`}>
             <Sparkles size={18} />
           </div>
         </div>
@@ -429,15 +431,16 @@ export default function DashboardHome({
         {/* Left Column: Recent Guests & Bookings */}
         <div className="lg:col-span-2 space-y-6">
           {/* Recent Reservations Panel */}
-          <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 shadow-xl space-y-4">
+          <div className={`border rounded-xl p-6 shadow-xl space-y-4 ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-[#E6C587] flex items-center gap-2">
+              <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: colors.primary.goldLight }}>
                 <Calendar size={18} />
                 <span>أحدث الحجوزات المسجلة</span>
               </h2>
               <button 
                 onClick={() => onNavigate('الحجوزات')}
-                className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1"
+                className="text-xs hover:underline flex items-center gap-1"
+                style={{ color: colors.primary.gold }}
               >
                 <span>عرض الكل</span>
                 <ChevronLeft size={14} />
@@ -447,7 +450,7 @@ export default function DashboardHome({
             <div className="overflow-x-auto">
               <table className="w-full text-right text-sm">
                 <thead>
-                  <tr className="border-b border-gray-800 text-gray-500 pb-2">
+                  <tr className={`border-b pb-2 ${isDark ? 'border-gray-800 text-gray-500' : 'border-gray-200 text-gray-600'}`}>
                     <th className="py-3 font-bold">النزيل</th>
                     <th className="py-3 font-bold">رقم الغرفة</th>
                     <th className="py-3 font-bold">تاريخ الإقامة</th>
@@ -455,30 +458,30 @@ export default function DashboardHome({
                     <th className="py-3 font-bold text-left">المبلغ</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-800/50">
+                <tbody className={`divide-y ${isDark ? 'divide-gray-800/50' : 'divide-gray-200'}`}>
                   {latestReservations.map((res) => (
-                    <tr key={res.id} className="hover:bg-white/[0.02] transition duration-150">
-                      <td className="py-3.5 font-bold text-white">{res.guestName}</td>
+                    <tr key={res.id} className={`transition duration-150 ${isDark ? 'hover:bg-white/[0.02]' : 'hover:bg-gray-50'}`}>
+                      <td className="py-3.5 font-bold" style={{ color: colors.text.primary }}>{res.guestName}</td>
                       <td className="py-3.5">
-                        <span className="px-2.5 py-0.5 bg-[#121212] border border-gray-800 rounded text-xs text-gray-300 font-mono">
+                        <span className={`px-2.5 py-0.5 border rounded text-xs font-mono ${isDark ? 'bg-[#121212] border-gray-800 text-gray-300' : 'bg-gray-100 border-gray-300 text-gray-700'}`}>
                           {res.roomNumber}
                         </span>
                       </td>
-                      <td className="py-3.5 text-xs text-gray-400 font-mono">
+                      <td className="py-3.5 text-xs font-mono" style={{ color: colors.text.muted }}>
                         {res.checkIn} ── {res.checkOut}
                       </td>
                       <td className="py-3.5">
-                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold ${
-                          res.status === 'checked_in' ? 'bg-emerald-950/40 text-emerald-400 border border-emerald-500/20' :
-                          res.status === 'checked_out' ? 'bg-gray-900 text-gray-400 border border-gray-800' :
-                          'bg-amber-950/40 text-[#D4AF37] border border-[#D4AF37]/20'
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                          res.status === 'checked_in' ? (isDark ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-700 border-emerald-200') :
+                          res.status === 'checked_out' ? (isDark ? 'bg-gray-900 text-gray-400 border-gray-800' : 'bg-gray-100 text-gray-600 border-gray-300') :
+                          (isDark ? 'bg-amber-950/40 text-[#D4AF37] border-[#D4AF37]/20' : 'bg-amber-50 text-amber-700 border-amber-200')
                         }`}>
                           {res.status === 'checked_in' ? 'مقيم حالياً' :
                            res.status === 'checked_out' ? 'مغادر' :
                            'وصول متوقع'}
                         </span>
                       </td>
-                      <td className="py-3.5 text-left font-mono font-bold text-[#E6C587]">
+                      <td className="py-3.5 text-left font-mono font-bold" style={{ color: colors.primary.goldLight }}>
                         {res.amount ? res.amount.toLocaleString('ar-SA') : '0'} ريال
                       </td>
                     </tr>
@@ -489,15 +492,16 @@ export default function DashboardHome({
           </div>
 
           {/* Guest Requests Ticker */}
-          <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 shadow-xl space-y-4">
+          <div className={`border rounded-xl p-6 shadow-xl space-y-4 ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
             <div className="flex justify-between items-center">
-              <h2 className="text-lg font-bold text-[#E6C587] flex items-center gap-2">
+              <h2 className="text-lg font-bold flex items-center gap-2" style={{ color: colors.primary.goldLight }}>
                 <ConciergeBell size={18} />
                 <span>الطلبات الخاصة النشطة</span>
               </h2>
               <button 
                 onClick={() => onNavigate('الطلبات الخاصة')}
-                className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1"
+                className="text-xs hover:underline flex items-center gap-1"
+                style={{ color: colors.primary.gold }}
               >
                 <span>إدارة الطلبات</span>
                 <ChevronLeft size={14} />
@@ -506,33 +510,33 @@ export default function DashboardHome({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {recentRequests.length > 0 ? recentRequests.map((req) => (
-                <div key={req.id} className="p-4 bg-[#121212] border border-gray-800 rounded-xl hover:border-[#D4AF37]/20 transition duration-200 flex flex-col justify-between space-y-3">
+                <div key={req.id} className={`p-4 border rounded-xl hover:border-[#D4AF37]/20 transition duration-200 flex flex-col justify-between space-y-3 ${isDark ? 'bg-[#121212] border-gray-800' : 'bg-gray-50 border-gray-200'}`}>
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2">
-                      <span className="w-8 h-8 rounded-full bg-amber-950/20 border border-[#D4AF37]/20 flex items-center justify-center text-[#D4AF37]">
+                      <span className="w-8 h-8 rounded-full border flex items-center justify-center" style={{ background: isDark ? 'rgba(245, 158, 11, 0.2)' : 'rgba(245, 158, 11, 0.1)', borderColor: `${colors.primary.gold}20`, color: colors.primary.gold }}>
                         <ConciergeBell size={14} />
                       </span>
                       <div>
-                        <span className="text-xs text-gray-400 font-bold">طلب #{req.id}</span>
-                        <div className="text-[10px] text-gray-500 font-mono">{new Date(req.createdAt).toLocaleDateString('ar-SA')}</div>
+                        <span className="text-xs font-bold" style={{ color: colors.text.muted }}>طلب #{req.id}</span>
+                        <div className="text-[10px] font-mono" style={{ color: colors.text.disabled }}>{new Date(req.createdAt).toLocaleDateString('ar-SA')}</div>
                       </div>
                     </div>
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
-                      req.status === 'PENDING' ? 'bg-amber-950/40 text-amber-500 border border-amber-500/20' :
-                      req.status === 'IN_PROGRESS' ? 'bg-blue-950/40 text-blue-400 border border-blue-500/20' :
-                      'bg-gray-900 text-gray-400 border border-gray-800'
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold border ${
+                      req.status === 'PENDING' ? (isDark ? 'bg-amber-950/40 text-amber-500 border-amber-500/20' : 'bg-amber-50 text-amber-700 border-amber-200') :
+                      req.status === 'IN_PROGRESS' ? (isDark ? 'bg-blue-950/40 text-blue-400 border-blue-500/20' : 'bg-blue-50 text-blue-700 border-blue-200') :
+                      (isDark ? 'bg-gray-900 text-gray-400 border-gray-800' : 'bg-gray-100 text-gray-600 border-gray-300')
                     }`}>
                       {req.status === 'PENDING' ? 'قيد الانتظار' : 
                        req.status === 'IN_PROGRESS' ? 'جاري التنفيذ' :
                        'مكتمل'}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-300 leading-relaxed font-medium line-clamp-2">
+                  <p className="text-xs leading-relaxed font-medium line-clamp-2" style={{ color: colors.text.secondary }}>
                     {req.description || 'طلب خاص'}
                   </p>
                 </div>
               )) : (
-                <div className="col-span-2 text-center py-8 text-gray-500 text-xs">
+                <div className="col-span-2 text-center py-8 text-xs" style={{ color: colors.text.muted }}>
                   لا توجد طلبات خاصة نشطة
                 </div>
               )}
@@ -543,54 +547,54 @@ export default function DashboardHome({
         {/* Right Column: Quick Actions & Live Activities */}
         <div className="space-y-6">
           {/* Quick Actions Panel */}
-          <div className="bg-[#0b0b0b] border border-gray-900 rounded-xl p-6 shadow-xl space-y-4">
-            <h2 className="text-md font-bold text-[#E6C587] flex items-center gap-2 border-b border-gray-800 pb-3">
-              <Sparkles size={16} className="text-[#D4AF37]" />
+          <div className={`border rounded-xl p-6 shadow-xl space-y-4 ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
+            <h2 className={`text-md font-bold flex items-center gap-2 border-b pb-3 ${isDark ? 'text-[#E6C587] border-gray-800' : 'text-gray-800 border-gray-200'}`}>
+              <Sparkles size={16} style={{ color: colors.primary.gold }} />
               <span>إجراءات التشغيل السريعة</span>
             </h2>
             <div className="grid grid-cols-2 gap-3">
               <button 
                 onClick={onOpenQuickBook}
-                className="p-4 bg-gradient-to-br from-[#121212] to-[#181818] border border-gray-800 hover:border-[#D4AF37]/30 hover:to-[#222] text-right rounded-xl transition duration-200 space-y-2 group"
+                className={`p-4 border hover:border-[#D4AF37]/30 text-right rounded-xl transition duration-200 space-y-2 group ${isDark ? 'bg-gradient-to-br from-[#121212] to-[#181818] border-gray-800 hover:to-[#222]' : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:to-gray-200'}`}
               >
-                <div className="w-9 h-9 rounded-lg bg-amber-950/30 text-[#D4AF37] border border-[#D4AF37]/10 flex items-center justify-center group-hover:scale-105 transition-all">
+                <div className="w-9 h-9 rounded-lg border flex items-center justify-center group-hover:scale-105 transition-all" style={{ background: isDark ? 'rgba(245, 158, 11, 0.3)' : 'rgba(245, 158, 11, 0.1)', borderColor: `${colors.primary.gold}10`, color: colors.primary.gold }}>
                   <Calendar size={16} />
                 </div>
-                <h4 className="text-xs font-bold text-white">تسجيل حجز جديد</h4>
-                <p className="text-[10px] text-gray-500">إدخال نزيل جديد للجناح</p>
+                <h4 className="text-xs font-bold" style={{ color: colors.text.primary }}>تسجيل حجز جديد</h4>
+                <p className="text-[10px]" style={{ color: colors.text.muted }}>إدخال نزيل جديد للجناح</p>
               </button>
 
               <button 
                 onClick={onOpenQuickRequest}
-                className="p-4 bg-gradient-to-br from-[#121212] to-[#181818] border border-gray-800 hover:border-[#D4AF37]/30 hover:to-[#222] text-right rounded-xl transition duration-200 space-y-2 group"
+                className={`p-4 border hover:border-[#D4AF37]/30 text-right rounded-xl transition duration-200 space-y-2 group ${isDark ? 'bg-gradient-to-br from-[#121212] to-[#181818] border-gray-800 hover:to-[#222]' : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:to-gray-200'}`}
               >
-                <div className="w-9 h-9 rounded-lg bg-blue-950/30 text-blue-400 border border-blue-500/10 flex items-center justify-center group-hover:scale-105 transition-all">
+                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center group-hover:scale-105 transition-all ${isDark ? 'bg-blue-950/30 text-blue-400 border-blue-500/10' : 'bg-blue-50 text-blue-600 border-blue-200'}`}>
                   <ConciergeBell size={16} />
                 </div>
-                <h4 className="text-xs font-bold text-white">تسجيل طلب خدمة</h4>
-                <p className="text-[10px] text-gray-500">خدمة غرف ومغسلة ونقل</p>
+                <h4 className="text-xs font-bold" style={{ color: colors.text.primary }}>تسجيل طلب خدمة</h4>
+                <p className="text-[10px]" style={{ color: colors.text.muted }}>خدمة غرف ومغسلة ونقل</p>
               </button>
 
               <button 
                 onClick={() => onNavigate('الغرف')}
-                className="p-4 bg-gradient-to-br from-[#121212] to-[#181818] border border-gray-800 hover:border-[#D4AF37]/30 hover:to-[#222] text-right rounded-xl transition duration-200 space-y-2 group"
+                className={`p-4 border hover:border-[#D4AF37]/30 text-right rounded-xl transition duration-200 space-y-2 group ${isDark ? 'bg-gradient-to-br from-[#121212] to-[#181818] border-gray-800 hover:to-[#222]' : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:to-gray-200'}`}
               >
-                <div className="w-9 h-9 rounded-lg bg-purple-950/30 text-purple-400 border border-purple-500/10 flex items-center justify-center group-hover:scale-105 transition-all">
+                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center group-hover:scale-105 transition-all ${isDark ? 'bg-purple-950/30 text-purple-400 border-purple-500/10' : 'bg-purple-50 text-purple-600 border-purple-200'}`}>
                   <BedDouble size={16} />
                 </div>
-                <h4 className="text-xs font-bold text-white">حالة الغرف</h4>
-                <p className="text-[10px] text-gray-500">تعديل حالة تنظيف وصيانة</p>
+                <h4 className="text-xs font-bold" style={{ color: colors.text.primary }}>حالة الغرف</h4>
+                <p className="text-[10px]" style={{ color: colors.text.muted }}>تعديل حالة تنظيف وصيانة</p>
               </button>
 
               <button 
                 onClick={() => onNavigate('المدفوعات')}
-                className="p-4 bg-gradient-to-br from-[#121212] to-[#181818] border border-gray-800 hover:border-[#D4AF37]/30 hover:to-[#222] text-right rounded-xl transition duration-200 space-y-2 group"
+                className={`p-4 border hover:border-[#D4AF37]/30 text-right rounded-xl transition duration-200 space-y-2 group ${isDark ? 'bg-gradient-to-br from-[#121212] to-[#181818] border-gray-800 hover:to-[#222]' : 'bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 hover:to-gray-200'}`}
               >
-                <div className="w-9 h-9 rounded-lg bg-emerald-950/30 text-emerald-400 border border-emerald-500/10 flex items-center justify-center group-hover:scale-105 transition-all">
+                <div className={`w-9 h-9 rounded-lg border flex items-center justify-center group-hover:scale-105 transition-all ${isDark ? 'bg-emerald-950/30 text-emerald-400 border-emerald-500/10' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
                   <CreditCard size={16} />
                 </div>
-                <h4 className="text-xs font-bold text-white">الفواتير والمالية</h4>
-                <p className="text-[10px] text-gray-500">عرض العمليات والمستحقات</p>
+                <h4 className="text-xs font-bold" style={{ color: colors.text.primary }}>الفواتير والمالية</h4>
+                <p className="text-[10px]" style={{ color: colors.text.muted }}>عرض العمليات والمستحقات</p>
               </button>
             </div>
           </div>

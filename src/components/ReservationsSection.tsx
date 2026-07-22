@@ -6,8 +6,10 @@ import {
   Download, Printer, Eye, Edit, X, Save, Star, MessageSquare, Phone, Mail as MailIcon, MapPin, Briefcase, Loader2
 } from 'lucide-react';
 import { apiService, StayDetailsResponse, CreateStayRequest } from '../services/api';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 export default function ReservationsSection() {
+  const { colors, isDark } = useThemeColors();
   const [stays, setStays] = useState<StayDetailsResponse[]>([]);
   const [todayArrivals, setTodayArrivals] = useState<StayDetailsResponse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -197,15 +199,16 @@ export default function ReservationsSection() {
   return (
     <div className="space-y-6 pb-12">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-900 pb-5">
+      <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-5 ${isDark ? 'border-gray-900' : 'border-gray-200'}`}>
         <div>
-          <h1 className="text-2xl font-black text-[#E6C587]">جدول وإدارة الحجوزات</h1>
-          <p className="text-gray-500 text-xs mt-1">عرض وتنسيق ملفات الحجوزات، والتحكم في إجراءات الدخول والمغادرة والفوترة.</p>
+          <h1 className="text-2xl font-black" style={{ color: colors.primary.goldLight }}>جدول وإدارة الحجوزات</h1>
+          <p className="text-xs mt-1" style={{ color: colors.text.muted }}>عرض وتنسيق ملفات الحجوزات، والتحكم في إجراءات الدخول والمغادرة والفوترة.</p>
         </div>
 
         <button
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200"
+          className="flex items-center gap-2 px-4 py-2 text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200"
+          style={{ background: colors.primary.goldGradient }}
         >
           <Plus size={15} />
           <span>حجز جناح جديد</span>
@@ -213,12 +216,12 @@ export default function ReservationsSection() {
       </div>
 
       {/* Tabs and Search Bar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-[#0b0b0b] border border-gray-900 p-4 rounded-xl">
+      <div className={`flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 border p-4 rounded-xl ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
         <div className="flex items-center gap-2 overflow-x-auto">
           <button
             onClick={() => setActiveTab('all')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'all' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'all' ? 'bg-[#D4AF37] text-black' : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800' : 'bg-gray-100 text-gray-600 border border-gray-300')
             }`}
           >
             كافة الحجوزات ({stays.length})
@@ -226,7 +229,7 @@ export default function ReservationsSection() {
           <button
             onClick={() => setActiveTab('active')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'active' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'active' ? 'bg-[#D4AF37] text-black' : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800' : 'bg-gray-100 text-gray-600 border border-gray-300')
             }`}
           >
             نشط
@@ -234,7 +237,7 @@ export default function ReservationsSection() {
           <button
             onClick={() => setActiveTab('closed')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'closed' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'closed' ? 'bg-[#D4AF37] text-black' : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800' : 'bg-gray-100 text-gray-600 border border-gray-300')
             }`}
           >
             مغلق
@@ -242,7 +245,7 @@ export default function ReservationsSection() {
           <button
             onClick={() => setActiveTab('booked')}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${
-              activeTab === 'booked' ? 'bg-[#D4AF37] text-black' : 'bg-[#121212] text-gray-400 border border-gray-800'
+              activeTab === 'booked' ? 'bg-[#D4AF37] text-black' : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800' : 'bg-gray-100 text-gray-600 border border-gray-300')
             }`}
           >
             محجوز
@@ -251,13 +254,13 @@ export default function ReservationsSection() {
 
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500" />
+            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2" style={{ color: colors.text.muted }} />
             <input
               type="text"
               placeholder="بحث بالاسم أو الغرفة..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-4 py-2 pr-10 text-xs text-white focus:outline-none w-48"
+              className={`rounded-lg px-4 py-2 pr-10 text-xs focus:outline-none w-48 ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
             />
           </div>
         </div>
@@ -269,70 +272,71 @@ export default function ReservationsSection() {
           <Loader2 size={24} className="text-[#D4AF37] animate-spin" />
         </div>
       ) : error ? (
-        <div className="text-center py-16 bg-[#0b0b0b] border border-gray-900 rounded-2xl">
+        <div className={`text-center py-16 border rounded-2xl ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
           <XCircle size={48} className="text-red-500 mx-auto mb-4" />
-          <h3 className="text-sm font-bold text-gray-400 mb-2">فشل تحميل الحجوزات</h3>
-          <p className="text-xs text-gray-600 mb-4">{error}</p>
+          <h3 className="text-sm font-bold mb-2" style={{ color: colors.text.muted }}>فشل تحميل الحجوزات</h3>
+          <p className="text-xs mb-4" style={{ color: colors.text.disabled }}>{error}</p>
           <button
             onClick={loadStays}
-            className="px-4 py-2 bg-[#D4AF37] text-black font-extrabold text-xs rounded-xl"
+            className="px-4 py-2 text-black font-extrabold text-xs rounded-xl"
+            style={{ background: colors.primary.gold }}
           >
             إعادة المحاولة
           </button>
         </div>
       ) : filteredStays.length === 0 ? (
-        <div className="text-center py-16 bg-[#0b0b0b] border border-gray-900 rounded-2xl">
-          <AlertCircle size={48} className="text-gray-500 mx-auto mb-4" />
-          <h3 className="text-sm font-bold text-gray-400 mb-2">لا توجد حجوزات</h3>
-          <p className="text-xs text-gray-600 mb-4">ابدأ بإضافة حجز جديد</p>
+        <div className={`text-center py-16 border rounded-2xl ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
+          <AlertCircle size={48} className="mx-auto mb-4" style={{ color: colors.text.muted }} />
+          <h3 className="text-sm font-bold mb-2" style={{ color: colors.text.muted }}>لا توجد حجوزات</h3>
+          <p className="text-xs mb-4" style={{ color: colors.text.disabled }}>ابدأ بإضافة حجز جديد</p>
         </div>
       ) : (
         <div className="overflow-x-auto pb-2">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-gray-800">
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الضيف</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الغرفة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">تسجيل الدخول</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">تسجيل المغادرة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الحالة</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">المبلغ</th>
-                <th className="text-xs text-gray-500 font-bold text-right pb-3">الإجراءات</th>
+              <tr className={`border-b ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>الضيف</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>الغرفة</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>تسجيل الدخول</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>تسجيل المغادرة</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>الحالة</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>المبلغ</th>
+                <th className={`text-xs font-bold text-right pb-3 ${isDark ? 'text-gray-500' : 'text-gray-600'}`}>الإجراءات</th>
               </tr>
             </thead>
             <tbody>
               {filteredStays.map((stay) => (
-                <tr key={stay.stayId} className="border-b border-gray-800/50 hover:bg-[#121212]/50 transition-colors">
+                <tr key={stay.stayId} className={`border-b transition-colors ${isDark ? 'border-gray-800/50 hover:bg-[#121212]/50' : 'border-gray-200 hover:bg-gray-50'}`}>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-[#D4AF37]/20 border border-[#D4AF37]/30 rounded-lg flex items-center justify-center">
-                        <User size={14} className="text-[#E6C587]" />
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${colors.primary.gold}20`, borderColor: `${colors.primary.gold}30`, border: '1px solid' }}>
+                        <User size={14} style={{ color: colors.primary.goldLight }} />
                       </div>
-                      <span className="text-sm text-white font-bold">{stay.guestName}</span>
+                      <span className="text-sm font-bold" style={{ color: colors.text.primary }}>{stay.guestName}</span>
                     </div>
                   </td>
-                  <td className="py-3 text-sm text-white">{stay.roomNumber}</td>
-                  <td className="py-3 text-sm text-gray-400">{stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
-                  <td className="py-3 text-sm text-gray-400">{stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
+                  <td className="py-3 text-sm" style={{ color: colors.text.primary }}>{stay.roomNumber}</td>
+                  <td className="py-3 text-sm" style={{ color: colors.text.muted }}>{stay.checkInTime ? new Date(stay.checkInTime).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
+                  <td className="py-3 text-sm" style={{ color: colors.text.muted }}>{stay.expectedCheckOutDate ? new Date(stay.expectedCheckOutDate).toLocaleDateString('ar-SA', { calendar: 'gregory' }) : '-'}</td>
                   <td className="py-3">
-                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold text-gray-400 border border-gray-800">
+                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold border ${isDark ? 'text-gray-400 border-gray-800' : 'text-gray-600 border-gray-300'}`}>
                       {stay.status === 'CHECKED_IN' ? 'نشط' : stay.status === 'CHECKED_OUT' ? 'مغلق' : stay.status === 'RESERVED' ? 'محجوز' : stay.status}
                     </span>
                   </td>
-                  <td className="py-3 text-sm text-[#E6C587] font-bold">{stay.totalCharge ? stay.totalCharge.toLocaleString('ar-SA', { maximumFractionDigits: 0 }) : '0'} ريال</td>
+                  <td className="py-3 text-sm font-bold" style={{ color: colors.primary.goldLight }}>{stay.totalCharge ? stay.totalCharge.toLocaleString('ar-SA', { maximumFractionDigits: 0 }) : '0'} ريال</td>
                   <td className="py-3">
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleCheckIn(stay.stayId)}
                         disabled={stay.status === 'CHECKED_IN'}
-                        className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold text-gray-400 hover:text-white"
+                        className={`px-3 py-1.5 border rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                       >
                         موافقة
                       </button>
                       <button
                         onClick={() => handleCheckOut(stay.stayId)}
                         disabled={stay.status === 'CHECKED_OUT'}
-                        className="px-3 py-1.5 bg-[#121212] border border-gray-800 rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold text-gray-400 hover:text-white"
+                        className={`px-3 py-1.5 border rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                       >
                         رفض
                       </button>
@@ -347,38 +351,38 @@ export default function ReservationsSection() {
 
       {/* New Reservation Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4" style={{ background: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)' }}>
+          <div className={`border rounded-2xl p-6 max-w-2xl w-full max-h-[90vh] overflow-y-auto ${isDark ? 'bg-[#0b0b0b] border-[#D4AF37]/30' : 'bg-white border-gray-200'}`}>
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-[#E6C587]">حجز جناح جديد</h3>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 bg-gray-900 border border-gray-800 rounded-lg">
+              <h3 className="text-xl font-bold" style={{ color: colors.primary.goldLight }}>حجز جناح جديد</h3>
+              <button onClick={() => setIsModalOpen(false)} className={`p-2 border rounded-lg ${isDark ? 'bg-gray-900 border-gray-800' : 'bg-gray-100 border-gray-300'}`}>
                 <X size={18} />
               </button>
             </div>
 
             {createStayError && (
-              <div className="bg-red-950/40 border border-red-500/30 text-red-200 text-sm p-3 rounded-lg mb-4">
+              <div className={`border text-sm p-3 rounded-lg mb-4 ${isDark ? 'bg-red-950/40 border-red-500/30 text-red-200' : 'bg-red-50 border-red-200 text-red-700'}`}>
                 {createStayError}
               </div>
             )}
 
             <div className="space-y-4">
               <div>
-                <label className="text-xs text-gray-500 block mb-2">اسم الضيف</label>
+                <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>اسم الضيف</label>
                 <input
                   type="text"
                   value={guestName}
                   onChange={(e) => setGuestName(e.target.value)}
-                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                  className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                 />
               </div>
 
               <div>
-                <label className="text-xs text-gray-500 block mb-2">رقم الغرفة</label>
+                <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>رقم الغرفة</label>
                 <select
                   value={selectedRoomNumber}
                   onChange={(e) => setSelectedRoomNumber(e.target.value)}
-                  className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                  className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                 >
                   <option value="">اختر غرفة متاحة</option>
                   {availableRooms.map((room) => (
@@ -391,53 +395,53 @@ export default function ReservationsSection() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 block mb-2">تسجيل الدخول</label>
+                  <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>تسجيل الدخول</label>
                   <input
                     type="date"
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 block mb-2">تسجيل المغادرة</label>
+                  <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>تسجيل المغادرة</label>
                   <input
                     type="date"
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-xs text-gray-500 block mb-2">عدد البالغين</label>
+                  <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>عدد البالغين</label>
                   <input
                     type="number"
                     value={adults}
                     onChange={(e) => setAdults(parseInt(e.target.value))}
                     min="1"
-                    className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500 block mb-2">عدد الأطفال</label>
+                  <label className="text-xs block mb-2" style={{ color: colors.text.muted }}>عدد الأطفال</label>
                   <input
                     type="number"
                     value={children}
                     onChange={(e) => setChildren(parseInt(e.target.value))}
                     min="0"
-                    className="w-full bg-[#121212] border border-gray-800 focus:border-[#D4AF37] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
+                    className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none ${isDark ? 'bg-[#121212] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                   />
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+              <div className={`flex justify-end gap-3 pt-4 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition"
+                  className={`px-4 py-2 border rounded-xl text-xs font-bold transition ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                 >
                   إلغاء
                 </button>
@@ -445,7 +449,8 @@ export default function ReservationsSection() {
                   type="button"
                   onClick={handleCreateReservation}
                   disabled={isCreatingStay}
-                  className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                  style={{ background: colors.primary.goldGradient }}
                 >
                   {isCreatingStay ? (
                     <>

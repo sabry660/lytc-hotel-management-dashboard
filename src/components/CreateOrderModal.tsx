@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Trash2, Save, Loader2, Utensils, Coffee, Sparkles, Search } from 'lucide-react';
 import { apiService, CreateOrderRequest, OrderItemRequest } from '../services/api';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 interface CreateOrderModalProps {
   isOpen: boolean;
@@ -28,6 +29,7 @@ interface MenuItem {
 }
 
 export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumber }: CreateOrderModalProps) {
+  const { colors, isDark } = useThemeColors();
   const [category, setCategory] = useState<'FOOD' | 'DRINK' | 'SERVICE'>('FOOD');
   const [items, setItems] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -145,7 +147,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          style={{ background: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)' }}
         >
           <motion.div
             initial={{ scale: 0.95, opacity: 0 }}
@@ -153,22 +156,22 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
             exit={{ scale: 0.95, opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative"
+            className={`border rounded-2xl p-6 max-w-3xl w-full max-h-[90vh] overflow-y-auto relative ${isDark ? 'bg-[#0b0b0b] border-[#D4AF37]/30' : 'bg-white border-gray-200'}`}
           >
             <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
             
             {/* Header */}
             <div className="flex justify-between items-center mb-6">
               <div>
-                <h2 className="text-xl font-bold text-[#E6C587] flex items-center gap-2">
-                  <Utensils size={20} className="text-[#D4AF37]" />
+                <h2 className="text-xl font-bold flex items-center gap-2" style={{ color: colors.primary.goldLight }}>
+                  <Utensils size={20} style={{ color: colors.primary.gold }} />
                   إنشاء طلب جديد
                 </h2>
-                <p className="text-xs text-gray-500 mt-1">رقم الغرفة: {roomNumber}</p>
+                <p className="text-xs mt-1" style={{ color: colors.text.muted }}>رقم الغرفة: {roomNumber}</p>
               </div>
               <button
                 onClick={onClose}
-                className="p-2 bg-gray-900 border border-gray-800 hover:bg-gray-800 rounded-lg transition"
+                className={`p-2 border rounded-lg transition ${isDark ? 'bg-gray-900 border-gray-800 hover:bg-gray-800' : 'bg-gray-100 border-gray-300 hover:bg-gray-200'}`}
               >
                 <X size={18} />
               </button>
@@ -177,14 +180,14 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
             {/* Form */}
             <div className="space-y-5">
               {errorMessage && (
-                <div className="p-3 bg-red-950/20 border border-red-500/20 rounded-lg text-red-400 text-xs">
+                <div className={`p-3 border rounded-lg text-xs ${isDark ? 'bg-red-950/20 border-red-500/20 text-red-400' : 'bg-red-50 border-red-200 text-red-700'}`}>
                   {errorMessage}
                 </div>
               )}
 
               {/* Category Selection */}
               <div>
-                <label className="block text-xs font-bold text-gray-400 mb-2">
+                <label className="block text-xs font-bold mb-2" style={{ color: colors.text.muted }}>
                   فئة الطلب <span className="text-red-400">*</span>
                 </label>
                 <div className="flex gap-2">
@@ -198,7 +201,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                         className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-xs font-bold transition ${
                           category === cat.value
                             ? 'bg-[#D4AF37] text-black'
-                            : 'bg-[#121212] text-gray-400 border border-gray-800 hover:text-white'
+                            : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800 hover:text-white' : 'bg-gray-100 text-gray-600 border border-gray-300 hover:text-gray-900')
                         }`}
                       >
                         <Icon size={16} />
@@ -212,13 +215,14 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
               {/* Items List */}
               <div>
                 <div className="flex justify-between items-center mb-2">
-                  <label className="block text-xs font-bold text-gray-400">
+                  <label className="block text-xs font-bold" style={{ color: colors.text.muted }}>
                     عناصر الطلب <span className="text-red-400">*</span>
                   </label>
                   <button
                     type="button"
                     onClick={addItem}
-                    className="text-xs text-[#D4AF37] hover:underline flex items-center gap-1"
+                    className="text-xs hover:underline flex items-center gap-1"
+                    style={{ color: colors.primary.gold }}
                   >
                     <Plus size={14} />
                     إضافة عنصر
@@ -227,12 +231,12 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                 
                 <div className="space-y-3">
                   {items.map((item, index) => (
-                    <div key={index} className="bg-[#121212] border border-gray-800 rounded-xl p-4 space-y-3">
+                    <div key={index} className={`border rounded-xl p-4 space-y-3 ${isDark ? 'bg-[#121212] border-gray-800' : 'bg-gray-50 border-gray-200'}`}>
                       <div className="flex justify-between items-start">
                         <div className="flex-1 space-y-3">
                           {/* Menu Item Selector */}
                           <div>
-                            <label className="block text-[10px] text-gray-500 mb-1">اختر العنصر</label>
+                            <label className="block text-[10px] mb-1" style={{ color: colors.text.muted }}>اختر العنصر</label>
                             {isLoadingMenu ? (
                               <div className="flex items-center justify-center py-2">
                                 <Loader2 size={16} className="text-[#D4AF37] animate-spin" />
@@ -241,7 +245,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                               <select
                                 value={item.menuItemId}
                                 onChange={(e) => updateItem(index, 'menuItemId', parseInt(e.target.value))}
-                                className="w-full bg-[#0b0b0b] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-3 py-2 text-white text-xs focus:outline-none transition"
+                                className={`w-full border rounded-lg px-3 py-2 text-xs focus:outline-none transition ${isDark ? 'bg-[#0b0b0b] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                               >
                                 <option value={0}>-- اختر عنصر --</option>
                                 {menuItems
@@ -260,12 +264,12 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                           
                           {/* Quantity */}
                           <div>
-                            <label className="block text-[10px] text-gray-500 mb-1">الكمية</label>
+                            <label className="block text-[10px] mb-1" style={{ color: colors.text.muted }}>الكمية</label>
                             <input
                               type="number"
                               value={item.quantity}
                               onChange={(e) => updateItem(index, 'quantity', parseInt(e.target.value))}
-                              className="w-full bg-[#0b0b0b] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-3 py-2 text-white text-xs focus:outline-none transition"
+                              className={`w-full border rounded-lg px-3 py-2 text-xs focus:outline-none transition ${isDark ? 'bg-[#0b0b0b] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                               placeholder="الكمية"
                               min="1"
                             />
@@ -273,24 +277,24 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                           
                           {/* Notes */}
                           <div>
-                            <label className="block text-[10px] text-gray-500 mb-1">ملاحظات</label>
+                            <label className="block text-[10px] mb-1" style={{ color: colors.text.muted }}>ملاحظات</label>
                             <input
                               type="text"
                               value={item.notes || ''}
                               onChange={(e) => updateItem(index, 'notes', e.target.value)}
-                              className="w-full bg-[#0b0b0b] border border-gray-800 focus:border-[#D4AF37] rounded-lg px-3 py-2 text-white text-xs focus:outline-none transition"
+                              className={`w-full border rounded-lg px-3 py-2 text-xs focus:outline-none transition ${isDark ? 'bg-[#0b0b0b] border-gray-800 focus:border-[#D4AF37] text-white' : 'bg-white border-gray-300 focus:border-[#D4AF37] text-gray-900'}`}
                               placeholder="ملاحظات (اختياري)"
                             />
                           </div>
                           
                           {/* Selected Item Info */}
                           {item.name && (
-                            <div className="p-2 bg-[#0b0b0b] border border-[#D4AF37]/20 rounded-lg">
+                            <div className={`p-2 border rounded-lg ${isDark ? 'bg-[#0b0b0b] border-[#D4AF37]/20' : 'bg-gray-100 border-gray-200'}`}>
                               <div className="flex justify-between items-center">
-                                <span className="text-xs text-white font-bold">{item.name}</span>
-                                <span className="text-xs text-[#D4AF37] font-mono">{item.price} ريال</span>
+                                <span className="text-xs font-bold" style={{ color: colors.text.primary }}>{item.name}</span>
+                                <span className="text-xs font-mono" style={{ color: colors.primary.gold }}>{item.price} ريال</span>
                               </div>
-                              <div className="text-[10px] text-gray-500 mt-1">
+                              <div className="text-[10px] mt-1" style={{ color: colors.text.muted }}>
                                 الإجمالي: {(item.price || 0) * item.quantity} ريال
                               </div>
                             </div>
@@ -299,7 +303,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                         <button
                           type="button"
                           onClick={() => removeItem(index)}
-                          className="p-2 text-red-400 hover:bg-red-950/20 rounded-lg transition"
+                          className={`p-2 rounded-lg transition ${isDark ? 'text-red-400 hover:bg-red-950/20' : 'text-red-600 hover:bg-red-50'}`}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -308,7 +312,7 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                   ))}
                   
                   {items.length === 0 && (
-                    <div className="text-center py-8 text-gray-500 text-xs">
+                    <div className="text-center py-8 text-xs" style={{ color: colors.text.muted }}>
                       لا توجد عناصر مضافة. اضغط على "إضافة عنصر" للبدء.
                     </div>
                   )}
@@ -316,11 +320,11 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
               </div>
 
               {/* Submit Button */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-800">
+              <div className={`flex justify-end gap-3 pt-4 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 bg-[#121212] border border-gray-800 text-gray-400 rounded-xl text-xs font-bold hover:text-white transition"
+                  className={`px-4 py-2 border rounded-xl text-xs font-bold transition ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                 >
                   إلغاء
                 </button>
@@ -328,7 +332,8 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
                   type="button"
                   onClick={handleSubmit}
                   disabled={isLoading || items.length === 0}
-                  className="px-6 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                  className="px-6 py-2 text-black font-extrabold text-xs rounded-xl shadow hover:shadow-lg transition duration-200 flex items-center gap-2 disabled:opacity-50"
+                  style={{ background: colors.primary.goldGradient }}
                 >
                   {isLoading ? (
                     <>

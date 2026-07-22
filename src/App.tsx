@@ -23,11 +23,13 @@ import RestaurantStatsSection from './components/RestaurantStatsSection';
 import CafeStatsSection from './components/CafeStatsSection';
 import SpecialOffersSection from './components/SpecialOffersSection';
 import AnalyticsPage from './analytics/AnalyticsPage';
+import ThemeToggle from './components/ThemeToggle';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 import { HOTEL_INFO } from './data';
 import { Room, Reservation, Guest, ServiceRequest, HousekeepingTask, MaintenanceTicket, RestaurantOrder, Invoice } from './types';
 
-export default function App() {
+function App() {
   // Authentication & Loading States
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     return localStorage.getItem('lytc_logged_in') === 'true';
@@ -566,6 +568,8 @@ export default function App() {
             <span className="text-xs font-mono text-gray-400 font-bold hidden md:inline-flex bg-[#121212] border border-gray-850 px-3 py-1.5 rounded-lg select-none">
               {new Date().toLocaleDateString('ar-SA', { weekday: 'long', day: 'numeric', month: 'long', calendar: 'gregory' })}
             </span>
+            {/* Theme Toggle */}
+            <ThemeToggle />
           </div>
         </header>
 
@@ -776,3 +780,11 @@ export default function App() {
     </div>
   );
 }
+
+const AppWithProvider = () => (
+  <ThemeProvider>
+    <App />
+  </ThemeProvider>
+);
+
+export default AppWithProvider;

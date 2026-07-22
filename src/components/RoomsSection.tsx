@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Room } from '../types';
 import { apiService, RoomResponse } from '../services/api';
+import { useThemeColors } from '../hooks/useThemeColors';
 
 interface RoomsSectionProps {
   rooms?: Room[];
@@ -15,6 +16,7 @@ interface RoomsSectionProps {
 }
 
 export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomStatus, onUpdateRoom }: RoomsSectionProps) {
+  const { colors, isDark } = useThemeColors();
   const [rooms, setRooms] = useState<Room[]>(initialRooms);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -336,7 +338,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="bg-[#121212] border border-gray-800 rounded-lg px-3 py-1.5 text-xs text-gray-400 focus:outline-none focus:border-[#D4AF37]"
+            className={`rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:border-[#D4AF37] ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400' : 'bg-white border-gray-300 text-gray-700'}`}
           >
             <option value="number">ترتيب: الرقم</option>
             <option value="price">ترتيب: السعر</option>
@@ -349,16 +351,16 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
           {/* Bulk Actions */}
           {selectedRooms.size > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-xs text-gray-500">{selectedRooms.size} محدد</span>
+              <span className="text-xs" style={{ color: colors.text.muted }}>{selectedRooms.size} محدد</span>
               <button
                 onClick={() => handleBulkAction('available')}
-                className="px-3 py-1.5 bg-emerald-950/40 text-emerald-400 border border-emerald-500/20 rounded-lg text-xs font-bold hover:bg-emerald-950/60"
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border ${isDark ? 'bg-emerald-950/40 text-emerald-400 border-emerald-500/20 hover:bg-emerald-950/60' : 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'}`}
               >
                 تعيين متاح
               </button>
               <button
                 onClick={() => handleBulkAction('maintenance')}
-                className="px-3 py-1.5 bg-red-950/40 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-950/60"
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border ${isDark ? 'bg-red-950/40 text-red-400 border-red-500/20 hover:bg-red-950/60' : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'}`}
               >
                 صيانة
               </button>
@@ -375,22 +377,23 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               <Loader2 size={24} className="text-[#D4AF37] animate-spin" />
             </div>
           ) : error ? (
-            <div className="text-center py-16 bg-[#0b0b0b] border border-gray-900 rounded-2xl">
+            <div className={`text-center py-16 border rounded-2xl ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
               <X size={48} className="text-red-500 mx-auto mb-4" />
-              <h3 className="text-sm font-bold text-gray-400 mb-2">فشل تحميل الغرف</h3>
-              <p className="text-xs text-gray-600 mb-4">{error}</p>
+              <h3 className="text-sm font-bold mb-2" style={{ color: colors.text.muted }}>فشل تحميل الغرف</h3>
+              <p className="text-xs mb-4" style={{ color: colors.text.disabled }}>{error}</p>
               <button
                 onClick={loadRooms}
-                className="px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] text-black font-extrabold text-xs rounded-xl"
+                className="px-4 py-2 text-black font-extrabold text-xs rounded-xl"
+                style={{ background: colors.primary.goldGradient }}
               >
                 إعادة المحاولة
               </button>
             </div>
           ) : paginatedRooms.length === 0 ? (
-            <div className="text-center py-16 bg-[#0b0b0b] border border-gray-900 rounded-2xl">
-              <BedDouble size={48} className="text-gray-700 mx-auto mb-4" />
-              <h3 className="text-sm font-bold text-gray-400 mb-2">لا توجد غرف</h3>
-              <p className="text-xs text-gray-600 mb-4">لم يتم العثور على غرف تطابق البحث</p>
+            <div className={`text-center py-16 border rounded-2xl ${isDark ? 'bg-[#0b0b0b] border-gray-900' : 'bg-white border-gray-200'}`}>
+              <BedDouble size={48} className="mx-auto mb-4" style={{ color: colors.text.muted }} />
+              <h3 className="text-sm font-bold mb-2" style={{ color: colors.text.muted }}>لا توجد غرف</h3>
+              <p className="text-xs mb-4" style={{ color: colors.text.disabled }}>لم يتم العثور على غرف تطابق البحث</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -402,7 +405,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               transition={{ duration: 0.3 }}
               className="relative"
             >
-              <div className="relative bg-[#0b0b0b]/80 backdrop-blur-xl border border-gray-900 rounded-2xl overflow-hidden hover:border-[#D4AF37]/30 hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] transition-all duration-500 hover:-translate-y-2 group">
+              <div className={`relative backdrop-blur-xl border rounded-2xl overflow-hidden hover:border-[#D4AF37]/30 hover:shadow-[0_20px_40px_rgba(212,175,55,0.15)] transition-all duration-500 hover:-translate-y-2 group ${isDark ? 'bg-[#0b0b0b]/80 border-gray-900' : 'bg-white/80 border-gray-200'}`}>
                 {/* Room Image */}
                 <div className="relative h-48 overflow-hidden">
                   <img 
@@ -413,7 +416,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-transparent to-transparent" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isDark ? 'from-[#0b0b0b]' : 'from-gray-900/60'} via-transparent to-transparent`} />
                   
                   {/* Status Badge - More Prominent */}
                   <div className="absolute top-3 right-3">
@@ -425,7 +428,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
 
                   {/* Floor Badge */}
                   <div className="absolute top-3 left-3">
-                    <span className="px-3 py-1.5 bg-black/60 backdrop-blur-md rounded-full text-[10px] font-bold text-[#E6C587] border border-[#D4AF37]/20">
+                    <span className="px-3 py-1.5 backdrop-blur-md rounded-full text-[10px] font-bold border" style={{ background: isDark ? 'rgba(0,0,0,0.6)' : 'rgba(0,0,0,0.4)', color: colors.primary.goldLight, borderColor: `${colors.primary.gold}20` }}>
                       الطابق {room.floor}
                     </span>
                   </div>
@@ -445,43 +448,43 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h3 className="text-lg font-black text-white group-hover:text-[#E6C587] transition">{room.name}</h3>
-                        <p className="text-xs text-gray-500 mt-1">{room.type}</p>
+                        <h3 className={`text-lg font-black transition ${isDark ? 'text-white group-hover:text-[#E6C587]' : 'text-gray-900 group-hover:text-[#D4AF37]'}`}>{room.name}</h3>
+                        <p className="text-xs mt-1" style={{ color: colors.text.muted }}>{room.type}</p>
                       </div>
-                      <span className="text-xl font-black font-mono text-[#E6C587]">{room.number}</span>
+                      <span className="text-xl font-black font-mono" style={{ color: colors.primary.goldLight }}>{room.number}</span>
                     </div>
                   </div>
 
                   {/* Room Details */}
                   <div className="grid grid-cols-2 gap-3 text-xs">
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Users size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <Users size={14} style={{ color: colors.primary.gold }} />
                       <span>{room.capacity} نزلاء</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <DollarSign size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <DollarSign size={14} style={{ color: colors.primary.gold }} />
                       <span>{room.pricePerNight.toLocaleString('ar-SA')} ريال</span>
                     </div>
                   </div>
 
                   {/* Guest Info */}
                   {room.guestName && (
-                    <div className="bg-[#121212] border border-gray-800/60 rounded-xl p-3 flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-blue-950/40 flex items-center justify-center">
-                        <User size={14} className="text-blue-400" />
+                    <div className={`border rounded-xl p-3 flex items-center gap-3 ${isDark ? 'bg-[#121212] border-gray-800/60' : 'bg-gray-50 border-gray-200'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isDark ? 'bg-blue-950/40' : 'bg-blue-50'}`}>
+                        <User size={14} className={isDark ? 'text-blue-400' : 'text-blue-600'} />
                       </div>
                       <div className="flex-1">
-                        <span className="text-[10px] text-gray-500 block">النزيل المقيم</span>
-                        <span className="text-xs font-bold text-white">{room.guestName}</span>
+                        <span className="text-[10px] block" style={{ color: colors.text.muted }}>النزيل المقيم</span>
+                        <span className="text-xs font-bold" style={{ color: colors.text.primary }}>{room.guestName}</span>
                       </div>
                     </div>
                   )}
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-3 border-t border-gray-800/60">
+                  <div className={`flex gap-2 pt-3 border-t ${isDark ? 'border-gray-800/60' : 'border-gray-200'}`}>
                     <button
                       onClick={() => setSelectedRoom(room)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#121212] border border-gray-800 rounded-lg text-xs font-bold text-gray-400 hover:text-white hover:border-[#D4AF37]/30 transition"
+                      className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 border rounded-lg text-xs font-bold transition ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white hover:border-[#D4AF37]/30' : 'bg-gray-50 border-gray-300 text-gray-600 hover:text-gray-900 hover:border-[#D4AF37]/30'}`}
                     >
                       <Eye size={14} />
                       <span>التفاصيل</span>
@@ -505,7 +508,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative bg-[#0b0b0b]/80 backdrop-blur-xl border border-gray-900 rounded-2xl overflow-hidden hover:border-[#D4AF37]/30 hover:shadow-[0_10px_30px_rgba(212,175,55,0.1)] transition-all duration-300"
+              className={`relative backdrop-blur-xl border rounded-2xl overflow-hidden hover:border-[#D4AF37]/30 hover:shadow-[0_10px_30px_rgba(212,175,55,0.1)] transition-all duration-300 ${isDark ? 'bg-[#0b0b0b]/80 border-gray-900' : 'bg-white/80 border-gray-200'}`}
             >
               <div className="flex flex-col sm:flex-row">
                 {/* Room Image */}
@@ -518,7 +521,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                       e.currentTarget.src = 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800';
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0b0b0b] via-transparent to-transparent sm:bg-gradient-to-l" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isDark ? 'from-[#0b0b0b]' : 'from-gray-900/60'} via-transparent to-transparent sm:bg-gradient-to-l`} />
                   
                   <div className="absolute top-3 right-3 sm:top-3 sm:right-3">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] font-bold border backdrop-blur-md ${getStatusColor(room.status)}`}>
@@ -533,38 +536,38 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-3">
-                        <h3 className="text-lg font-black text-white">{room.name}</h3>
-                        <span className="px-2 py-1 bg-[#D4AF37]/10 border border-[#D4AF37]/30 rounded text-[10px] font-bold text-[#D4AF37]">
+                        <h3 className="text-lg font-black" style={{ color: colors.text.primary }}>{room.name}</h3>
+                        <span className="px-2 py-1 rounded text-[10px] font-bold border" style={{ background: `${colors.primary.gold}10`, borderColor: `${colors.primary.gold}30`, color: colors.primary.gold }}>
                           {room.number}
                         </span>
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">{room.type}</p>
+                      <p className="text-xs mt-1" style={{ color: colors.text.muted }}>{room.type}</p>
                     </div>
                     <div className="text-right">
-                      <span className="text-2xl font-black font-mono text-[#E6C587]">
+                      <span className="text-2xl font-black font-mono" style={{ color: colors.primary.goldLight }}>
                         {room.pricePerNight.toLocaleString('ar-SA')}
                       </span>
-                      <span className="text-xs text-gray-500 block">ريال / ليلة</span>
+                      <span className="text-xs block" style={{ color: colors.text.muted }}>ريال / ليلة</span>
                     </div>
                   </div>
 
-                  <p className="text-xs text-gray-400 line-clamp-2">{room.description}</p>
+                  <p className="text-xs line-clamp-2" style={{ color: colors.text.secondary }}>{room.description}</p>
 
                   <div className="flex flex-wrap gap-4 text-xs">
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <MapPin size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <MapPin size={14} style={{ color: colors.primary.gold }} />
                       <span>الطابق {room.floor}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Users size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <Users size={14} style={{ color: colors.primary.gold }} />
                       <span>{room.capacity} نزلاء</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Clock size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <Clock size={14} style={{ color: colors.primary.gold }} />
                       <span>{room.lastUpdated}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-400">
-                      <Layers size={14} className="text-[#D4AF37]" />
+                    <div className="flex items-center gap-2" style={{ color: colors.text.secondary }}>
+                      <Layers size={14} style={{ color: colors.primary.gold }} />
                       <span>إشغال {room.occupancyRate}%</span>
                     </div>
                   </div>
@@ -572,36 +575,36 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
                   {/* Amenities */}
                   <div className="flex flex-wrap gap-2">
                     {room.amenities.filter(a => a).slice(0, 4).map((amenity, idx) => (
-                      <span key={`${room.id}-amenity-${idx}`} className="px-2 py-1 bg-[#121212] border border-gray-800 rounded-md text-[10px] text-gray-400">
+                      <span key={`${room.id}-amenity-${idx}`} className={`px-2 py-1 border rounded-md text-[10px] ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400' : 'bg-gray-100 border-gray-300 text-gray-600'}`}>
                         {amenity}
                       </span>
                     ))}
                     {room.amenities.length > 4 && (
-                      <span className="px-2 py-1 bg-[#121212] border border-gray-800 rounded-md text-[10px] text-gray-400">
+                      <span className={`px-2 py-1 border rounded-md text-[10px] ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400' : 'bg-gray-100 border-gray-300 text-gray-600'}`}>
                         +{room.amenities.length - 4}
                       </span>
                     )}
                   </div>
 
                   {/* Actions */}
-                  <div className="flex gap-2 pt-3 border-t border-gray-800/60">
+                  <div className={`flex gap-2 pt-3 border-t ${isDark ? 'border-gray-800/60' : 'border-gray-200'}`}>
                     <button
                       onClick={() => setSelectedRoom(room)}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#121212] border border-gray-800 rounded-lg text-xs font-bold text-gray-400 hover:text-white hover:border-[#D4AF37]/30 transition"
+                      className={`flex items-center justify-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white hover:border-[#D4AF37]/30' : 'bg-gray-50 border-gray-300 text-gray-600 hover:text-gray-900 hover:border-[#D4AF37]/30'}`}
                     >
                       <Eye size={14} />
                       <span>التفاصيل</span>
                     </button>
                     <button
                       onClick={() => handleUpdateRoomStatus(room.id, 'available')}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-emerald-950/40 border border-emerald-500/20 rounded-lg text-xs font-bold text-emerald-400 hover:bg-emerald-950/60 transition"
+                      className={`flex items-center justify-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition ${isDark ? 'bg-emerald-950/40 border-emerald-500/20 text-emerald-400 hover:bg-emerald-950/60' : 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'}`}
                     >
                       <Calendar size={14} />
                       <span>حجز</span>
                     </button>
                     <button
                       onClick={() => handleDeleteRoom(room.id)}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-red-950/40 border border-red-500/20 rounded-lg text-xs font-bold text-red-400 hover:bg-red-950/60 transition"
+                      className={`flex items-center justify-center gap-2 px-4 py-2 border rounded-lg text-xs font-bold transition ${isDark ? 'bg-red-950/40 border-red-500/20 text-red-400 hover:bg-red-950/60' : 'bg-red-50 border-red-200 text-red-700 hover:bg-red-100'}`}
                     >
                       <Trash2 size={14} />
                       <span>حذف</span>
@@ -620,7 +623,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
           <button
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="p-2 bg-[#121212] border border-gray-800 rounded-lg text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`p-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-50 border-gray-300 text-gray-600 hover:text-gray-900'}`}
           >
             <ChevronLeft size={16} />
           </button>
@@ -631,7 +634,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               className={`w-10 h-10 rounded-lg text-xs font-bold transition ${
                 currentPage === page 
                   ? 'bg-[#D4AF37] text-black' 
-                  : 'bg-[#121212] text-gray-400 border border-gray-800 hover:text-white'
+                  : (isDark ? 'bg-[#121212] text-gray-400 border border-gray-800 hover:text-white' : 'bg-gray-50 text-gray-600 border-gray-300 hover:text-gray-900')
               }`}
             >
               {page}
@@ -640,7 +643,7 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
           <button
             onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
             disabled={currentPage === totalPages}
-            className="p-2 bg-[#121212] border border-gray-800 rounded-lg text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className={`p-2 border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-50 border-gray-300 text-gray-600 hover:text-gray-900'}`}
           >
             <ChevronLeft size={16} className="rotate-180" />
           </button>
@@ -654,7 +657,8 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            className="fixed inset-0 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            style={{ background: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(0,0,0,0.5)' }}
             onClick={() => setSelectedRoom(null)}
           >
             <motion.div
@@ -662,67 +666,67 @@ export default function RoomsSection({ rooms: initialRooms = [], onUpdateRoomSta
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="bg-[#0b0b0b] border border-[#D4AF37]/30 rounded-2xl p-6 max-w-2xl w-full relative space-y-6 max-h-[90vh] overflow-y-auto"
+              className={`border rounded-2xl p-6 max-w-2xl w-full relative space-y-6 max-h-[90vh] overflow-y-auto ${isDark ? 'bg-[#0b0b0b] border-[#D4AF37]/30' : 'bg-white border-gray-200'}`}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
               
-              <div className="flex justify-between items-start border-b border-gray-800 pb-4">
+              <div className={`flex justify-between items-start border-b pb-4 ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
                 <div>
-                  <h3 className="text-2xl font-bold text-[#E6C587]">{selectedRoom.name || 'غرفة'}</h3>
-                  <p className="text-sm text-gray-500 mt-1">{selectedRoom.type || '-'} • جناح {selectedRoom.number || '-'}</p>
+                  <h3 className="text-2xl font-bold" style={{ color: colors.primary.goldLight }}>{selectedRoom.name || 'غرفة'}</h3>
+                  <p className="text-sm mt-1" style={{ color: colors.text.muted }}>{selectedRoom.type || '-'} • جناح {selectedRoom.number || '-'}</p>
                 </div>
                 <button
                   onClick={() => setSelectedRoom(null)}
-                  className="p-2 bg-gray-900 border border-gray-800 hover:bg-gray-800 rounded-lg"
+                  className={`p-2 border rounded-lg ${isDark ? 'bg-gray-900 border-gray-800 hover:bg-gray-800' : 'bg-gray-100 border-gray-300 hover:bg-gray-200'}`}
                 >
                   <X size={18} />
                 </button>
               </div>
 
               {/* Description */}
-              <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
-                <h4 className="text-sm font-bold text-[#E6C587] mb-2">الوصف</h4>
-                <p className="text-sm text-gray-300">{selectedRoom.description || 'لا يوجد وصف متاح'}</p>
+              <div className={`p-4 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800' : 'bg-gray-50 border-gray-200'}`}>
+                <h4 className="text-sm font-bold mb-2" style={{ color: colors.primary.goldLight }}>الوصف</h4>
+                <p className="text-sm" style={{ color: colors.text.secondary }}>{selectedRoom.description || 'لا يوجد وصف متاح'}</p>
               </div>
 
               {/* Room ID */}
-              <div className="p-4 bg-[#121212] border border-gray-800 rounded-xl">
-                <h4 className="text-sm font-bold text-[#E6C587] mb-2">معرف الغرفة</h4>
-                <p className="text-sm text-gray-300 font-mono">{selectedRoom.id || '-'}</p>
+              <div className={`p-4 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800' : 'bg-gray-50 border-gray-200'}`}>
+                <h4 className="text-sm font-bold mb-2" style={{ color: colors.primary.goldLight }}>معرف الغرفة</h4>
+                <p className="text-sm font-mono" style={{ color: colors.text.secondary }}>{selectedRoom.id || '-'}</p>
               </div>
 
               {/* Info Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-xs font-semibold">
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">رقم الغرفة</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.number || '-'}</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>رقم الغرفة</span>
+                  <span className="text-sm font-bold block mt-1" style={{ color: colors.text.primary }}>{selectedRoom.number || '-'}</span>
                 </div>
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">الطابق</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.floor || '-'}</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>الطابق</span>
+                  <span className="text-sm font-bold block mt-1" style={{ color: colors.text.primary }}>{selectedRoom.floor || '-'}</span>
                 </div>
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">السعر</span>
-                  <span className="text-[#E6C587] text-sm font-bold block mt-1">{selectedRoom.pricePerNight ? selectedRoom.pricePerNight.toLocaleString('ar-SA') : '-'} ريال</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>السعر</span>
+                  <span className="text-sm font-bold block mt-1" style={{ color: colors.primary.goldLight }}>{selectedRoom.pricePerNight ? selectedRoom.pricePerNight.toLocaleString('ar-SA') : '-'} ريال</span>
                 </div>
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">السعة (بالغين)</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.maxAdults !== undefined ? selectedRoom.maxAdults : '-'}</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>السعة (بالغين)</span>
+                  <span className="text-sm font-bold block mt-1" style={{ color: colors.text.primary }}>{selectedRoom.maxAdults !== undefined ? selectedRoom.maxAdults : '-'}</span>
                 </div>
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">السعة (أطفال)</span>
-                  <span className="text-white text-sm font-bold block mt-1">{selectedRoom.maxKids !== undefined ? selectedRoom.maxKids : '-'}</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>السعة (أطفال)</span>
+                  <span className="text-sm font-bold block mt-1" style={{ color: colors.text.primary }}>{selectedRoom.maxKids !== undefined ? selectedRoom.maxKids : '-'}</span>
                 </div>
-                <div className="p-3 bg-[#121212] border border-gray-800/80 rounded-xl">
-                  <span className="text-gray-500 block">الحالة</span>
+                <div className={`p-3 border rounded-xl ${isDark ? 'bg-[#121212] border-gray-800/80' : 'bg-gray-50 border-gray-200'}`}>
+                  <span className="block" style={{ color: colors.text.muted }}>الحالة</span>
                   <span className={`text-sm font-bold block mt-1 ${getStatusColor(selectedRoom.status || 'available')}`}>{getStatusLabel(selectedRoom.status || 'available')}</span>
                 </div>
               </div>
 
               {/* Status Modification */}
-              <div className="space-y-3 pt-4 border-t border-gray-800">
-                <h4 className="text-sm font-bold text-gray-400">تغيير الحالة</h4>
+              <div className={`space-y-3 pt-4 border-t ${isDark ? 'border-gray-800' : 'border-gray-200'}`}>
+                <h4 className="text-sm font-bold" style={{ color: colors.text.muted }}>تغيير الحالة</h4>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                   {(['available', 'occupied', 'cleaning', 'maintenance'] as Room['status'][]).map((status) => (
                     <button
