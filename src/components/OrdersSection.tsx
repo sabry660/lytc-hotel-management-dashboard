@@ -165,14 +165,24 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
           <h1 className="text-2xl font-black text-[#E6C587]">الطلبات</h1>
           <p className="text-gray-500 text-xs mt-1">تتبع طلبات الطعام المباشرة لجميع الطاولات والأجنحة، ومراقبة حالة المطبخ والمبيعات الإجمالية.</p>
         </div>
-        {viewMode === 'menu' && (
-          <button 
-            onClick={() => setIsCreateMenuItemModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
-            <Plus size={15} />
-            <span>إضافة عنصر</span>
-          </button>
-        )}
+        <div className="flex gap-2">
+          {viewMode === 'orders' && (
+            <button 
+              onClick={() => setIsCreateOrderModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
+              <Plus size={15} />
+              <span>إنشاء طلب</span>
+            </button>
+          )}
+          {viewMode === 'menu' && (
+            <button 
+              onClick={() => setIsCreateMenuItemModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#AA7B30] to-[#D4AF37] hover:from-[#C59740] hover:to-[#D4AF37] text-black font-extrabold text-xs rounded-xl shadow-lg transition duration-200">
+              <Plus size={15} />
+              <span>إضافة عنصر</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* View Mode Toggles */}
