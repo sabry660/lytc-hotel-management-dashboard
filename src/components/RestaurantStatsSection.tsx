@@ -21,15 +21,9 @@ export default function RestaurantStatsSection() {
       const response = await apiService.getRestaurantStats();
       setStats(response);
     } catch (error: any) {
-      // Dummy data fallback - ensure error is not set
-      setError(null);
-      setStats({
-        totalOrders: 234,
-        pendingOrders: 18,
-        completedOrders: 216,
-        totalRevenue: 67800,
-        todayRevenue: 4500
-      });
+      console.error('Failed to load restaurant stats:', error);
+      setError('فشل تحميل الإحصائيات من الخادم');
+      setStats(null);
     } finally {
       setIsLoading(false);
     }

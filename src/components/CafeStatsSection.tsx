@@ -21,15 +21,9 @@ export default function CafeStatsSection() {
       const response = await apiService.getCafeStats();
       setStats(response);
     } catch (error: any) {
-      // Dummy data fallback - ensure error is not set
-      setError(null);
-      setStats({
-        totalOrders: 189,
-        pendingOrders: 8,
-        completedOrders: 181,
-        totalRevenue: 32400,
-        todayRevenue: 2100
-      });
+      console.error('Failed to load cafe stats:', error);
+      setError('فشل تحميل الإحصائيات من الخادم');
+      setStats(null);
     } finally {
       setIsLoading(false);
     }
