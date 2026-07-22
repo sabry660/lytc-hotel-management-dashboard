@@ -12,7 +12,7 @@ import ReservationsSection from './components/ReservationsSection';
 import GuestsSection from './components/GuestsSection';
 import RequestsSection from './components/RequestsSection';
 import HousekeepingSection from './components/HousekeepingSection';
-import RestaurantSection from './components/RestaurantSection';
+import OrdersSection from './components/OrdersSection';
 import PaymentsSection from './components/PaymentsSection';
 import UsersManagementSection from './components/UsersManagementSection';
 import EmployeesManagementSection from './components/EmployeesManagementSection';
@@ -374,7 +374,7 @@ export default function App() {
       case 'النزلاء':
         return <GuestsSection guests={guests} reservations={reservations} />;
       case 'الطلبات':
-        return <RestaurantSection />;
+        return <OrdersSection />;
       case 'المدفوعات':
         return <PaymentsSection invoices={invoices} onUpdateInvoiceStatus={handleUpdateInvoiceStatus} />;
       case 'التحليلات الذكية':

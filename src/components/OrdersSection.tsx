@@ -11,12 +11,12 @@ import CreateOrderModal from './CreateOrderModal';
 import CreateMenuItemModal from './CreateMenuItemModal';
 import { apiService } from '../services/api';
 
-interface RestaurantSectionProps {
+interface OrdersSectionProps {
   orders?: RestaurantOrder[];
   onUpdateOrderStatus?: (orderId: string, status: RestaurantOrder['status']) => void;
 }
 
-export default function RestaurantSection({ orders: initialOrders = [], onUpdateOrderStatus }: RestaurantSectionProps) {
+export default function OrdersSection({ orders: initialOrders = [], onUpdateOrderStatus }: OrdersSectionProps) {
   const [viewMode, setViewMode] = useState<'orders' | 'menu'>('orders');
   const [filter, setFilter] = useState<'all' | RestaurantOrder['status']>('all');
   const [selectedOrder, setSelectedOrder] = useState<RestaurantOrder | null>(null);
