@@ -84,10 +84,12 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
     try {
       // Try to load orders from backend
       const response = await apiService.getGuestOrders('101', 0, 50);
+      console.log('Orders response:', response);
       // Transform backend response to RestaurantOrder format if needed
       const transformedOrders = response.content || [];
       setOrders(transformedOrders);
     } catch (error: any) {
+      console.error('Failed to load orders:', error);
       if (error.message && error.message.includes('500')) {
         setError('خطأ في الخادم عند تحميل الطلبات. يرجى التواصل مع فريق الدعم.');
       } else if (error.message && error.message.includes('NetworkError')) {

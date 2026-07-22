@@ -51,8 +51,19 @@ export default function CreateOrderModal({ isOpen, onClose, onSuccess, roomNumbe
   const loadMenuItems = async () => {
     setIsLoadingMenu(true);
     try {
-      const response = await apiService.getGuestMenu(category, 0, 100);
-      setMenuItems(response.content || []);
+      // Load all menu items without category filter first
+      const response = await apiService.getGuestMenu(undefined, 0, 100);
+      console.log('Menu items response:', response);
+      console.log('Category filter:', category);
+      
+      // Filter items by category on the client side if needed
+      let items = response.content || [];
+      if (category && category !== 'ALL') {
+        items = items.filter((item: MenuItem) => item.category === category);
+      }
+      
+      console.log('Filtered menu items:', items);
+      setMenuItems(items);
     } catch (error) {
       console.error('Failed to load menu items:', error);
       setMenuItems([]);
