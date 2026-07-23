@@ -341,14 +341,14 @@ export default function ReservationsSection() {
                         disabled={stay.status === 'CHECKED_IN'}
                         className={`px-3 py-1.5 border rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                       >
-                        موافقة
+                        تسجيل دخول
                       </button>
                       <button
                         onClick={() => handleCheckOut(stay.stayId)}
-                        disabled={stay.status === 'CHECKED_OUT'}
+                        disabled={stay.status !== 'CHECKED_IN'}
                         className={`px-3 py-1.5 border rounded-lg hover:border-[#D4AF37]/30 transition disabled:opacity-50 text-xs font-bold ${isDark ? 'bg-[#121212] border-gray-800 text-gray-400 hover:text-white' : 'bg-gray-100 border-gray-300 text-gray-600 hover:text-gray-900'}`}
                       >
-                        رفض
+                        تسجيل مغادرة
                       </button>
                     </div>
                   </td>
