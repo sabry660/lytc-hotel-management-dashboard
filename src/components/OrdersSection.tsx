@@ -131,7 +131,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
     }
   };
 
-  const totalRestaurantSales = (orders || []).reduce((sum, order) => sum + order.total, 0);
+  const totalRestaurantSales = (orders || []).reduce((sum, order) => sum + (order.total || 0), 0);
   const filteredOrders = filter === 'all' ? (orders || []) : (orders || []).filter(o => o.status === filter);
 
   // Calculate average preparation time
@@ -325,7 +325,7 @@ export default function OrdersSection({ orders: initialOrders = [], onUpdateOrde
                     <div>
                       <span className="text-[10px] block" style={{ color: colors.text.muted }}>إجمالي الفاتورة</span>
                       <span className="text-sm font-black font-mono" style={{ color: colors.primary.goldLight }}>
-                        {order.total.toLocaleString('ar-SA', { maximumFractionDigits: 0 })} <span className="text-[10px] font-sans">ريال</span>
+                        {(order.total || 0).toLocaleString('ar-SA', { maximumFractionDigits: 0 })} <span className="text-[10px] font-sans">ريال</span>
                       </span>
                     </div>
 
